@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to S3
         uses: aws-actions/s3-sync@v2
         with:
-          bucket: www.oncehappened.com 
+          bucket: oncehappened.com 
           region: us-east-1
           source-dir: build
         env:
