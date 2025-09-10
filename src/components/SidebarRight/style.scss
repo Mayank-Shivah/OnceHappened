@@ -1,0 +1,122 @@
+.sidebar-right {
+  width: 270px;
+  background-color: var(--header-bg);
+  border-radius: 13px;
+  padding: 1rem 0.6rem 0.5rem 0.6rem;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: sticky;
+  height: fit-content;
+  top: 36px;
+  margin-bottom: 72px;
+
+  @media (max-width:1024px) {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    top: auto;
+    height: 113px;
+    z-index: 999;
+    left: 0;
+    border-radius: unset;
+    padding: 0px;
+    margin-bottom: -16px;
+  }
+
+  .ad-section {
+    width: 100%;
+
+    .ad-card {
+      //   background: var(--light-yellow);
+      //   box-shadow: 0 1px 10px #d9e5ef21;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      //   padding: 0.8rem 0.2rem 0.7rem 0.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      @media (max-width:1024px) {
+        margin-bottom: 0px;
+      }
+
+      .ad-image {
+        width: 98%;
+        border-radius: 10px;
+        margin-bottom: 7px;
+
+        @media (max-width:1024px) {
+          width: 98%;
+          border-radius: 10px;
+          margin-bottom: 7px;
+          height: 96px;
+          object-fit: cover;
+        }
+      }
+
+      .bottom-image {
+        margin-top: 8px;
+      }
+
+      .ad-btn {
+        margin-top: 3px;
+        margin-bottom: 3px;
+        width: 80%;
+        padding: 0.6rem 0.5rem;
+        border: none;
+        border-radius: 23px;
+        background-image: var(--theme-color);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+
+        &.dark {
+          background: #333;
+        }
+
+        transition: background 0.15s;
+
+        &:hover {
+          background: var(--theme-color);
+        }
+      }
+    }
+
+    .ad-label {
+      text-align: center;
+      color: #888;
+      font-size: 0.97rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .trial-complete-btn {
+      margin: 0 auto;
+      padding: 0.35rem 1.1rem;
+      background-color: var(--theme-color);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.15s;
+
+      &:hover {
+        background: var(--theme-color);
+      }
+    }
+  }
+
+  .trial-ended-message {
+    background: #fff6e0;
+    border-radius: 10px;
+    padding: 1.2rem 0.8rem;
+    color: #a82020;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+}

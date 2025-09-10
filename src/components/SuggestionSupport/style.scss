@@ -1,0 +1,129 @@
+.support-header {
+  display: flex;
+  gap: 2em;
+  justify-content: center;
+  @media  (max-width: 768px) {
+   gap: 0.3em;
+  }
+}
+
+.outline-btn {
+  background: var(--header-bg);
+  border: 0px solid #ebe3e3;
+  padding: 0.4em 1em;
+  font-size: 1.1em;
+  border-radius: 7px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--category-text);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  @media  (max-width: 768px) {
+    width: 100%;
+      font-size: 0.9em;
+  }
+
+}
+
+// .outline-btn:hover {
+//   box-shadow: 0 0 8px var(--border-color);
+//   border-color: var(--border-color);
+// }
+
+.submit-btn {
+  background: var(--theme-color);
+  color: #34495e;
+  width: 100%;
+  margin: 1.2em 0 0;
+  font-weight: bold;
+  padding: 0.8em;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+}
+
+.form-group {
+  margin-bottom: 1.2em;
+  position: relative;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--category-text);
+}
+
+.field__message.error-msg {
+  color: #ec2e2e;
+  font-size: 0.93em;
+  margin-top: 0.35em;
+}
+
+.error input,
+.error textarea {
+  border-color: #ec2e2e;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.modal-content {
+  background: var(--header-bg);
+  position: relative;
+  border-radius: 20px;
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  max-width: 400px;
+  margin: auto;
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.input-wrapper {
+  .add-msg {
+    padding: 9px 34px 9px 10px;
+    border: 1px solid rgb(215, 215, 219);
+    border-radius: 6px;
+    height: 88px;
+    width: 100%;
+  }
+  .input-icon {
+    top: 21px !important;
+  }
+}
+select {
+  width: 100%;
+  padding: 9px 34px 9px 10px;
+  border: 1px solid #d7d7db;
+  border-radius: 6px
+}
