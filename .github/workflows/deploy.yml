@@ -28,7 +28,7 @@ jobs:
         uses: aws-actions/s3-sync@v2
         with:
           bucket: www.oncehappened.com   # ✅ this matches your AWS bucket name
-          region: us-east-1              # ✅ region of your bucket
+          region: ${{ secrets.AWS_REGION }}            # ✅ region of your bucket
           source-dir: build
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
