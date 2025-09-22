@@ -18,63 +18,81 @@ export default function QuestionCard({
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
-  const descRef = useRef();
 
+  const descRef = useRef();
   const user = loggedUser();
 
+  // ✅ Detect if text exceeds 9 lines
   useEffect(() => {
-    if (question && descRef.current) {
-      const lineHeightStr =
-        getComputedStyle(descRef.current).lineHeight || "20px";
-      const lineHeight = parseFloat(lineHeightStr);
-      const contentHeight = descRef.current.scrollHeight;
-      const lines = Math.round(contentHeight / lineHeight);
-      setShowReadMore(lines > 9);
-    }
-  }, [question, expanded]);
+    const el = descRef.current;
+    if (!el) return;
 
+    const checkOverflow = () => {
+      const style = window.getComputedStyle(el);
+      let lh = parseFloat(style.lineHeight);
+      if (!lh || Number.isNaN(lh)) {
+        lh = parseFloat(style.fontSize) * 1.5 || 20;
+      }
+      const lines = Math.ceil(el.scrollHeight / lh);
+      setShowReadMore(lines > 9);
+    };
+
+    checkOverflow();
+    const ro = new ResizeObserver(checkOverflow);
+    ro.observe(el);
+
+    return () => ro.disconnect();
+  }, [question]);
+
+  // ✅ Restore vote
   useEffect(() => {
-    if (user) {
-      const storedVotes = JSON.parse(localStorage.getItem("userVotes") || "{}");
-      if (storedVotes[`${user.id}_${question.id}`] !== undefined) {
-        setVote(storedVotes[`${user.id}_${question.id}`]);
-        return;
-      }
-      let userAction = null;
-      if (question?.likes?.length > 0) {
-        const userLike = question.likes.find((like) => like.user_id === user.id);
-        if (userLike) userAction = userLike.is_like === 1 ? true : false;
-      }
-      if (!userAction && question?.dislikes?.length > 0) {
-        const userDislike = question.dislikes.find(
-          (dislike) => dislike.user_id === user.id
-        );
-        if (userDislike) userAction = false;
-      }
-      setVote(userAction);
+    if (!user) return;
+    const storedVotes = JSON.parse(localStorage.getItem("userVotes") || "{}");
+    const key = `${user.id}_${question.id}`;
+    if (storedVotes[key] !== undefined) {
+      setVote(storedVotes[key]);
+      return;
     }
+    let userAction = null;
+    if (question?.likes?.length > 0) {
+      const userLike = question.likes.find((like) => like.user_id === user.id);
+      if (userLike) userAction = userLike.is_like === 1 ? true : false;
+    }
+    if (userAction === null && question?.dislikes?.length > 0) {
+      const userDislike = question.dislikes.find(
+        (dislike) => dislike.user_id === user.id
+      );
+      if (userDislike) userAction = false;
+    }
+    setVote(userAction);
   }, [question, user]);
 
+  // ✅ Like / Dislike toggle
   const handleVote = async (isLike) => {
     if (!isLoggedIn()) {
       toast.error("Please login first to Like OR Dislike");
       return;
     }
-    let newVote = isLike;
+    if (!user?.id || !question?.id) {
+      toast.error("Invalid user or question data");
+      return;
+    }
+
+    const newVote = vote === isLike ? null : isLike;
     setVote(newVote);
-    const storedVotes = JSON.parse(localStorage.getItem("userVotes") || "{}");
-    storedVotes[`${user.id}_${question.id}`] = newVote;
-    localStorage.setItem("userVotes", JSON.stringify(storedVotes));
+
+    const key = `${user.id}_${question.id}`;
+    const stored = JSON.parse(localStorage.getItem("userVotes") || "{}");
+    if (newVote === null) delete stored[key];
+    else stored[key] = newVote;
+    localStorage.setItem("userVotes", JSON.stringify(stored));
+
     try {
       setLoading(true);
-      const response = await api.post("/posts/like", {
-        is_like: newVote === true ? 1 : 0,
-        post_id: question.id,
-        user_id: user?.id,
-      });
-      if (!response.data.success) {
-        toast.error("Failed to update reaction");
-      }
+      const payload = { post_id: question.id, user_id: user.id };
+      if (newVote === true) payload.is_like = 1;
+      else if (newVote === false) payload.is_like = 0;
+      await api.post("/posts/like", payload);
     } catch (err) {
       console.error("Vote failed:", err.response?.data || err.message);
       toast.error("Something went wrong while voting");
@@ -83,6 +101,7 @@ export default function QuestionCard({
     }
   };
 
+  // ✅ Copy link
   const handleCopyLink = () => {
     const url = `${window.location.origin}/?id=${question.id}`;
     navigator.clipboard.writeText(url).then(() => {
@@ -93,50 +112,63 @@ export default function QuestionCard({
 
   return (
     <div className="question-card">
-      <div
-        className={
-          "question-description" +
-          (expanded ? " expanded" : "") +
-          (showReadMore && !expanded ? " show-fade" : "")
-        }
-        ref={descRef}
-      >
-        <span dangerouslySetInnerHTML={{ __html: question.description }} />
-        {showReadMore && !expanded && (
+      {/* ✅ Description */}
+      <div className={`question-description ${showReadMore ? "has-readmore" : ""}`}>
+        <div
+          ref={descRef}
+          className={`desc-body ${expanded ? "expanded" : "collapsed"}`}
+        >
+          <span dangerouslySetInnerHTML={{ __html: question.description }} />
+        </div>
+
+        {showReadMore && (
           <button
             className="read-more"
-            onClick={() => setExpanded(true)}
+            onClick={() => setExpanded(!expanded)}
             type="button"
           >
-            Read more
+            {expanded ? "Show Less" : "Read More"}
           </button>
         )}
       </div>
 
-      {/* ✅ Actions row */}
+      {/* ✅ Actions */}
       <div className="question-actions">
         <div className="d-flex g-1 w-100 justify-content-between align-items-center">
           {showActions && (
             <>
-              {/* LIKE */}
-            <div class="d-flex">
+              <div className="d-flex">
+                {/* LIKE */}
                 <button
-                className={`upvote ${vote === true ? "active" : ""}`}
-                disabled={loading}
-                onClick={() => handleVote(true)}
-              >
-                <FaHeart />
-              </button>
+                  className={`upvote ${vote === true ? "active" : ""}`}
+                  disabled={loading}
+                  onClick={() => handleVote(true)}
+                >
+                  {vote === true ? (
+                    <FaHeart color="red" size={20} />
+                  ) : (
+                    <img src="images/heart.svg" alt="like" width="20" height="20" />
+                  )}
+                </button>
 
-              {/* DISLIKE */}
-              <button
-                className={`downvote ms-2 ${vote === false ? "active" : ""}`}
-                disabled={loading}
-                onClick={() => handleVote(false)}
-              >
-                <FaThumbsDown />
-              </button>
-            </div>
+                {/* DISLIKE */}
+                <button
+                  className={`downvote ${vote === false ? "active" : ""}`}
+                  disabled={loading}
+                  onClick={() => handleVote(false)}
+                >
+                  {vote === false ? (
+                    <FaThumbsDown  size={20} />
+                  ) : (
+                    <img
+                      src="images/dislike-icon.png"
+                      alt="dislike"
+                      width="20"
+                      height="20"
+                    />
+                  )}
+                </button>
+              </div>
 
               {/* COPY */}
               <div className="share-dropdown-container">
@@ -148,22 +180,15 @@ export default function QuestionCard({
           )}
 
           {showEdit && (
-            <button
-              className={`upvote`} // ✅ reuse same style as like
-              onClick={() => onEdit?.(question.id)}
-            >
+            <button className="upvote" onClick={() => onEdit?.(question.id)}>
               <FaEdit />
             </button>
           )}
           {showDelete && (
-            <button
-              className={`downvote ms-2`} // ✅ reuse same style as dislike
-              onClick={() => onDelete?.(question.id)}
-            >
+            <button className="downvote" onClick={() => onDelete?.(question.id)}>
               <FaTrash />
             </button>
           )}
-
         </div>
       </div>
     </div>
