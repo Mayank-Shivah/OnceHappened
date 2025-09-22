@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ThemeProvider from "./components/ThemeProvider";
+import feather from "feather-icons";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";

@@ -20,7 +20,7 @@
   --dark-text: #000;
   --light-yellow: rgb(255, 255, 255);
   --border-color: Yellow;
-  ;
+--filter-set:invert(0);
   --category-text: #34495e;
   --shadow: 0 2px 16px #edeef1;
   --active-bg: #f6f7fa;
@@ -32,6 +32,7 @@
   --header-bg: #222;
   --search-bg: #393e46;
   --profile-bg: #353c45;
+  --filter-set:invert(1);
   --profile-color: #eee;
   --dark-text: #fff;
   --light-yellow: #464646;
