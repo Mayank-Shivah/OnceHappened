@@ -1,0 +1,35 @@
+.theme-otp {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.otp-box {
+  width: 40px !important;
+  height: 40px;
+  font-size: 1.5rem;
+  text-align: center;
+  border-radius: 8px;
+  border: 2px solid #fdd127;
+  background: #f0f0f0;
+  transition: border-color 0.3s;
+  padding: 0px !important;
+}
+
+.otp-box:focus {
+  border-color: #607d8b;
+  outline: none;
+}
+
+.btn-border {
+  background: #0000;
+  border: initial !important;
+  font-size: 13px;
+  padding-bottom: 1px;
+  color: var(--dark-text);
+  text-decoration: underline;
+  text-decoration-color: var(--theme-color);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}

@@ -1,0 +1,28 @@
+.no-post-container {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--dark-text);
+  background: var(--header-bg);
+  border-radius: 12px;
+}
+
+.no-post-image {
+  width: 120px;
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.add-post-btn {
+  margin-top: 20px;
+  background-color: #2979ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 26px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.add-post-btn:hover {
+  background-color: #1565c0;
+}

@@ -1,0 +1,30 @@
+.price-tab {
+    border: 2px solid var(--theme-color);
+    font-weight: 600;
+    padding: 7px 20px;
+    font-size: 15px;
+    border-radius: 10px;
+    background: var(--light-yellow);
+    letter-spacing: 1px;
+    color: var(--dark-text);
+    a{
+        text-decoration: none;
+    }
+    span{
+        color: var(--dark-text);
+    }
+}
+hr{
+    color: var(--theme-color);
+    border-top: 2px solid var(--theme-color);
+}
+.price-list{
+    margin-bottom: 20px;
+}
+
+.price-item {
+    margin-bottom: 24px !important;
+    a{
+        text-decoration: none;
+    }
+}

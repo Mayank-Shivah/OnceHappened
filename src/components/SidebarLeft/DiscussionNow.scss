@@ -1,0 +1,43 @@
+  .discussion-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .discussion-item {
+      padding: 0.95rem 1.3rem 0.7rem 1.3rem;
+      border-bottom: 1px solid #eaeaea;
+      font-size: 1.01rem;
+
+      .discussion-question {
+        font-weight: 600;
+        color: var(--category-text);
+        ;
+        margin-bottom: 5px;
+        font-size: 1rem;
+      }
+
+      .discussion-meta {
+        color: var(--category-text);
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 2px;
+
+        svg {
+          font-size: 1.08rem;
+          color: var(--category-text);
+        }
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .discussion-now {
+    @media screen and (max-width: 1024px) {
+      display: none;
+    }
+  }
