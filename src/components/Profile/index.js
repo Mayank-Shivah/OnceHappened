@@ -17,7 +17,7 @@ const Profile = () => {
   const [draftPosts, setDraftPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [editingDraft, setEditingDraft] = useState(null); // ✅ store draft being edited
+  const [editingDraft, setEditingDraft] = useState(null);
 
   const postsPerPage = 5;
   const user = loggedUser();
@@ -30,7 +30,7 @@ const Profile = () => {
         const res = await api.get("/topics");
         const posts = res.data?.posts || [];
 
-        // liked posts (latest first)
+        // liked posts
         const userLiked = posts
           .filter(
             (p) =>
@@ -42,7 +42,7 @@ const Profile = () => {
 
         setLikedPosts(userLiked);
 
-        // drafts (status = published for this user) → latest first
+        // drafts
         const userDrafts = posts
           .filter((p) => p.user_id === user.id && p.status === "published")
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -81,21 +81,13 @@ const Profile = () => {
     setPage(1);
   }, [searchTerm, activeTab]);
 
-  // 🔹 Confirm toast component
+  // confirm toast
   const confirmToast = (message, onConfirm, onCancel) => {
     toast(
       ({ closeToast }) => (
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <span>{message}</span>
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              justifyContent: "center",
-              marginTop: "8px",
-              width: "100%",
-            }}
-          >
+          <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
             <button
               onClick={() => {
                 onConfirm();
@@ -135,7 +127,7 @@ const Profile = () => {
     );
   };
 
-  // delete draft with confirm toast
+  // delete draft
   const handleDeleteDraft = (id) => {
     confirmToast(
       "Are you sure you want to delete this draft?",
@@ -181,39 +173,47 @@ const Profile = () => {
         </button>
       </div>
 
-      {/* Content */}
+      {/* Search */}
+      <SidebarSearch
+        searchTerm={searchTerm}
+        onSearchChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      {/* Posts */}
       <div className="pt-1">
-        <SidebarSearch
-          searchTerm={searchTerm}
-          onSearchChange={(e) => setSearchTerm(e.target.value)}
-        />
+        {loading && <p>Loading posts...</p>}
 
-        <div className="pt-1">
-          {loading && <p>Loading posts...</p>}
+        {!loading &&
+          currentPosts.map((q) => (
+            <QuestionCard
+              key={q.id}
+              question={q}
+              showActions={activeTab === "Liked"}
+              showDelete={activeTab === "Drafts"}
+              showEdit={activeTab === "Drafts"}
+              onEdit={() => handleEditDraft(q)}
+              onDelete={() => handleDeleteDraft(q.id)}
+            />
+          ))}
 
-          {!loading &&
-            currentPosts.map((q) => (
-              <QuestionCard
-                key={q.id}
-                question={q}
-                showActions={activeTab === "Liked"}
-                showDelete={activeTab === "Drafts"}
-                showEdit={activeTab === "Drafts"}
-                onEdit={() => handleEditDraft(q)} // ✅ pass draft
-                onDelete={() => handleDeleteDraft(q.id)} // ✅ confirm + delete
-              />
-            ))}
-
-         {!loading && currentList.length === 0 && (
-  <NoPost 
-    message={
-      activeTab === "Liked"
-        ? "No liked posts found."
-        : "No drafts available."
-    }
-  />
-)}
-        </div>
+        {/* No Posts */}
+        {!loading && currentList.length === 0 && (
+          <NoPost
+            message={
+              activeTab === "Liked"
+                ? "No post available"
+                : "No posts yet"
+            }
+            subMessage={
+              activeTab === "Liked"
+                ? "Try liking/saving a post, thanks!"
+                : "Try writing a new post, thanks!"
+            }
+            onAddNew={
+              activeTab === "Drafts" ? () => setEditingDraft({}) : null
+            }
+          />
+        )}
       </div>
 
       {/* Pagination */}

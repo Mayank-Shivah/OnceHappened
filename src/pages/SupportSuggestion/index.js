@@ -162,7 +162,7 @@ function SupportSuggestion() {
 
                   <button
                     type="submit"
-                    className="btn btn-custom"
+                    className="btn btn-custom mt-2"
                     disabled={suggestionForm.isSubmitting}
                   >
                     {suggestionForm.isSubmitting ? "Submitting..." : "Submit"}
@@ -172,10 +172,10 @@ function SupportSuggestion() {
             </div>
 
             {/* ============================ Support ============================ */}
-            <div className="ss-content-section">
+            <div className="ss-content-section mt-1">
               <div className="details-section">
                 <h4>
-                  Customer-Support :-{" "}
+              
                   <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a>
                 </h4>
 
@@ -261,7 +261,7 @@ function SupportSuggestion() {
 
                   <button
                     type="submit"
-                    className="btn btn-custom"
+                    className="btn btn-custom mt-2"
                     disabled={supportForm.isSubmitting}
                   >
                     {supportForm.isSubmitting ? "Submitting..." : "Submit"}
@@ -271,7 +271,7 @@ function SupportSuggestion() {
             </div>
 
             {/* ============================= FAQ ============================= */}
-            <div className="ss-content-section">
+            <div className="ss-content-section mt-1">
               <div className="details-section">
                 <div className="main-accordion-section">
                   <h3>Frequently Asked Questions:</h3>

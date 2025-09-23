@@ -7,22 +7,22 @@
   }
 }
 
-.outline-btn {
-  background: var(--header-bg);
-  border: 0px solid #ebe3e3;
-  padding: 0.4em 1em;
-  font-size: 1.1em;
-  border-radius: 7px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--category-text);
-  transition: box-shadow 0.2s, border-color 0.2s;
-  @media  (max-width: 768px) {
-    width: 100%;
-      font-size: 0.9em;
-  }
+// .outline-btn {
+//   background: var(--header-bg);
+//   border: 0px solid #ebe3e3;
+//   padding: 0.4em 1em;
+//   font-size: 1.1em;
+//   border-radius: 100px;
+//   font-weight: 600;
+//   cursor: pointer;
+//   color: var(--category-text);
+//   transition: box-shadow 0.2s, border-color 0.2s;
+//   @media  (max-width: 768px) {
+//     width: 100%;
+//       font-size: 0.9em;
+//   }
 
-}
+// }
 
 // .outline-btn:hover {
 //   box-shadow: 0 0 8px var(--border-color);

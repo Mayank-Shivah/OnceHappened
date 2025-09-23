@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
+import useScrollLock from "../useScrollLock";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faEye, faEyeSlash, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "react-toastify";
 import "./style.scss";
 import { login } from "../../services/authService";
 
 const LoginModal = ({ onClose, openForgot, openSignup }) => {
+    useScrollLock(true); // <-- IMPORTANT
   const [showPassword, setShowPassword] = useState(false);
+
   const formik = useFormik({
     initialValues: { email: "", password: "" },
-    validate: values => {
+    validate: (values) => {
       const errors = {};
       if (!values.email) errors.email = "Please enter your email";
       if (!values.password) errors.password = "Please enter your password";
@@ -32,15 +35,10 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
         }, 1500);
       } catch (err) {
         const apiErrors = err.response?.data?.errors;
-
         if (apiErrors) {
           const formikErrors = {};
-          if (apiErrors.email) {
-            formikErrors.email = apiErrors.email[0];
-          }
-          if (apiErrors.password) {
-            formikErrors.password = apiErrors.password[0];
-          }
+          if (apiErrors.email) formikErrors.email = apiErrors.email[0];
+          if (apiErrors.password) formikErrors.password = apiErrors.password[0];
           setErrors(formikErrors);
         } else {
           toast.error("Incorrect email or password. Please try again.");
@@ -52,7 +50,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
     },
   });
 
-  const handleOverlay = e => {
+  const handleOverlay = (e) => {
     if (e.target.classList.contains("modal-overlay")) {
       onClose();
     }
@@ -65,8 +63,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           ×
         </button>
         <h1 className="text-center">Log In</h1>
-        <p class="other-section text-center m-0"
-        >&</p>
+        <p className="other-section text-center m-0">&</p>
         <p className="other-section text-center pb-3">
           Let's again read what people have written
         </p>
@@ -74,7 +71,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
         <form onSubmit={formik.handleSubmit}>
           {/* Email */}
           <div className={`form-group ${formik.errors.email ? "error" : ""}`}>
-            <label htmlFor="email"> E-mail </label>
+            <label htmlFor="email">E-mail</label>
             <div className="input-wrapper">
               <input
                 type="email"
@@ -92,9 +89,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           </div>
 
           {/* Password */}
-          <div
-            className={`form-group ${formik.errors.password ? "error" : ""}`}
-          >
+          <div className={`form-group ${formik.errors.password ? "error" : ""}`}>
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
               <input
@@ -108,19 +103,17 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
               <FontAwesomeIcon
                 icon={showPassword ? faEye : faEyeSlash}
                 className="input-icon"
-                onClick={() => setShowPassword(p => !p)}
+                onClick={() => setShowPassword((p) => !p)}
               />
             </div>
             {formik.errors.password && (
-              <p className="field__message error-msg">
-                {formik.errors.password}
-              </p>
+              <p className="field__message error-msg">{formik.errors.password}</p>
             )}
           </div>
 
           {/* Footer */}
-          <div className="form-footer d-flex justify-content-between">
-            <label>
+          <div className="form-footer d-flex justify-content-end">
+            <label class="d-none">
               <input type="checkbox" /> Remember Me
             </label>
             <button
@@ -143,14 +136,13 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
         </form>
 
         <p className="account-details text-center mt-3">
-          Want to create an account ?
+          Want to create an account?
           <button
             type="button"
             className="custom-link"
             style={{
               background: "none",
               border: "none",
-         
               textDecoration: "underline",
               cursor: "pointer",
             }}

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../components/ThemeProvider";
 import SidebarRight from "../components/SidebarRight";
+import BackButton from "../components/BackButton";
 function PrivacyPolicy() {
   const { theme } = useContext(ThemeContext);
 
@@ -11,8 +12,13 @@ function PrivacyPolicy() {
         <div className="content-wrapper" style={{ display: "flex" }}>
 
           <main className="main-section-parent p-0">
-            <div className="privacy-card">
-              <h1 >Privacy Policy <span> (Update Date:- 10/08/2025)</span></h1>
+            <div className="privacy-card d-flex align-items-center justify-content-between ">
+              <div class="d-flex align-items-center">
+                <BackButton />
+                <h1 >Privacy Policy </h1>
+              </div>
+
+              <h1 > <span> (Update Date:- 10/08/2025)</span></h1>
             </div>
             <div className="policy-page" >
 

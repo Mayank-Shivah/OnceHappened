@@ -5,6 +5,9 @@ import api from "../../api";
 import { toast } from "react-toastify";
 import { loggedUser, isLoggedIn } from "../../services/authService";
 
+// 🔹 Use Popup context
+import { usePopup } from "../PopupManager";
+
 export default function QuestionCard({
   question,
   showActions = true,
@@ -22,17 +25,17 @@ export default function QuestionCard({
   const descRef = useRef();
   const user = loggedUser();
 
-  // ✅ Detect if text exceeds 9 lines
+  // ✅ Access popup manager
+  const { openRegister, openLogin } = usePopup();
+
+  // ✅ Detect overflow text
   useEffect(() => {
     const el = descRef.current;
     if (!el) return;
 
     const checkOverflow = () => {
       const style = window.getComputedStyle(el);
-      let lh = parseFloat(style.lineHeight);
-      if (!lh || Number.isNaN(lh)) {
-        lh = parseFloat(style.fontSize) * 1.5 || 20;
-      }
+      let lh = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.5 || 20;
       const lines = Math.ceil(el.scrollHeight / lh);
       setShowReadMore(lines > 9);
     };
@@ -40,39 +43,18 @@ export default function QuestionCard({
     checkOverflow();
     const ro = new ResizeObserver(checkOverflow);
     ro.observe(el);
-
     return () => ro.disconnect();
   }, [question]);
-
-  // ✅ Restore vote
-  useEffect(() => {
-    if (!user) return;
-    const storedVotes = JSON.parse(localStorage.getItem("userVotes") || "{}");
-    const key = `${user.id}_${question.id}`;
-    if (storedVotes[key] !== undefined) {
-      setVote(storedVotes[key]);
-      return;
-    }
-    let userAction = null;
-    if (question?.likes?.length > 0) {
-      const userLike = question.likes.find((like) => like.user_id === user.id);
-      if (userLike) userAction = userLike.is_like === 1 ? true : false;
-    }
-    if (userAction === null && question?.dislikes?.length > 0) {
-      const userDislike = question.dislikes.find(
-        (dislike) => dislike.user_id === user.id
-      );
-      if (userDislike) userAction = false;
-    }
-    setVote(userAction);
-  }, [question, user]);
 
   // ✅ Like / Dislike toggle
   const handleVote = async (isLike) => {
     if (!isLoggedIn()) {
-      toast.error("Please login first to Like OR Dislike");
+      // 🔹 Instead of showing local RegisterModal,
+      // we use PopupManager to open login/register popup
+      openRegister();
       return;
     }
+
     if (!user?.id || !question?.id) {
       toast.error("Invalid user or question data");
       return;
@@ -80,12 +62,6 @@ export default function QuestionCard({
 
     const newVote = vote === isLike ? null : isLike;
     setVote(newVote);
-
-    const key = `${user.id}_${question.id}`;
-    const stored = JSON.parse(localStorage.getItem("userVotes") || "{}");
-    if (newVote === null) delete stored[key];
-    else stored[key] = newVote;
-    localStorage.setItem("userVotes", JSON.stringify(stored));
 
     try {
       setLoading(true);
@@ -114,10 +90,7 @@ export default function QuestionCard({
     <div className="question-card">
       {/* ✅ Description */}
       <div className={`question-description ${showReadMore ? "has-readmore" : ""}`}>
-        <div
-          ref={descRef}
-          className={`desc-body ${expanded ? "expanded" : "collapsed"}`}
-        >
+        <div ref={descRef} className={`desc-body ${expanded ? "expanded" : "collapsed"}`}>
           <span dangerouslySetInnerHTML={{ __html: question.description }} />
         </div>
 
@@ -158,14 +131,9 @@ export default function QuestionCard({
                   onClick={() => handleVote(false)}
                 >
                   {vote === false ? (
-                    <FaThumbsDown  size={20} />
+                    <FaThumbsDown size={20} />
                   ) : (
-                    <img
-                      src="images/dislike-icon.png"
-                      alt="dislike"
-                      width="20"
-                      height="20"
-                    />
+                    <img src="images/dislike-icon.png" alt="dislike" width="20" height="20" />
                   )}
                 </button>
               </div>

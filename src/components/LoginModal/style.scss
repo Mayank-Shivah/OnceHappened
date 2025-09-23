@@ -10,8 +10,18 @@
   align-items: center;
   z-index: 9999;
   padding: 10px;
+  position: fixed;              /* not absolute */
+  inset: 0;                     /* top:0; right:0; bottom:0; left:0 */
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;                /* higher than your app */
+  overflow: hidden;
 }
-
+.login-form{
+padding: 20px 24px;
+}
 .modal-content.signup-form.login-form {
   height: auto;
   width: 404px !important;
@@ -113,7 +123,7 @@
 select.form-control {
     font-size: 14px;
     border-bottom: 3px solid yellow !important;
-    background: transparent;
+    background-color: transparent;
     border: unset;
 }
 
