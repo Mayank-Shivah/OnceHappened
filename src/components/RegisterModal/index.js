@@ -348,7 +348,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
-                  <option value="notsay">Rather not say</option>
+                  <option value="notsay">LGBT</option>
                 </select>
                 {formik.errors.gender && (
                   <p className="field__message error-msg">
