@@ -9,7 +9,7 @@ export default function Categories({
   onSearch
 }) {
   const [categories, setCategories] = useState([]);
-  const [searchTerms, setSearchTerms] = useState({}); // store search per category
+  const [searchTerms, setSearchTerms] = useState({}); // keep search per category
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -18,20 +18,18 @@ export default function Categories({
         const topics = res.data?.topics || [];
         setCategories(topics);
 
-        // auto select first category if not already selected
+        // auto select first category
         if (topics.length > 0 && !selectedCategory && onCategorySelect) {
           onCategorySelect(topics[0].id);
         }
       } catch (err) {
-        console.error(
-          "Failed to load categories:",
-          err.response?.data || err.message
-        );
+        console.error("Failed to load categories:", err.response?.data || err.message);
       }
     };
     fetchCategories();
   }, [onCategorySelect, selectedCategory]);
 
+  // 🔹 update search term
   const handleSearchChange = (value) => {
     if (!selectedCategory) return;
     setSearchTerms((prev) => ({
@@ -40,12 +38,14 @@ export default function Categories({
     }));
   };
 
+  // 🔹 when press Enter
   const handleSearchSubmit = (value) => {
     if (onSearch) {
       onSearch(value, selectedCategory);
     }
   };
 
+  // 🔹 clear search for this category
   const handleClear = () => {
     if (!selectedCategory) return;
     setSearchTerms((prev) => ({
@@ -60,14 +60,13 @@ export default function Categories({
   return (
     <aside className="sidebar-left-main">
       <div className="sidebar-title">Topics</div>
+
       <ul className="category-list">
         {categories.length > 0 ? (
           categories.map((cat) => (
             <li
               key={cat.id}
-              className={`category-item ${
-                selectedCategory === cat.id ? "active-item" : ""
-              }`}
+              className={`category-item ${selectedCategory === cat.id ? "active-item" : ""}`}
               onClick={() => onCategorySelect && onCategorySelect(cat.id)}
               style={{ cursor: "pointer" }}
             >
@@ -81,6 +80,7 @@ export default function Categories({
         )}
       </ul>
 
+      {/* 🔹 Search box per category */}
       {selectedCategory && (
         <SidebarSearch
           searchTerm={searchTerms[selectedCategory] || ""}

@@ -1,27 +1,27 @@
 .ss-content-section {
-    background: var(--header-bg);
+      background: var(--header-bg);
     position: relative;
-    border-radius: 20px;
-    box-shadow: 0 0 30px 0 rgb(0 0 0 / 8%);
+    border-radius: 18px;
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.08);
     padding: 2rem;
-    margin-top: 8px;
+   
 
 
     @media (max-width: 768px) {
         padding: 14px;
-        margin-top: 3px;
+        margin-top: -2px;
     }
 
     h4 {
         margin-bottom: 6px;
         font-size: 1.4rem;
         font-weight: 600;
-        color: var(--category-text);
+        color: var(--text-dark);
 
         a {
-            color: var(--category-text);
+             color: var(--text-dark);
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 1.7rem;
 
             &:hover {
                 text-decoration: underline;
@@ -102,15 +102,26 @@ div#faqAccordion {
     }
 }
 button.btn.btn-custom {
-    background: #fff;
-    display: block;
-    border: 1px solid yellow;
-    width: 100%;
+    border-bottom: 2px solid rgb(255, 255, 0) !important;
+    background: transparent;
+    border: unset;
+    font-weight: 600;
+    margin: 0 auto;
+    justify-content: center;
+    width: 160px !important;
+    display: flex;
+    align-items: center;
+    color: var(--text-dark);
+    border-radius: 0px;
 }
 textarea{
     height: 46px;
-
-}.form-group label {
-
+}textarea.form-control {
+    min-height: calc(1.5em + .75rem + calc(var(--bs-border-width) * 2));
+    background: transparent;
+    border-bottom: 2px solid rgb(255, 255, 0) !important;
+    border: unset;
+}
+.form-group label {
     margin-bottom: 2px;
 }

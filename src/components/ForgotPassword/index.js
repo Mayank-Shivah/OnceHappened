@@ -1,7 +1,8 @@
 // src/components/ForgotPassword/index.jsx
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import useScrollLock from "../useScrollLock";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "react-toastify";  // ✅ import toast
 import "react-toastify/dist/ReactToastify.css"; // ✅ ensure css is included
@@ -11,6 +12,8 @@ import './style.scss';
 import { forgotPassword, verifyOtp, resetPassword } from "../../services/authService";
 
 const ForgotPopup = ({ onClose }) => {
+useScrollLock(true);
+
   const [step, setStep] = useState(1); // 1: email, 2: otp, 3: reset password, 4: success
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(Array(6).fill(""));
@@ -87,9 +90,9 @@ const ForgotPopup = ({ onClose }) => {
         password_confirmation: confirmPassword,
       });
       toast.success("Password reset successfully");
-        setTimeout(() => {
-          onClose();
-        }, 1500);
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to reset password");
     } finally {
@@ -103,11 +106,13 @@ const ForgotPopup = ({ onClose }) => {
       onClick={e => e.target.classList.contains("modal-overlay") && onClose()}
     >
       <div className="modal-content forgot-form signup-form login-form">
-        <button className="close-btn" onClick={onClose}>
-          ×
-        </button>
-        <h1 className="text-center mb-5">Forgot Password</h1>
-
+        <div class="for-div">
+    
+          <h1 className="text-center mb-5">Forgot Password</h1>
+                <button className="close-btn" onClick={onClose}>
+            ×
+          </button>
+        </div>
         {step === 1 && (
           <div className="form-group">
             <label htmlFor="forgot-email">Enter your email</label>

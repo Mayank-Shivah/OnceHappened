@@ -38,15 +38,20 @@
     padding: 0.7rem 0.7rem;
     display: grid;
     gap: 7px;
-        background: var(--header-bg, #fff);
+        // background: var(--header-bg, #fff);
         border-radius:10px;
 
     @media (max-width: 1024px) {
       display: flex;
       overflow-x: auto;
-      padding: 8px 5px;
+      padding:0px;
       column-gap: 3px;
+       scrollbar-width: thin;              /* Firefox */
+  scrollbar-color: #ccc transparent;
       border-radius: 0px;
+      ::-webkit-scrollbar {
+  height: 6px; /* thin scrollbar */
+}
     }
 
     .category-item {
@@ -157,7 +162,7 @@
 .sidebar-search {
   display: flex;
   align-items: center;
-  margin-top: 4px;
+  margin-top: 3px;
   padding: 5px 6px;
   border: 1px solid #eee;
   background: var(--header-bg);
@@ -222,7 +227,7 @@ line {
   }
 }
 .single-components-ad {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     img{
       border-radius: 10px;
     }
