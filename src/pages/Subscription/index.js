@@ -1,16 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext} from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
-import LoginModal from "../../components/LoginModal";
+
 import "./style.scss";
 export default function Subscription() {
   const { theme } = useContext(ThemeContext);
   return (
     <div className={`main-layout ${theme}-theme`}>
       <div className="container">
-        <div className="content-wrapper" style={{ display: "flex" }}>
+        <div className="content-wrapper" style={{ display: "flex", marginTop: "2px" }}>
           <main className="main-section-parent p-0">
-            <div className="policy-page mb-2">
+            <div className="policy-page mb-1">
               <div className="subscribe-box">
                 <h2>
                   <span className="color-red">S</span>ubscribe to
@@ -20,10 +20,17 @@ export default function Subscription() {
                     Unlock every post and Remove all ads in just few bucks.
                   </strong>
                 </p>
-                <div className="price-list">
+                <div className="price-list">  <div className="price-item mb-2">
+                    <a
+                      href="/"
+                      className="price-tab"
+                    >
+                      $2.5 <span>per day</span>
+                    </a>
+                  </div>
                   <div className="price-item mb-2">
                     <a
-                      href="#"
+                      href="/"
                       className="price-tab"
                     >
                       $7.50 <span>per month</span>
@@ -31,7 +38,7 @@ export default function Subscription() {
                   </div>
                   <div className="price-item mb-2">
                     <a
-                      href="#"
+                      href="/"
                       className="price-tab"
                    
                     >
@@ -40,14 +47,16 @@ export default function Subscription() {
                   </div>
                   <div className="price-item mb-2">
                     <a
-                 className="price-tab"
-                      href="#"
+                 className="price-tab  us-tab"
+                      href="/"
                     >
-                      $65.99 <span>for 12 months</span>
+                      $65.99 for 12 months
+                     
+                      <span> ★ Deal of the day </span> 
+                  
+                    
                     </a>
-                    <span className="star">
-                      <span> ★ </span>Deal of the day <span> ★ </span>
-                    </span>
+                  
                   </div>
                   <div className="note">
                     (only $65.99 for entire year, about 0.18 cents per day)
@@ -63,7 +72,7 @@ export default function Subscription() {
                   </strong>
                   <div className="price-item highlight mt-2 mb-2">
                     <a
-                      href="#"
+                      href="/"
                       className="price-tab"
                       
                     >
@@ -82,7 +91,7 @@ export default function Subscription() {
             <div className="policy-page">
               <div className="subscribe-box">
                 <h2>Your ongoing subscription:</h2>
-                <p>You currently don’t have any, let’s get & see once..</p>
+                <p>You currently don’t have any, lets get and see how its like</p>
                 <h6>
                   <strong>write this if any</strong>
                 </h6>
@@ -95,11 +104,11 @@ export default function Subscription() {
                   </div>
                   <div className="price-item ">
                     <a
-                      href="#"
+                      href="/"
                       className="price-tab"
                       
                     >
-                      $extend 1 more month
+                      extend 1 more month
                     </a>
                   </div>
                 </div>

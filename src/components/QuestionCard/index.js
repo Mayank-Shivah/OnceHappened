@@ -4,9 +4,9 @@ import "./style.scss";
 import api from "../../api";
 import { toast } from "react-toastify";
 import { loggedUser, isLoggedIn } from "../../services/authService";
-
-// 🔹 Use Popup context
 import { usePopup } from "../PopupManager";
+import ShareModal from "../ShareModal";   
+// ✅ Import the ShareModal
 
 export default function QuestionCard({
   question,
@@ -19,14 +19,13 @@ export default function QuestionCard({
   const [expanded, setExpanded] = useState(false);
   const [vote, setVote] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
+  const [showShare, setShowShare] = useState(false);
 
   const descRef = useRef();
   const user = loggedUser();
 
-  // ✅ Access popup manager
-  const { openRegister, openLogin } = usePopup();
+  const { openRegister } = usePopup();
 
   // ✅ Detect overflow text
   useEffect(() => {
@@ -46,11 +45,9 @@ export default function QuestionCard({
     return () => ro.disconnect();
   }, [question]);
 
-  // ✅ Like / Dislike toggle
+  // ✅ Like / Dislike
   const handleVote = async (isLike) => {
     if (!isLoggedIn()) {
-      // 🔹 Instead of showing local RegisterModal,
-      // we use PopupManager to open login/register popup
       openRegister();
       return;
     }
@@ -77,14 +74,7 @@ export default function QuestionCard({
     }
   };
 
-  // ✅ Copy link
-  const handleCopyLink = () => {
-    const url = `${window.location.origin}/?id=${question.id}`;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
+  const shareUrl = `${window.location.origin}/?id=${question.id}`;
 
   return (
     <div className="question-card">
@@ -138,10 +128,10 @@ export default function QuestionCard({
                 </button>
               </div>
 
-              {/* COPY */}
+              {/* SHARE BUTTON */}
               <div className="share-dropdown-container">
-                <button className="share-btn" onClick={handleCopyLink}>
-                  {copied ? "Copied!" : "Send To"}
+                <button className="share-btn" onClick={() => setShowShare(true)}>
+                  Send To
                 </button>
               </div>
             </>
@@ -159,6 +149,9 @@ export default function QuestionCard({
           )}
         </div>
       </div>
+
+      {/* ✅ Share Modal */}
+      {showShare && <ShareModal url={shareUrl} onClose={() => setShowShare(false)} />}
     </div>
   );
 }

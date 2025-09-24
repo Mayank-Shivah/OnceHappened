@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRegNewspaper } from "react-icons/fa";
+
 import "./style.scss";
 import BottomAd from "../BottomAdd";
 
@@ -7,7 +7,7 @@ import BottomAd from "../BottomAdd";
 export default function Footer() {
   return (
     <footer className="site-footer">
-      <div class="container">
+      <div className="container d-md-none d-lg-block">
         <div class="row align-items-center justify-content-between">
           {/* col-6 */}
           <div className="col-lg-12">
@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
       </div>
    
-        <div class="d-block d-md-none">
+        <div class="d-block d-lg-none">
           <BottomAd></BottomAd>
         </div>
       

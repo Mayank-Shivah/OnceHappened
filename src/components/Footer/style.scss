@@ -18,6 +18,10 @@
   }
   @media (max-width:1024px) {
     border: unset;
+    display: block;
+    border-radius: 10px 10px 0px 0px;
+    padding: 0px;
+    height: 95px;
   }
 
   .footer-left {
