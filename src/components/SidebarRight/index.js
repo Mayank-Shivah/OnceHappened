@@ -36,7 +36,7 @@ export default function SidebarRight() {
   }, []);
 
   return (
-    <aside className="sidebar-right d-none d-md-block">
+    <aside className="sidebar-right d-none d-lg-block">
       {!trialEnded ? (
         <div className="ad-section">
           {ads.length > 0 ? (

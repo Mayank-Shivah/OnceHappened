@@ -4,12 +4,15 @@ import useScrollLock from "../useScrollLock";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ClipLoader from "react-spinners/ClipLoader";
-import { toast } from "react-toastify";
+import Swal from "sweetalert2"; 
+import withReactContent from "sweetalert2-react-content";
 import "./style.scss";
 import { login } from "../../services/authService";
 
+const MySwal = withReactContent(Swal);
+
 const LoginModal = ({ onClose, openForgot, openSignup }) => {
-    useScrollLock(true); // <-- IMPORTANT
+  useScrollLock(true); // ✅ lock background scroll when modal is open
   const [showPassword, setShowPassword] = useState(false);
 
   const formik = useFormik({
@@ -28,11 +31,31 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           localStorage.setItem("token", data.token);
         }
 
-        toast.success("You have logged in successfully!");
-        setTimeout(() => {
-          onClose();
-          // window.location.reload();
-        }, 1500);
+        // ✅ SweetAlert2 success popup (always above modal)
+        MySwal.fire({
+          icon: "success",
+          title: "Login Successful 🎉",
+          text: "Welcome back!",
+          showConfirmButton: false,
+          timer: 2000,
+          backdrop: `
+            rgba(0,0,0,0.4)
+            left top
+            no-repeat
+          `,
+          customClass: {
+            popup: "swal-custom-popup",
+            title: "swal-custom-title",
+          },
+          didOpen: (popup) => {
+            popup.parentNode.style.zIndex = 3000; // ✅ Force SweetAlert on top
+          },
+          willClose: () => {
+            onClose();
+            window.location.reload();
+          },
+        });
+
       } catch (err) {
         const apiErrors = err.response?.data?.errors;
         if (apiErrors) {
@@ -41,7 +64,15 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           if (apiErrors.password) formikErrors.password = apiErrors.password[0];
           setErrors(formikErrors);
         } else {
-          toast.error("Incorrect email or password. Please try again.");
+          MySwal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: "Incorrect email or password. Please try again.",
+            confirmButtonColor: "#d33",
+            didOpen: (popup) => {
+              popup.parentNode.style.zIndex = 3000;
+            },
+          });
           setErrors({ password: "Incorrect email or password." });
         }
       } finally {
@@ -113,9 +144,6 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
 
           {/* Footer */}
           <div className="form-footer d-flex justify-content-end">
-            <label class="d-none">
-              <input type="checkbox" /> Remember Me
-            </label>
             <button
               type="button"
               className="link-button btn-border"
@@ -140,12 +168,6 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           <button
             type="button"
             className="custom-link"
-            style={{
-              background: "none",
-              border: "none",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
             onClick={openSignup}
           >
             Sign Up
