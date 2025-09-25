@@ -28,6 +28,7 @@ export const login = async (email, password) => {
   // ✅ ensure user also saved (needed for validation)
   if (response.data?.user) {
     localStorage.setItem("user", JSON.stringify(response.data.user));
+    startIdleTimer();
   }
 
   // await verifyToken();
@@ -45,6 +46,7 @@ export const register = async (payload) => {
   }
   if (response.data?.user) {
     localStorage.setItem("user", JSON.stringify(response.data.user));
+    startIdleTimer();
   }
 
   return response.data;
@@ -90,5 +92,42 @@ export const loggedUser = () => {
 export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  stopIdleTimer();
   window.location.reload(); // or navigate to homepage
+};
+
+let idleTimer = null;
+
+export const startIdleTimer = (timeout = 30000) => {
+  // only start if user is logged in
+  if (!isLoggedIn()) return;
+
+  const resetTimer = () => {
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      // console.warn("User inactive for 2 minutes. Logging out...");
+      logout();
+    }, timeout);
+  };
+
+  // events to track
+  const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+
+  // attach listeners
+  events.forEach((event) =>
+    window.addEventListener(event, resetTimer, { passive: true })
+  );
+
+  // start first timer
+  resetTimer();
+};
+
+export const stopIdleTimer = () => {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = null;
+
+  const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+  events.forEach((event) =>
+    window.removeEventListener(event, () => {}, false)
+  );
 };

@@ -159,14 +159,15 @@ function Home() {
 
                 {(() => {
                   const elements = [];
-                  let adIndex = 0; // start at first ad
-                  let nextAdIndex = 3; // first ad after 3 posts
+                  let adIndex = 0; // which ad to show next
 
                   questions.forEach((q, i) => {
+                    // always push the question
                     elements.push(<QuestionCard key={q.id} question={q} />);
 
-                    if (i + 1 === nextAdIndex && ads.length > 0) {
-                      const ad = ads[adIndex % ads.length]; // ✅ loop ads
+                    // after every 3 posts, insert an ad (if any)
+                    if ((i + 1) % 3 === 0 && ads.length > 0) {
+                      const ad = ads[adIndex % ads.length]; // loop through ads if fewer ads than slots
                       elements.push(
                         <div className="single-components-ad" key={`ad-${i}-${ad.id}`}>
                           <a href={ad.url} target="_blank" rel="noopener noreferrer">
@@ -174,15 +175,12 @@ function Home() {
                               src={ad.image_video}
                               alt="Advertisement"
                               className="ad-image"
-                              style={{ width: "100%", height: "auto" }} // ✅ full width, keeps aspect ratio
+                              style={{ width: "100%", height: "auto" }}
                             />
-
                           </a>
                         </div>
                       );
-
-                      adIndex++; // move to next ad (looped via modulo)
-                      nextAdIndex += Math.floor(Math.random() * 8) + 2; // random 3–10
+                      adIndex++; // go to next ad
                     }
                   });
 

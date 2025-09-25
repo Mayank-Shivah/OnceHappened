@@ -10,8 +10,12 @@ import { useTranslation } from "react-i18next";
 // ✅ Import the Popup hook
 import { usePopup } from "../PopupManager";
 
+// ✅ Import GoogleTranslate component
+import GoogleTranslate from "../GoogleTranslate";
+
 export default function Header() {
   const [showLang, setShowLang] = useState(false);
+  const [showTranslate, setShowTranslate] = useState(false); // 🔹 add translate state
   const langRef = useRef();
 
   const { resetTheme } = useContext(ThemeContext);
@@ -23,9 +27,9 @@ export default function Header() {
   // ✅ Access popup functions
   const { openLogin, openRegister, openForgot } = usePopup();
 
+  // ✅ on click show GoogleTranslate component
   const changeLanguage = () => {
-    const newLang = i18n.language === "en" ? "es" : "en";
-    i18n.changeLanguage(newLang);
+    setShowTranslate(true);
   };
 
   // prevent background scroll when dropdown open
@@ -132,7 +136,7 @@ export default function Header() {
                               <span className="lang-avatar">
                                 {user?.name?.charAt(0).toUpperCase() || "U"}
                               </span>
-                              {user?.name || "Guest"}Your Profile
+                              Your Profile
                               <FaCheckCircle className="lang-check" />
                             </a>
                           </div>
@@ -146,6 +150,8 @@ export default function Header() {
                             <button type="button" className="link-button" onClick={changeLanguage}>
                               Translate To
                             </button>
+                            {/* 🔹 Render GoogleTranslate only when Translate To clicked */}
+                            {showTranslate && <GoogleTranslate />}
                           </div>
                           <div className="lang-option border-bottom-set">
                             <a href="/subscription" className="link-button border-bottom-set" onClick={() => setShowLang(false)}>
@@ -196,6 +202,8 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      
     </header>
   );
 }

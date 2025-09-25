@@ -30,7 +30,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
         if (data?.token) {
           localStorage.setItem("token", data.token);
         }
-
+        onClose();
         // ✅ SweetAlert2 success popup (always above modal)
         MySwal.fire({
           icon: "success",
@@ -48,10 +48,10 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
             title: "swal-custom-title",
           },
           didOpen: (popup) => {
-            popup.parentNode.style.zIndex = 3000; // ✅ Force SweetAlert on top
+            popup.parentNode.style.zIndex = 2000; // ✅ Force SweetAlert on top
           },
           willClose: () => {
-            onClose();
+          
             window.location.reload();
           },
         });
@@ -64,6 +64,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           if (apiErrors.password) formikErrors.password = apiErrors.password[0];
           setErrors(formikErrors);
         } else {
+          onClose();
           MySwal.fire({
             icon: "error",
             title: "Login Failed",
@@ -72,8 +73,13 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
             didOpen: (popup) => {
               popup.parentNode.style.zIndex = 3000;
             },
+            willClose: () => {
+          
+            window.location.reload();
+          },
           });
           setErrors({ password: "Incorrect email or password." });
+          
         }
       } finally {
         setSubmitting(false);

@@ -15,13 +15,14 @@ const Profile = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [likedPosts, setLikedPosts] = useState([]);
   const [draftPosts, setDraftPosts] = useState([]);
+  const [myPosts, setMyPosts] = useState([]); // ✅ new state
   const [loading, setLoading] = useState(false);
 
   const [editingDraft, setEditingDraft] = useState(null);
 
   const postsPerPage = 5;
   const user = loggedUser();
-
+  
   useEffect(() => {
     const fetchPosts = async () => {
       if (!user?.id) return;
@@ -29,13 +30,17 @@ const Profile = () => {
         setLoading(true);
         const res = await api.get("/topics");
         const posts = res.data?.posts || [];
+        console.log("responce", posts);
 
         // liked posts
         const userLiked = posts
           .filter(
             (p) =>
-              p.likes?.some(
-                (like) => like.user_id === user.id && like.is_like === 1
+              Array.isArray(p.likes) &&
+              p.likes.some(
+                (like) =>
+                  String(like.user_id) === String(user.id) &&
+                  String(like.is_like) === "1"
               )
           )
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -48,6 +53,15 @@ const Profile = () => {
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
         setDraftPosts(userDrafts);
+
+        // ✅ my posts
+        const mine = posts
+           .filter(
+              (p) => String(p.user_id) === String(user.id) && p.status === "approved"
+            )
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        setMyPosts(mine);
       } catch (err) {
         console.error("Failed to load posts:", err);
       } finally {
@@ -69,8 +83,17 @@ const Profile = () => {
     return text.includes(searchTerm.toLowerCase());
   });
 
+  const filteredMyPosts = myPosts.filter((q) => {
+    const text = (q.title || q.description || "").toLowerCase();
+    return text.includes(searchTerm.toLowerCase());
+  });
+
   const currentList =
-    activeTab === "Liked" ? filteredLikedPosts : filteredDraftPosts;
+    activeTab === "Liked"
+      ? filteredLikedPosts
+      : activeTab === "Drafts"
+      ? filteredDraftPosts
+      : filteredMyPosts; // ✅ handle My Posts
 
   // pagination
   const totalPages = Math.ceil(currentList.length / postsPerPage) || 1;
@@ -171,6 +194,12 @@ const Profile = () => {
         >
           Drafts
         </button>
+        <button
+          className={`outline-btn ${activeTab === "MyPosts" ? "active" : ""}`}
+          onClick={() => setActiveTab("MyPosts")}
+        >
+          My Posts
+        </button>
       </div>
 
       {/* Search */}
@@ -191,6 +220,7 @@ const Profile = () => {
               showActions={activeTab === "Liked"}
               showDelete={activeTab === "Drafts"}
               showEdit={activeTab === "Drafts"}
+              showCounts={activeTab === "MyPosts"}
               onEdit={() => handleEditDraft(q)}
               onDelete={() => handleDeleteDraft(q.id)}
             />
@@ -202,12 +232,16 @@ const Profile = () => {
             message={
               activeTab === "Liked"
                 ? "No post available"
-                : "No posts yet"
+                : activeTab === "Drafts"
+                ? "No posts yet"
+                : "You haven't created any posts yet"
             }
             subMessage={
               activeTab === "Liked"
                 ? "Try liking/saving a post, thanks!"
-                : "Try writing a new post, thanks!"
+                : activeTab === "Drafts"
+                ? "Try writing a new post, thanks!"
+                : "Start creating content and it will show here!"
             }
             onAddNew={
               activeTab === "Drafts" ? () => setEditingDraft({}) : null
