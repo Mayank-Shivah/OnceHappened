@@ -59,7 +59,7 @@ export default function Categories({
 
   return (
     <aside className="sidebar-left-main">
-      <div className="sidebar-title">Topics</div>
+      {/* <div className="sidebar-title">Topics</div> */}
 
       <ul className="category-list">
         {categories.length > 0 ? (

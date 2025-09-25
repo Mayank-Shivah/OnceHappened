@@ -12,6 +12,9 @@ import "./style.scss";
 
 Modal.setAppElement("#root");
 
+const MIN_WORDS = 45;
+const MAX_WORDS = 500;
+
 export default function FloatingEditModal({
   editPost = null,
   onClose,
@@ -22,6 +25,7 @@ export default function FloatingEditModal({
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [topics, setTopics] = useState([]);
+  const [wordCount, setWordCount] = useState(0); // ✅ word count state
 
   const dropdownRef = useRef();
   const user = loggedUser();
@@ -99,6 +103,14 @@ export default function FloatingEditModal({
     } else {
       openRegister(); // 🔹 open signup popup instead of tooltip
     }
+  };
+
+  // ✅ track word count
+  const handleEditorChange = (state) => {
+    setEditorState(state);
+    const plainText = state.getCurrentContent().getPlainText("\u0001");
+    const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0);
+    setWordCount(words.length);
   };
 
   // ✅ Save Draft
@@ -224,47 +236,10 @@ export default function FloatingEditModal({
           </button>
         </div>
 
-        {/* Topic Dropdown (hidden by default, you can enable if needed) */}
-        <div
-          className="multiselect-dropdown d-none"
-          ref={dropdownRef}
-          style={{ marginBottom: 15 }}
-        >
-          <button
-            type="button"
-            className="multiselect-control"
-            onClick={() => setDropdownOpen((open) => !open)}
-          >
-            {selectedTopics.length
-              ? topics
-                  .filter((t) => selectedTopics.includes(t.id))
-                  .map((t) => t.name)
-                  .join(", ")
-              : "Choose topic"}
-          </button>
-          {dropdownOpen && (
-            <div className="multiselect-options">
-              {topics.map((topic) => (
-                <label key={topic.id}>
-                  <input
-                    className="input-custom"
-                    type="radio"
-                    name="topic"
-                    checked={selectedTopics.includes(topic.id)}
-                    onChange={() => toggleTopic(topic.id)}
-                    style={{ marginRight: 7 }}
-                  />
-                  {topic.name}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* Editor */}
         <Editor
           editorState={editorState}
-          onEditorStateChange={setEditorState}
+          onEditorStateChange={handleEditorChange} // ✅ track words
           toolbarClassName="editor-toolbar"
           wrapperClassName="editor-wrapper"
           editorClassName="editor-textarea"
@@ -279,26 +254,55 @@ export default function FloatingEditModal({
           placeholder="Write yours..."
         />
 
-        {/* Buttons */}
+        {/* ✅ Word Counter + Warnings + Buttons */}
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end",
-            gap: 10,
-            marginTop: 6,
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 15,
           }}
         >
-          {!editPost && (
-            <button
-              className="modal-btn modal-btn-light"
-              onClick={handleSaveDraft}
+          <div style={{ textAlign: "left" }}>
+            <div
+              style={{
+                fontSize: "12px",
+                color:
+                  wordCount < MIN_WORDS || wordCount > MAX_WORDS ? "red" : "gray",
+              }}
             >
-              Save Draft
+              Word count: {wordCount} / {MAX_WORDS}
+            </div>
+            {wordCount < MIN_WORDS && (
+              <div style={{ color: "red", fontSize: "12px" }}>
+                Minimum {MIN_WORDS} words required to publish
+              </div>
+            )}
+            {wordCount > MAX_WORDS && (
+              <div style={{ color: "red", fontSize: "12px" }}>
+                Word limit exceeded! Maximum {MAX_WORDS} words allowed
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            {!editPost && (
+              <button
+                className="modal-btn modal-btn-light"
+                onClick={handleSaveDraft}
+                disabled={wordCount > MAX_WORDS}
+              >
+                Save Draft
+              </button>
+            )}
+            <button
+              className="modal-btn modal-btn-custom"
+              onClick={handlePublish}
+              disabled={wordCount < MIN_WORDS || wordCount > MAX_WORDS}
+            >
+              {editPost ? "Publish" : "Publish"}
             </button>
-          )}
-          <button className="modal-btn modal-btn-custom" onClick={handlePublish}>
-            {editPost ? "Publish" : "Publish"}
-          </button>
+          </div>
         </div>
       </Modal>
     </>

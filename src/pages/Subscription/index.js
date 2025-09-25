@@ -1,10 +1,18 @@
-import React, { useContext} from "react";
+import React, { useContext, useEffect} from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
-
+import { useNavigate } from "react-router-dom";
+import { loggedUser } from "../../services/authService";
 import "./style.scss";
 export default function Subscription() {
   const { theme } = useContext(ThemeContext);
+  const navigate = useNavigate();
+  const user = loggedUser();
+  useEffect(() => {
+      if (!user) {
+        navigate("/"); // or your login route
+      }
+    }, [user, navigate]);
   return (
     <div className={`main-layout ${theme}-theme`}>
       <div className="container">
@@ -66,7 +74,7 @@ export default function Subscription() {
                 <div className="special-offer">
                   <strong className="mb-1">
                     <span className="color-green fw-600">
-                      Shanon
+                      {user?.name || "Guest"}
                     </span>
                     , lets try for only a month & read all at once
                   </strong>

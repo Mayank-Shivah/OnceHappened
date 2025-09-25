@@ -10,9 +10,11 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./style.scss";
+import { useNavigate } from "react-router-dom";
 
 function SupportSuggestion() {
   const { theme } = useContext(ThemeContext);
+  const navigate = useNavigate();
 
   // Logged-in user (sent invisibly to APIs)
   const user = loggedUser();
@@ -22,8 +24,14 @@ function SupportSuggestion() {
 
   const [categories, setCategories] = useState([]);
   const [faqs, setFaqs] = useState([]);
-
+  
   // 🔹 Fetch categories from API
+  useEffect(() => {
+    if (!user) {
+      navigate("/"); // or your login route
+    }
+  }, [user, navigate]);
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -75,11 +83,11 @@ function SupportSuggestion() {
           user_id: userId,
         });
 
-        toast.success("Suggestion submitted successfully!");
+        // toast.success("Suggestion submitted successfully!");
         resetForm();
       } catch (err) {
         console.error("Suggestion submit error:", err.response?.data || err.message);
-        toast.error("Error while submitting suggestion. Please try again.");
+        // toast.error("Error while submitting suggestion. Please try again.");
       } finally {
         setSubmitting(false);
       }
@@ -111,11 +119,11 @@ function SupportSuggestion() {
           description,
         });
 
-        toast.success("Support issue submitted successfully!");
+        // toast.success("Support issue submitted successfully!");
         resetForm();
       } catch (err) {
         console.error("Support submit error:", err.response?.data || err.message);
-        toast.error("Error while submitting issue. Please try again.");
+        // toast.error("Error while submitting issue. Please try again.");
       } finally {
         setSubmitting(false);
       }

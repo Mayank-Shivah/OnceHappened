@@ -85,7 +85,7 @@ export default function RegisterModal({ onClose, openLogin }) {
         };
 
         const data = await register(payload);
-        toast.success("Registered successfully, you are logged in.");
+        // toast.success("Registered successfully, you are logged in.");
 
         if (data?.token || data?.authorisation?.token) {
           localStorage.setItem(
@@ -100,7 +100,7 @@ export default function RegisterModal({ onClose, openLogin }) {
         }, 2500);
       } catch (err) {
         console.error("Register failed:", err.response?.data || err.message);
-        toast.error("The email has already been taken.");
+        // toast.error("The email has already been taken.");
         setErrors({ email: "The email has already been taken." });
       } finally {
         setLoading(false);
@@ -367,6 +367,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   name="city"
                   placeholder="City"
                   value={formik.values.city}
+                  maxLength={15}
                   onChange={formik.handleChange}
                   className="form-control ps-2"
                 />
@@ -381,6 +382,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   name="country"
                   list="country-list"
                   placeholder="Country"
+                  maxLength={15}
                   value={formik.values.country}
                   onChange={formik.handleChange}
                   className="form-control ps-2"
