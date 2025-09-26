@@ -4,8 +4,8 @@ import { Editor } from "react-draft-wysiwyg";
 import { EditorState, ContentState, convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
-import { isLoggedIn, loggedUser } from "../../services/authService";
-import { toast } from "react-toastify";
+import { isLoggedIn, loggedUser  } from "../../services/authService";
+import Swal from "sweetalert2"; 
 import api from "../../api";
 import { usePopup } from "../PopupManager";   // ✅ import popup context
 import "./style.scss";
@@ -28,7 +28,7 @@ export default function FloatingEditModal({
   const [wordCount, setWordCount] = useState(0); // ✅ word count state
 
   const dropdownRef = useRef();
-  const user = loggedUser();
+  const user = loggedUser ();
 
   // ✅ use popup manager
   const { openRegister } = usePopup();
@@ -73,7 +73,7 @@ export default function FloatingEditModal({
           }
         }
       } catch (err) {
-        toast.error("Failed to load topics");
+        Swal.fire('Error!', 'Failed to load topics', 'error');
       }
     };
     fetchTopics();
@@ -118,7 +118,7 @@ export default function FloatingEditModal({
     try {
       const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
       if (!content.trim() || selectedTopics.length === 0) {
-        toast.error("Please select a topic and add some content");
+        Swal.fire('Error!', 'Please select a topic and add some content', 'error');
         return;
       }
       const token = localStorage.getItem("token");
@@ -129,24 +129,33 @@ export default function FloatingEditModal({
           { content, topic_id: selectedTopics, status: "published" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        toast.success("Draft updated successfully!");
+        Swal.fire('Success!', 'Draft updated successfully!', 'success');
+        // ✅ Reset form after success
+        setEditorState(EditorState.createEmpty());
+        setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
       } else {
         await api.post(
           "/posts/submit",
           { content, topic_id: selectedTopics, status: "published" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        toast.success("Draft saved successfully!");
+        Swal.fire('Success!', 'Draft saved successfully!', 'success');
+        // ✅ Reset form after success
+        setEditorState(EditorState.createEmpty());
+        setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
       }
 
-      localStorage.setItem(
-        "postDraft",
-        JSON.stringify({ selectedTopics, content })
-      );
+      // ✅ Removed localStorage.setItem to prevent persistence after backend save
       setModalOpen(false);
       onClose?.();
     } catch (err) {
-      toast.error("Failed to save draft");
+      Swal.fire('Error!', 'Failed to save draft', 'error');
     }
   };
 
@@ -155,7 +164,7 @@ export default function FloatingEditModal({
     try {
       const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
       if (!content.trim() || selectedTopics.length === 0) {
-        toast.error("Please select a topic and add some content");
+        Swal.fire('Error!', 'Please select a topic and add some content', 'error');
         return;
       }
       const token = localStorage.getItem("token");
@@ -166,7 +175,10 @@ export default function FloatingEditModal({
           { content, topic_id: selectedTopics, status: "draft" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        toast.success("Draft Published");
+        Swal.fire('Success!', 'Draft Published', 'success');
+        // ✅ Reset form after success (added for consistency with new posts)
+        setEditorState(EditorState.createEmpty());
+        setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
         setTimeout(() => {
           window.location.reload();
         }, 1000);
@@ -176,7 +188,7 @@ export default function FloatingEditModal({
           { content, topic_id: selectedTopics, status: "draft" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        toast.success("Published Successfully.");
+        Swal.fire('Success!', 'Published Successfully.', 'success');
       }
 
       localStorage.removeItem("postDraft");
@@ -185,7 +197,7 @@ export default function FloatingEditModal({
       setModalOpen(false);
       onClose?.();
     } catch (err) {
-      toast.error("Failed to publish post");
+      Swal.fire('Error!', 'Failed to publish post', 'error');
     }
   };
 

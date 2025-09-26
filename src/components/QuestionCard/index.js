@@ -3,7 +3,7 @@ import { FaHeart, FaThumbsDown, FaTrash, FaEdit } from "react-icons/fa";
 import "./style.scss";
 import api from "../../api";
 import { toast } from "react-toastify";
-import { loggedUser, isLoggedIn } from "../../services/authService";
+import { loggedUser , isLoggedIn } from "../../services/authService";
 import { usePopup } from "../PopupManager";
 import ShareModal from "../ShareModal";
 
@@ -13,6 +13,7 @@ export default function QuestionCard({
   showDelete = false,
   showEdit = false,
   showCounts = false,   // ✅ new prop
+  isLiked = false,     // ✅ New prop: Force liked state (e.g., for Profile "Liked" tab)
   onDelete,
   onEdit,
 }) {
@@ -23,7 +24,7 @@ export default function QuestionCard({
   const [showShare, setShowShare] = useState(false);
 
   const descRef = useRef();
-  const user = loggedUser();
+  const user = loggedUser ();
   const { openRegister } = usePopup();
 
   const voteKey = user ? `post_${question.id}_user_${user.id}_vote` : null;
@@ -41,8 +42,8 @@ export default function QuestionCard({
       return;
     }
 
-    // fallback: check API data in question.likes
-    const userLike = question?.likes?.find((like) => like.user_id === user.id);
+    // fallback: check API data in question.likes (✅ Fixed: Use String comparison for type safety)
+    const userLike = question?.likes?.find((like) => String(like.user_id) === String(user.id));
     if (userLike) {
       if (userLike.is_like === 1) setVote(true);
       else if (userLike.is_like === 0) setVote(false);
@@ -50,7 +51,12 @@ export default function QuestionCard({
     } else {
       setVote(null);
     }
-  }, [question, user?.id]);
+
+    // ✅ Fallback override: Force liked state if prop is true (e.g., Profile "Liked" tab)
+    if (isLiked) {
+      setVote(true);
+    }
+  }, [question, user?.id, isLiked]); // ✅ Added isLiked to deps for reactivity
 
   // ✅ Detect overflow text for read more/less
   useEffect(() => {

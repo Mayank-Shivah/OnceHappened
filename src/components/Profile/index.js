@@ -5,9 +5,9 @@ import QuestionCard from "../../components/QuestionCard";
 import SidebarSearch from "../../components/SidebarSearch";
 import FloatingEditModal from "../../components/FloatingEditModal";
 import api from "../../api"; // axios instance
-import { loggedUser } from "../../services/authService";
+import { loggedUser   } from "../../services/authService";
 import NoPost from "../NoPost";
-import { toast } from "react-toastify";
+import Swal from "sweetalert2"; // ✅ Added SweetAlert import
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("Liked");
@@ -21,7 +21,7 @@ const Profile = () => {
   const [editingDraft, setEditingDraft] = useState(null);
 
   const postsPerPage = 5;
-  const user = loggedUser();
+  const user = loggedUser  ();
   
   useEffect(() => {
     const fetchPosts = async () => {
@@ -104,71 +104,46 @@ const Profile = () => {
     setPage(1);
   }, [searchTerm, activeTab]);
 
-  // confirm toast
-  const confirmToast = (message, onConfirm, onCancel) => {
-    toast(
-      ({ closeToast }) => (
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <span>{message}</span>
-          <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-            <button
-              onClick={() => {
-                onConfirm();
-                closeToast();
-              }}
-              style={{
-                background: "#dc3545",
-                color: "#fff",
-                border: "none",
-                padding: "5px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => {
-                onCancel?.();
-                closeToast();
-              }}
-              style={{
-                background: "#6c757d",
-                color: "#fff",
-                border: "none",
-                padding: "5px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      ),
-      { autoClose: false }
-    );
+  // ✅ confirm swal (replaced confirmToast with SweetAlert confirmation)
+  const confirmSwal = (message, onConfirm, onCancel) => {
+    Swal.fire({
+      title: 'Confirm',
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      reverseButtons: true, // Cancel on left, Delete on right
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onConfirm();
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        onCancel?.();
+      }
+    });
   };
 
   // delete draft
   const handleDeleteDraft = (id) => {
-    confirmToast(
+    confirmSwal(
       "Are you sure you want to delete this draft?",
       async () => {
         try {
           await api.delete(`/posts/${id}`);
           setDraftPosts((prev) => prev.filter((p) => p.id !== id));
-          toast.success("Draft deleted successfully");
+          Swal.fire('Success!', 'Draft deleted successfully', 'success');
           setTimeout(() => {
             window.location.reload();
           }, 1000);
         } catch (err) {
           console.error("Delete error:", err.response?.data || err.message);
-          toast.error("Failed to delete draft");
+          Swal.fire('Error!', 'Failed to delete draft', 'error');
         }
       },
       () => {
-        toast.info("Delete canceled");
+        Swal.fire('Info', 'Delete canceled', 'info');
       }
     );
   };
@@ -221,6 +196,8 @@ const Profile = () => {
               showDelete={activeTab === "Drafts"}
               showEdit={activeTab === "Drafts"}
               showCounts={activeTab === "MyPosts"}
+              // ✅ Fix: Pass isLiked prop for "Liked" tab to ensure like icon is red/filled
+              isLiked={activeTab === "Liked"}
               onEdit={() => handleEditDraft(q)}
               onDelete={() => handleDeleteDraft(q.id)}
             />

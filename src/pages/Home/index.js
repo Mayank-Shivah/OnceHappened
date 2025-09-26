@@ -4,8 +4,10 @@ import SidebarRight from "../../components/SidebarRight";
 import QuestionCard from "../../components/QuestionCard";
 import { ThemeContext } from "../../components/ThemeProvider";
 import FloatingEditModal from "../../components/FloatingEditModal";
-import { getUser, isLoggedIn } from "../../services/authService";
+import { getUser  , isLoggedIn } from "../../services/authService";
 import api from "../../api"; // axios instance
+import Swal from "sweetalert2"; // ✅ Added SweetAlert import
+import Loader from "../../components/Loader"; // ✅ Added Loader import
 
 function Home() {
   const { theme } = useContext(ThemeContext);
@@ -16,7 +18,7 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [singlePostId, setSinglePostId] = useState(null);
-  const loggedInUser = isLoggedIn() ? getUser() : null;
+  const loggedInUser   = isLoggedIn() ? getUser  () : null;
 
   useEffect(() => {
     // 🔹 Check URL for ?id=
@@ -33,13 +35,13 @@ function Home() {
         setLoading(true);
         // 🔹 fetch posts
         const res = await api.get("/topics");
-        console.log("API response:", res.data);
+        // ✅ Removed console.log for clean console
 
         const posts = (res.data?.posts || [])
         .filter((p) => p.status === "approved")
         .filter((p) => {
-          if (!loggedInUser) return true;      // show everything if not logged in
-          return p.user_id !== loggedInUser.id; // hide posts by current user
+          if (!loggedInUser  ) return true;      // show everything if not logged in
+          return p.user_id !== loggedInUser  .id; // hide posts by current user
         })
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
@@ -71,7 +73,8 @@ function Home() {
 
         setAds(sortedAds);
       } catch (err) {
-        console.error("Failed to load data:", err.response?.data || err.message);
+        // ✅ Replaced console.error with SweetAlert
+        Swal.fire('Error!', 'Failed to load data', 'error');
       } finally {
         setLoading(false);
       }
@@ -119,7 +122,7 @@ function Home() {
           />
 
           <main className="main-section-parent">
-            {loading && <p>Loading questions...</p>}
+            {loading && <Loader />} {/* ✅ Replaced <p>Loading questions...</p> with Loader */}
 
             {(!loading && singlePostId) ? (
               (() => {
