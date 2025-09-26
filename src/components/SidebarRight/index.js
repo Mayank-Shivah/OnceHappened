@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
 import api from "../../api"; // axios instance
+import Swal from "sweetalert2"; // ✅ Added SweetAlert import
 
 export default function SidebarRight() {
   const [ads, setAds] = useState([]);
@@ -10,7 +11,6 @@ export default function SidebarRight() {
     const fetchAds = async () => {
       try {
         const res = await api.get("/add-banners");
-        console.log("Sidebar Ads API response:", res.data);
 
         const advisements = res.data?.data?.Advisement || [];
 
@@ -28,7 +28,8 @@ export default function SidebarRight() {
 
         setAds(recentAds);
       } catch (err) {
-        console.error("Failed to load sidebar ads:", err.response?.data || err.message);
+        // ✅ Replaced console.error with SweetAlert
+        Swal.fire('Error!', 'Failed to load sidebar ads', 'error');
       }
     };
 

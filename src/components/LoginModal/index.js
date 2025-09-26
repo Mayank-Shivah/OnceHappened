@@ -51,13 +51,36 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
             popup.parentNode.style.zIndex = 2000; // ✅ Force SweetAlert on top
           },
           willClose: () => {
-          
             window.location.reload();
           },
         });
 
       } catch (err) {
-        const apiErrors = err.response?.data?.errors;
+        // ✅ Enhanced error handling: Check for {"error":"Account disabled"}
+        const errorData = err.response?.data;
+        const apiErrors = errorData?.errors;
+
+        // 🔹 Specific check for disabled account based on response structure
+        if (errorData?.error === "Account disabled") {
+          onClose(); // Close modal
+          MySwal.fire({
+            icon: "error",
+            title: "Account Disabled", // ✅ Updated title for consistency
+            text: "Please contact support your account has been disabled",
+            confirmButtonColor: "#d33",
+            didOpen: (popup) => {
+              popup.parentNode.style.zIndex = 3000;
+            },
+            willClose: () => {
+              // No reload on disable – allow user to contact support
+              // window.location.reload(); // Uncomment if reload needed
+            },
+          });
+          setSubmitting(false); // Ensure submitting state resets
+          return; // Exit early – no form errors for disable
+        }
+
+        // Existing logic for other errors (e.g., validation or generic)
         if (apiErrors) {
           const formikErrors = {};
           if (apiErrors.email) formikErrors.email = apiErrors.email[0];
@@ -74,12 +97,9 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
               popup.parentNode.style.zIndex = 3000;
             },
             willClose: () => {
-          
-            window.location.reload();
-          },
+              window.location.reload();
+            },
           });
-          setErrors({ password: "Incorrect email or password." });
-          
         }
       } finally {
         setSubmitting(false);
