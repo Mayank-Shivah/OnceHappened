@@ -1,6 +1,24 @@
 .subscribe-box{
     text-align: center;
 }
+.deal-tab-sec{
+    background: var(--light-yellow);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: -4px;
+    border: 2px solid var(--theme-color);    width: fit-content;
+    padding: 10px 43px;
+    margin: 0 auto;
+    .us-tab{
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--dark-text);
+        a{
+            text-decoration: none;
+            color: var(--dark-text);
+        }
+    }
+}
 .price-tab {
     border: 2px solid var(--theme-color);
     font-weight: 600;
@@ -29,5 +47,24 @@ hr{
     margin-bottom: 24px !important;
     a{
         text-decoration: none;
+    }
+}
+.highlight{
+    margin-top: 20px;
+    @media (max-width: 576px) {
+         display: grid
+;
+    gap: 10px;
+    width: fit-content;
+    margin: 0 auto;
+    }
+  
+    span{
+        margin: 0px 10px;
+        @media (max-width: 576px) {
+              display: block;
+        text-align: center; 
+        }
+     
     }
 }

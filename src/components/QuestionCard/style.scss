@@ -34,7 +34,7 @@ background: var(--light-yellow);
     left: 0;
     right: 0;
     bottom: 0;
-    height: 3.5rem;
+    height: 40px;
     background: var(  --after-gradient);
     pointer-events: none;
   }
@@ -117,6 +117,7 @@ background: var(--light-yellow);
     cursor: pointer;
     transition: 0.2s;
     color: var(--category-text);
+    border :1px solid transparent;
   
   }
 

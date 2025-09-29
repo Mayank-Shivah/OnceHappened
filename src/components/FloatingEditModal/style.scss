@@ -172,8 +172,11 @@
     height: 83%;
     margin-bottom: 12px;
         overflow-y: auto;
-        @media  (max-width: 768px) {
-            height: 70%;
+        @media screen and  (max-width:600px){
+            height: 66%;
+        }
+        @media  screen and (min-width:600px) and (max-width: 992px) {
+            height: 75%;
             
         }
 }
@@ -209,7 +212,11 @@
     @media (max-width: 600px) {
           min-width: 99%;
     max-width: 99%;
-        height: 98%;
+        height: 57%;
+    }
+    @media screen and (min-width:600px) and (max-width: 902px) {
+            height: 65%;
+        
     }
     h2 {
         font-size: 1.2rem;
@@ -325,7 +332,7 @@ a.rdw-dropdown-selectedtext {
             justify-content: space-between;
             align-items: center;
          gap:10px;
-                @media(max-width:768px){
+                @media(max-width:600px){
 justify-content: start;
 flex-wrap: wrap;
         }}

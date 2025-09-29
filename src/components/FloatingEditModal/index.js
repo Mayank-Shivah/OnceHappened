@@ -175,7 +175,7 @@ export default function FloatingEditModal({
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire("Success!", "Draft updated successfully and sent for admin approval", "success");
+        Swal.fire("", "Draft updated successfully and sent for admin approval", "success");
       } else {
         await api.post(
           "/posts/submit",

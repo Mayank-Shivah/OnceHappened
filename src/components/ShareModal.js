@@ -15,7 +15,7 @@ export default function ShareModal({ url, onClose }) {
         
         <div className="social-icons">
           <a href={`https://www.facebook.com/sharer/sharer.php?u=${url}`} target="_blank" rel="noreferrer">
-            <FaFacebook size={28} color="#1877f2" />
+            <FaFacebook size={28} color="#3B5998" />
           </a>
           {/* <a href={`https://www.instagram.com/?url=${url}`} target="_blank" rel="noreferrer">
             <FaInstagram size={28} color="#e4405f" />

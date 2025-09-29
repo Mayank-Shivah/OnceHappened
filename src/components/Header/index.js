@@ -5,13 +5,13 @@ import ThemeToggleBtn from "../ThemeToggleBtn";
 import FontSizeChanger from "../FontSizeChanger";
 import { isLoggedIn, getUser, logout } from "../../services/authService";
 import { ThemeContext } from "../ThemeProvider";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 
 // ✅ Import the Popup hook
 import { usePopup } from "../PopupManager";
 
 // ✅ Import GoogleTranslate component
-import GoogleTranslate from "../GoogleTranslate";
+// import GoogleTranslate from "../GoogleTranslate";
 
 export default function Header() {
   const [showLang, setShowLang] = useState(false);
@@ -19,7 +19,7 @@ export default function Header() {
   const langRef = useRef();
 
   const { resetTheme } = useContext(ThemeContext);
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation();
 
   const loggedIn = isLoggedIn();
   const user = getUser();
@@ -66,7 +66,7 @@ export default function Header() {
       <div className="container">
         <div className="quora-header">
           <div className="logo">
-            <a href="/" className="once-text">Once happened...</a>
+            <a href="/" className="once-text">Once happened..</a>
           </div>
           <div className="happened-sec">
             <div className="lang-dropdown-wrapper" ref={langRef}>
@@ -151,7 +151,7 @@ export default function Header() {
                               Translate To
                             </button>
                             {/* 🔹 Render GoogleTranslate only when Translate To clicked */}
-                            {showTranslate && <GoogleTranslate />}
+                           
                           </div>
                           <div className="lang-option border-bottom-set">
                             <a href="/subscription" className="link-button border-bottom-set" onClick={() => setShowLang(false)}>

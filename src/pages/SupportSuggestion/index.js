@@ -149,7 +149,7 @@ function SupportSuggestion() {
                     <textarea
                       id="sugMessage"
                       name="sugMessage"
-                      className={`form-control add-msg ${
+                      className={`form-control sugggestion-text add-msg ${
                         suggestionForm.touched.sugMessage && suggestionForm.errors.sugMessage
                           ? "is-invalid"
                           : ""
@@ -225,7 +225,7 @@ function SupportSuggestion() {
                         id="supOther"
                         name="supOther"
                         rows={1}
-                        className={`form-control ${
+                        className={`form-control sugggestion-text ${
                           supportForm.touched.supOther && supportForm.errors.supOther
                             ? "is-invalid"
                             : ""
@@ -248,7 +248,7 @@ function SupportSuggestion() {
                     <textarea
                       id="supMessage"
                       name="supMessage"
-                      className={`form-control add-msg ${
+                      className={`form-control sugggestion-text add-msg ${
                         supportForm.touched.supMessage && supportForm.errors.supMessage
                           ? "is-invalid"
                           : ""

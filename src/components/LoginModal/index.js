@@ -32,28 +32,23 @@
         }
         onClose();
         // ✅ SweetAlert2 success popup (always above modal)
-        MySwal.fire({
-          icon: "success",
-          title: "Login Successful 🎉",
-          text: "Welcome back!",
-          showConfirmButton: false,
-          timer: 2000,
-          backdrop: `
-            rgba(0,0,0,0.4)
-            left top
-            no-repeat
-          `,
-          customClass: {
-            popup: "swal-custom-popup",
-            title: "swal-custom-title",
-          },
-          didOpen: (popup) => {
-            popup.parentNode.style.zIndex = 2000; // ✅ Force SweetAlert on top
-          },
-          willClose: () => {
-            window.location.reload();
-          },
-        });
+      MySwal.fire({
+  icon: "success",
+  title: "Login Successful 🎉",
+  text: "Welcome back!",
+  showConfirmButton: false,
+  timer: 2000,
+  backdrop: `rgba(0,0,0,0.4) left top no-repeat`,
+  customClass: {
+    popup: "swal-custom-popup",
+    title: "swal-custom-title",
+  },
+  didOpen: (popup) => {
+    popup.parentNode.style.zIndex = 2000;
+  },
+}).then(() => {
+  window.location.reload();
+});
 
       } catch (err) {
         // ✅ Enhanced error handling: Check for {"error":"Account disabled"}
@@ -91,7 +86,8 @@
             icon: "error",
             title: "Login Failed",
             text: "Incorrect email or password. Please try again.",
-            confirmButtonColor: "#d33",
+            confirmButtonColor: "var(--theme-color)",
+            confirmTextColor: "#000",
             didOpen: (popup) => {
               popup.parentNode.style.zIndex = 3000;
             },
@@ -191,17 +187,17 @@
 
           <p className="account-details text-center mt-3">
             Want to create an account?
-            <button
-              type="button"
-              className="custom-link"
-              onClick={openSignup}
-            >
-              Sign Up
-            </button>
-          </p>
-        </div>
+          <button
+            type="button"
+            className="custom-link bg-transparent border-0 p-0"
+            onClick={openSignup}
+          >
+            Sign Up
+          </button>
+        </p>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   export default LoginModal;

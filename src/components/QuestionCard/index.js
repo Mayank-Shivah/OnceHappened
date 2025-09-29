@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaHeart, FaThumbsDown, FaTrash, FaEdit } from "react-icons/fa";
 import "./style.scss";
 import api from "../../api";
-import { toast } from "react-toastify";
+
 import { loggedUser      , isLoggedIn } from "../../services/authService";
 import { usePopup } from "../PopupManager";
 import ShareModal from "../ShareModal";
@@ -269,16 +269,8 @@ export default function QuestionCard({
             {/* ✅ Status Badge (Right bottom, parallel to counts) */}
             {statusDisplay && (
               <span
-                className="status-badge"
-                style={{
-                  backgroundColor: statusColor,
-                  color: "white",
-                  padding: "4px 8px",
-                  borderRadius: "12px",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  whiteSpace: "nowrap",
-                }}
+                className="share-btn"
+               
               >
                 {statusDisplay}
               </span>
