@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import { Editor } from "react-draft-wysiwyg";
+import DOMPurify from "dompurify";
 import { EditorState, ContentState, convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
-import { isLoggedIn, loggedUser  } from "../../services/authService";
-import Swal from "sweetalert2"; 
+import { isLoggedIn, loggedUser   } from "../../services/authService";
+import Swal from "sweetalert2";
 import api from "../../api";
 import { usePopup } from "../PopupManager";   // ✅ import popup context
 import "./style.scss";
@@ -28,7 +29,7 @@ export default function FloatingEditModal({
   const [wordCount, setWordCount] = useState(0); // ✅ word count state
 
   const dropdownRef = useRef();
-  const user = loggedUser ();
+  const user = loggedUser   ();
 
   // ✅ use popup manager
   const { openRegister } = usePopup();
@@ -113,29 +114,33 @@ export default function FloatingEditModal({
     setWordCount(words.length);
   };
 
+  const cleanContent = () => {
+    const raw = convertToRaw(editorState.getCurrentContent());
+    const dirtyHtml = draftToHtml(raw);
+
+    // Clean the HTML → keep only minimal tags
+    return DOMPurify.sanitize(dirtyHtml, { 
+      ALLOWED_TAGS: ["p", "br", "ul", "ol", "li", "b", "i", "u"],
+      ALLOWED_ATTR: [] // no inline styles allowed
+    });
+  };
+
   // ✅ Save Draft
   const handleSaveDraft = async () => {
     try {
-      const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-      if (!content.trim() || selectedTopics.length === 0) {
-        Swal.fire('Error!', 'Please select a topic and add some content', 'error');
-        return;
-      }
+      const content = cleanContent();
       const token = localStorage.getItem("token");
 
       if (editPost) {
         await api.put(
           `/posts/${editPost.id}`,
-          { content, topic_id: selectedTopics, status: "published" },
+          { 
+            content,               // ✅ required
+            topic_id: selectedTopics,
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         Swal.fire('Success!', 'Draft updated successfully!', 'success');
-        // ✅ Reset form after success
-        setEditorState(EditorState.createEmpty());
-        setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
       } else {
         await api.post(
           "/posts/submit",
@@ -143,15 +148,10 @@ export default function FloatingEditModal({
           { headers: { Authorization: `Bearer ${token}` } }
         );
         Swal.fire('Success!', 'Draft saved successfully!', 'success');
-        // ✅ Reset form after success
-        setEditorState(EditorState.createEmpty());
-        setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
       }
 
-      // ✅ Removed localStorage.setItem to prevent persistence after backend save
+      setEditorState(EditorState.createEmpty());
+      setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
       setModalOpen(false);
       onClose?.();
     } catch (err) {
@@ -162,40 +162,27 @@ export default function FloatingEditModal({
   // ✅ Publish Post
   const handlePublish = async () => {
     try {
-      const content = draftToHtml(convertToRaw(editorState.getCurrentContent())); // ✅ Keep: Use 'content' variable (as in old code)
-      if (!content.trim() || selectedTopics.length === 0) { // ✅ Keep: Check 'content'
-        Swal.fire('Error!', 'Please select a topic and add some content', 'error');
-        return;
-      }
+      const content = cleanContent();  // ✅ cleaned HTML (like your example)
+
       const token = localStorage.getItem("token");
 
       if (editPost) {
-        // Editing draft: Send BOTH 'content' (for backend processing) AND 'description' (for display update)
         await api.put(
           `/posts/${editPost.id}`,
           { 
-            content,  // ✅ Keep: Backend likely expects this
-            description: content,  // ✅ Added: Force update the display field with new edited content
-            topic_id: selectedTopics,  // ✅ Keep: Array as in old code (prevents 500)
-            status: "draft" 
+            content,               // ✅ backend requires this
+            topic_id: selectedTopics, // ✅ must be an array
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire('Success!', 'Draft Published', 'success');
-        // ✅ Reset form after success (added for consistency with new posts)
-        setEditorState(EditorState.createEmpty());
-        setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
+        Swal.fire("Success!", "Draft updated successfully and sent for admin approval", "success");
       } else {
-        // New post: Keep EXACTLY as old code (unchanged – works perfectly)
         await api.post(
           "/posts/submit",
-          { content, topic_id: selectedTopics, status: "draft" },
+          { content, topic_id: selectedTopics, status: "published" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire('Success!', 'Published Successfully.', 'success');
+        Swal.fire("Success!", "Published Successfully.", "success");
       }
 
       localStorage.removeItem("postDraft");
@@ -204,11 +191,16 @@ export default function FloatingEditModal({
       setModalOpen(false);
       onClose?.();
     } catch (err) {
-      Swal.fire('Error!', 'Failed to publish post', 'error');
+      Swal.fire("Error!", "Failed to publish post", "error");
     }
   };
 
-
+  // ✅ Validation checks for bottom messages
+  const isTopicValid = selectedTopics.length > 0;
+  
+  // Separate validations: Save Draft allows 1+ words, Publish requires 45-500
+  const isSaveDraftValid = wordCount > 0 && wordCount <= MAX_WORDS && isTopicValid;
+  const isPublishValid = wordCount >= MIN_WORDS && wordCount <= MAX_WORDS && isTopicValid;
 
   return (
     <>
@@ -275,11 +267,10 @@ export default function FloatingEditModal({
           placeholder="Write yours..."
         />
 
-        {/* ✅ Word Counter + Warnings + Buttons */}
-        <div
-         className="wordCountSection"
-        >
+        {/* ✅ Word Counter + Field Validations + Warnings (Bottom of Form Only) */}
+        <div className="wordCountSection">
           <div style={{ textAlign: "left" }}>
+            {/* Word Count Validation Message */}
             <div
               style={{
                 fontSize: "12px",
@@ -289,14 +280,33 @@ export default function FloatingEditModal({
             >
               Word count: {wordCount} / {MAX_WORDS}
             </div>
-            {wordCount < MIN_WORDS && (
+            {wordCount === 0 && (
               <div style={{ color: "red", fontSize: "12px" }}>
-                Minimum {MIN_WORDS} words required to publish
+                Please add some content to save draft
+              </div>
+            )}
+            {wordCount > 0 && wordCount < MIN_WORDS && (
+              <div style={{ color: "red", fontSize: "12px" }}>
+                Minimum {MIN_WORDS} words required to publish (drafts can be shorter)
               </div>
             )}
             {wordCount > MAX_WORDS && (
               <div style={{ color: "red", fontSize: "12px" }}>
                 Word limit exceeded! Maximum {MAX_WORDS} words allowed
+              </div>
+            )}
+
+            {/* Topic Selection Validation Message */}
+            {!isTopicValid && (
+              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                Please select a topic to continue
+              </div>
+            )}
+
+            {/* Overall Form Validation Message (if needed, but buttons handle disable) */}
+            {!isSaveDraftValid && !isPublishValid && (
+              <div style={{ color: "orange", fontSize: "12px", marginTop: "4px" }}>
+                Fix the above issues to enable buttons
               </div>
             )}
           </div>
@@ -306,7 +316,7 @@ export default function FloatingEditModal({
               <button
                 className="modal-btn modal-btn-light"
                 onClick={handleSaveDraft}
-                disabled={wordCount > MAX_WORDS}
+                disabled={!isSaveDraftValid}  // ✅ Allows 1+ words + topic, disables on empty or >500 or no topic
               >
                 Save Draft
               </button>
@@ -314,7 +324,7 @@ export default function FloatingEditModal({
             <button
               className="modal-btn modal-btn-custom"
               onClick={handlePublish}
-              disabled={wordCount < MIN_WORDS || wordCount > MAX_WORDS}
+              disabled={!isPublishValid}  // ✅ Strict: 45-500 words + topic
             >
               {editPost ? "Publish" : "Publish"}
             </button>
