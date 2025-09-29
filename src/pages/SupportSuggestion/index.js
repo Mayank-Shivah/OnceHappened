@@ -9,7 +9,7 @@ import { loggedUser } from "../../services/authService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./style.scss";
-import LockPost from "../../components/LockPost";
+
 import { useNavigate } from "react-router-dom";
 
 function SupportSuggestion() {
