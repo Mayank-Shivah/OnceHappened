@@ -5,11 +5,11 @@ import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
 import api from "../../api";
 import { loggedUser } from "../../services/authService";
-import { toast } from "react-toastify";   
-import "react-toastify/dist/ReactToastify.css";
+   import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./style.scss";
+import LockPost from "../../components/LockPost";
 import { useNavigate } from "react-router-dom";
 
 function SupportSuggestion() {
@@ -317,6 +317,8 @@ function SupportSuggestion() {
                 </div>
               </div>
             </div>
+        
+
           </main>
 
           <div className="d-block d-md-none">
