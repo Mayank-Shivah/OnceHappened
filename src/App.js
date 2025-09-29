@@ -59,7 +59,7 @@ function App() {
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);
   // Call the custom hook at app level
-  useRestrictInteractions();
+  // useRestrictInteractions();
   const PrivateRoute = ({ children }) => {
     return isLoggedIn() ? children : <Navigate to="/" replace />;
     // 👆 if not logged in, redirect (e.g. to home or login page)

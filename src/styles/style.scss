@@ -24,7 +24,9 @@
   --category-text: #34495e;
   --shadow: 0 2px 16px #edeef1;
   --active-bg: #f6f7fa;
-  --after-gradient: linear-gradient(177deg, #ffffffcc 11%, #ffffff 45%);
+--after-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgb(255 255 255 / 90%) 45%, /* == #ffffff91 approx */ rgba(255, 255, 255, 0.97) 100% /* == #fffffff7 approx */);
+// --after-gradient: linear-gradient(177deg, #ffffff91 11%, #fffffff7 45%);
+ 
 }
 
 .dark-theme {
@@ -948,7 +950,7 @@ input:-internal-autofill-selected {
 }
 
 .share-modal {
-  background: #fff;
+  background: var(--header-bg);
   padding: 20px;
   border-radius: 12px;
   width: 320px;
@@ -991,7 +993,7 @@ input:-internal-autofill-selected {
 }
 
 .copy-link button:hover {
-  background: #5a4bd1;
+  background: var(--theme-color);color: #000;
 }
 
 .close-btn {
@@ -1003,4 +1005,20 @@ input:-internal-autofill-selected {
   font-size: 22px;
   cursor: pointer;
   color: #333;
+}
+.no-post-box{
+  h5{
+    color: #000;
+  }
+}
+div:where(.swal2-icon).swal2-error {
+    border-color: var(--theme-color) !important;
+    color: var(--theme-color)!important;
+}
+div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line] {
+   
+    background-color: var(--theme-color) !important;
+}
+.swal2-confirm {
+  color: #000 !important;
 }

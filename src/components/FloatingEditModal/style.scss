@@ -173,7 +173,11 @@
     margin-bottom: 12px;
         overflow-y: auto;
         @media screen and (max-width: 600px) {
-            height: 87%;
+            height: 73%;
+            
+        }
+        @media screen and (min-width: 601px) and (max-width: 900px) {
+            height: 71%;
             
         }
 }
@@ -206,11 +210,15 @@
     top: 1%;
     bottom: auto;
     height: 97%;
-    @media (max-width: 600px) {
-          min-width: 99%;
+    @media screen and (max-width: 680px) {
+        min-width: 99%;
     max-width: 99%;
-        height: 98%;
-    }
+        height: 65%;
+    } 
+       @media screen and (min-width: 601px) and (max-width: 900px) {
+            height: 55%;
+            
+        }
     h2 {
         font-size: 1.2rem;
         font-weight: 600;
@@ -319,4 +327,15 @@ a.rdw-dropdown-selectedtext {
 
 .rdw-editor-toolbar.editor-toolbar {
     display: none;
+}
+.WordCounter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  @media screen and (max-width: 600px) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }

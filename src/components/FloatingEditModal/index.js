@@ -255,14 +255,7 @@ export default function FloatingEditModal({
         />
 
         {/* ✅ Word Counter + Warnings + Buttons */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 15,
-          }}
-        >
+        <div className="WordCounter">
           <div style={{ textAlign: "left" }}>
             <div
               style={{
@@ -275,7 +268,7 @@ export default function FloatingEditModal({
             </div>
             {wordCount < MIN_WORDS && (
               <div style={{ color: "red", fontSize: "12px" }}>
-                Minimum {MIN_WORDS} words required to publish
+                Min {MIN_WORDS} - Max 500 words required
               </div>
             )}
             {wordCount > MAX_WORDS && (

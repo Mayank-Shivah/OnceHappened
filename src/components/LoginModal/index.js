@@ -69,7 +69,8 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
             icon: "error",
             title: "Login Failed",
             text: "Incorrect email or password. Please try again.",
-            confirmButtonColor: "#d33",
+            confirmButtonColor: "var(--theme-color)",
+            confirmTextColor: "#000",
             didOpen: (popup) => {
               popup.parentNode.style.zIndex = 3000;
             },
@@ -173,7 +174,7 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
           Want to create an account?
           <button
             type="button"
-            className="custom-link"
+            className="custom-link border-0 bg-transparent p-0 ms-1"
             onClick={openSignup}
           >
             Sign Up
