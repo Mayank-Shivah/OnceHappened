@@ -162,27 +162,34 @@ export default function FloatingEditModal({
   // ✅ Publish Post
   const handlePublish = async () => {
     try {
-      const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-      if (!content.trim() || selectedTopics.length === 0) {
+      const content = draftToHtml(convertToRaw(editorState.getCurrentContent())); // ✅ Keep: Use 'content' variable (as in old code)
+      if (!content.trim() || selectedTopics.length === 0) { // ✅ Keep: Check 'content'
         Swal.fire('Error!', 'Please select a topic and add some content', 'error');
         return;
       }
       const token = localStorage.getItem("token");
 
       if (editPost) {
+        // Editing draft: Send BOTH 'content' (for backend processing) AND 'description' (for display update)
         await api.put(
           `/posts/${editPost.id}`,
-          { content, topic_id: selectedTopics, status: "draft" },
+          { 
+            content,  // ✅ Keep: Backend likely expects this
+            description: content,  // ✅ Added: Force update the display field with new edited content
+            topic_id: selectedTopics,  // ✅ Keep: Array as in old code (prevents 500)
+            status: "draft" 
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         Swal.fire('Success!', 'Draft Published', 'success');
         // ✅ Reset form after success (added for consistency with new posts)
         setEditorState(EditorState.createEmpty());
         setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
       } else {
+        // New post: Keep EXACTLY as old code (unchanged – works perfectly)
         await api.post(
           "/posts/submit",
           { content, topic_id: selectedTopics, status: "draft" },
@@ -200,6 +207,8 @@ export default function FloatingEditModal({
       Swal.fire('Error!', 'Failed to publish post', 'error');
     }
   };
+
+
 
   return (
     <>
@@ -268,12 +277,7 @@ export default function FloatingEditModal({
 
         {/* ✅ Word Counter + Warnings + Buttons */}
         <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 15,
-          }}
+         className="wordCountSection"
         >
           <div style={{ textAlign: "left" }}>
             <div
