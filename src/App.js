@@ -13,7 +13,7 @@ import MyProfile from "./pages/MyProfile";
 import About from "./pages/AboutUs";
 import Subscription from "./pages/Subscription";
 import { ToastContainer } from "react-toastify";
-import Loader from "./components/Loader";
+import LockPost from "./pages/lock";
 import "react-toastify/dist/ReactToastify.css";
 
 // 🔹 PopupManager
@@ -88,7 +88,7 @@ function App() {
                   <Route path="/terms-conditions" element={<TermsConditions />} />
                   <Route path="/return-policy" element={<ReturnPolicy />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
+                  <Route path="/lock" element={<LockPost />} />
                   {/* ✅ Protected Routes (login required) */}
                   <Route
                     path="/support-suggestion"

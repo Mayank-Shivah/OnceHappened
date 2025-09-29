@@ -304,11 +304,11 @@ export default function FloatingEditModal({
             )}
 
             {/* Overall Form Validation Message (if needed, but buttons handle disable) */}
-            {!isSaveDraftValid && !isPublishValid && (
+            {/* {!isSaveDraftValid && !isPublishValid && (
               <div style={{ color: "orange", fontSize: "12px", marginTop: "4px" }}>
                 Fix the above issues to enable buttons
               </div>
-            )}
+            )} */}
           </div>
 
           <div style={{ display: "flex", gap: 10 }}>
