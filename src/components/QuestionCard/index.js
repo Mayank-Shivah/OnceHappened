@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaHeart, FaThumbsDown, FaTrash, FaEdit } from "react-icons/fa";
 import "./style.scss";
 import api from "../../api";
-import { toast } from "react-toastify";
-import { loggedUser, isLoggedIn } from "../../services/authService";
+
+import { loggedUser      , isLoggedIn } from "../../services/authService";
 import { usePopup } from "../PopupManager";
 import ShareModal from "../ShareModal";
 
@@ -13,6 +13,8 @@ export default function QuestionCard({
   showDelete = false,
   showEdit = false,
   showCounts = false,   // ✅ new prop
+  isLiked = false,     // ✅ New prop: Force liked state (e.g., for Profile "Liked" tab)
+  status = null,       // ✅ New prop: For My Posts/Drafts tabs (e.g., "approved", "unapproved", "published", "draft")
   onDelete,
   onEdit,
 }) {
@@ -23,7 +25,7 @@ export default function QuestionCard({
   const [showShare, setShowShare] = useState(false);
 
   const descRef = useRef();
-  const user = loggedUser();
+  const user = loggedUser     ();
   const { openRegister } = usePopup();
 
   const voteKey = user ? `post_${question.id}_user_${user.id}_vote` : null;
@@ -41,8 +43,8 @@ export default function QuestionCard({
       return;
     }
 
-    // fallback: check API data in question.likes
-    const userLike = question?.likes?.find((like) => like.user_id === user.id);
+    // fallback: check API data in question.likes (✅ Fixed: Use String comparison for type safety)
+    const userLike = question?.likes?.find((like) => String(like.user_id) === String(user.id));
     if (userLike) {
       if (userLike.is_like === 1) setVote(true);
       else if (userLike.is_like === 0) setVote(false);
@@ -50,7 +52,12 @@ export default function QuestionCard({
     } else {
       setVote(null);
     }
-  }, [question, user?.id]);
+
+    // ✅ Fallback override: Force liked state if prop is true (e.g., Profile "Liked" tab)
+    if (isLiked) {
+      setVote(true);
+    }
+  }, [question, user?.id, isLiked]); // ✅ Added isLiked to deps for reactivity
 
   // ✅ Detect overflow text for read more/less
   useEffect(() => {
@@ -145,9 +152,35 @@ export default function QuestionCard({
     dislikeCount = Object.values(reactions).filter((v) => String(v) === "0").length;
   }
 
+  // ✅ Status display logic (for My Posts/Drafts tabs)
+  const getStatusDisplay = (status) => {
+    if (!status) return null;
+    let displayText = status.charAt(0).toUpperCase() + status.slice(1); // Capitalize
+    if (status === "published") {
+      displayText = "Draft"; // Map "published" to "Draft" (pending admin approval)
+    } else if (status === "draft") {
+      displayText = "Pending for Approval"; // Map "draft" to pending published state
+    }
+    // For "approved" → "Approved", "unapproved" → "Unapproved"
+    return displayText;
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "approved": return "#28a745"; // Green
+      case "published": 
+      case "draft": return "#ffc107"; // Orange (for drafts/pending)
+      case "unapproved": return "#dc3545"; // Red
+      default: return "#6c757d"; // Gray for unknown
+    }
+  };
+
+  const statusDisplay = getStatusDisplay(status);
+  const statusColor = getStatusColor(status);
+
   return (
     <div className="question-card">
-      {/* ✅ Description */}
+      {/* ✅ Description – Renders full question.description (updated from Profile state) */}
       <div
         className={`question-description ${
           showReadMore ? "has-readmore" : ""
@@ -171,11 +204,12 @@ export default function QuestionCard({
         )}
       </div>
 
-      {/* ✅ Actions */}
-      <div className="question-actions">
+      {/* ✅ Actions (Bottom row: Left=Counts/Votes, Right=Status/Actions) */}
+      <div className="question-actions" style={{ position: "relative" }}>
         <div className="d-flex g-1 w-100 justify-content-between align-items-center">
-          {showActions && (
-            <>
+          {/* Left: Votes (if showActions) + Counts (if showCounts) */}
+          <div className="left-actions d-flex align-items-center gap-2">
+            {showActions && (
               <div className="d-flex">
                 {/* LIKE */}
                 <button
@@ -213,8 +247,37 @@ export default function QuestionCard({
                   )}
                 </button>
               </div>
+            )}
 
-              {/* SHARE BUTTON */}
+            {/* ✅ Static Like/Dislike counts (for My Posts tab) – Left bottom */}
+            {showCounts && (
+              <div className="d-flex" style={{ gap: "15px" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <FaHeart color="red" size={16} />
+                  {likeCount}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <FaThumbsDown size={16} />
+                  {dislikeCount}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Status Badge (if status) + Share/Edit/Delete */}
+          <div className="right-actions d-flex align-items-center gap-2">
+            {/* ✅ Status Badge (Right bottom, parallel to counts) */}
+            {statusDisplay && (
+              <span
+                className="share-btn"
+               
+              >
+                {statusDisplay}
+              </span>
+            )}
+
+            {/* SHARE BUTTON */}
+            {showActions && (
               <div className="share-dropdown-container">
                 <button
                   className="share-btn"
@@ -223,39 +286,25 @@ export default function QuestionCard({
                   Send To
                 </button>
               </div>
-            </>
-          )}
+            )}
 
-          {/* ✅ Static Like/Dislike counts (for My Posts tab) */}
-          {showCounts && (
-            <div className="d-flex" style={{ gap: "15px" }}>
-              <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                <FaHeart color="red" size={16} />
-                {likeCount}
-              </span>
-              <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                <FaThumbsDown size={16} />
-                {dislikeCount}
-              </span>
-            </div>
-          )}
-
-          {showEdit && (
-            <button
-              className="upvote"
-              onClick={() => onEdit?.(question.id)}
-            >
-              <FaEdit />
-            </button>
-          )}
-          {showDelete && (
-            <button
-              className="downvote"
-              onClick={() => onDelete?.(question.id)}
-            >
-              <FaTrash />
-            </button>
-          )}
+            {showEdit && (
+              <button
+                className="upvote"
+                onClick={() => onEdit?.(question)}
+              >
+                <FaEdit />
+              </button>
+            )}
+            {showDelete && (
+              <button
+                className="downvote"
+                onClick={() => onDelete?.(question.id)}
+              >
+                <FaTrash />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

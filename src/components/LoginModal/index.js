@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import useScrollLock from "../useScrollLock";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import ClipLoader from "react-spinners/ClipLoader";
-import Swal from "sweetalert2"; 
-import withReactContent from "sweetalert2-react-content";
-import "./style.scss";
-import { login } from "../../services/authService";
+  import React, { useState } from "react";
+  import { useFormik } from "formik";
+  import useScrollLock from "../useScrollLock";
+  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  import { faEnvelope, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+  import ClipLoader from "react-spinners/ClipLoader";
+  import Swal from "sweetalert2"; 
+  import withReactContent from "sweetalert2-react-content";
+  import "./style.scss";
+  import { login } from "../../services/authService";
 
-const MySwal = withReactContent(Swal);
+  const MySwal = withReactContent(Swal);
 
-const LoginModal = ({ onClose, openForgot, openSignup }) => {
-  useScrollLock(true); // ✅ lock background scroll when modal is open
-  const [showPassword, setShowPassword] = useState(false);
+  const LoginModal = ({ onClose, openForgot, openSignup }) => {
+    useScrollLock(true); // ✅ lock background scroll when modal is open
+    const [showPassword, setShowPassword] = useState(false);
 
-  const formik = useFormik({
+    const formik = useFormik({
     initialValues: { email: "", password: "" },
     validate: (values) => {
       const errors = {};
@@ -32,32 +32,49 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
         }
         onClose();
         // ✅ SweetAlert2 success popup (always above modal)
-        MySwal.fire({
-          icon: "success",
-          title: "Login Successful 🎉",
-          text: "Welcome back!",
-          showConfirmButton: false,
-          timer: 2000,
-          backdrop: `
-            rgba(0,0,0,0.4)
-            left top
-            no-repeat
-          `,
-          customClass: {
-            popup: "swal-custom-popup",
-            title: "swal-custom-title",
-          },
-          didOpen: (popup) => {
-            popup.parentNode.style.zIndex = 2000; // ✅ Force SweetAlert on top
-          },
-          willClose: () => {
-          
-            window.location.reload();
-          },
-        });
+      MySwal.fire({
+  icon: "success",
+  title: "Login Successful 🎉",
+  text: "Welcome back!",
+  showConfirmButton: false,
+  timer: 2000,
+  backdrop: `rgba(0,0,0,0.4) left top no-repeat`,
+  customClass: {
+    popup: "swal-custom-popup",
+    title: "swal-custom-title",
+  },
+  didOpen: (popup) => {
+    popup.parentNode.style.zIndex = 2000;
+  },
+}).then(() => {
+  window.location.reload();
+});
 
       } catch (err) {
-        const apiErrors = err.response?.data?.errors;
+        // ✅ Enhanced error handling: Check for {"error":"Account disabled"}
+        const errorData = err.response?.data;
+        const apiErrors = errorData?.errors;
+
+        // 🔹 Specific check for disabled account based on response structure
+        if (errorData?.error === "Account disabled") {
+          onClose(); // Close modal
+          MySwal.fire({
+            icon: "error",
+            title: "Account Disabled", // ✅ Updated title for consistency
+            text: "Please contact support your account has been disabled",
+            confirmButtonColor: "#d33",
+            didOpen: (popup) => {
+              popup.parentNode.style.zIndex = 3000;
+            },
+            willClose: () => {
+              window.location.reload();
+            },
+          });
+          setSubmitting(false); // Ensure submitting state resets
+          return; // ✅ Exit early to prevent generic error handling
+        }
+
+        // Existing logic for other errors (e.g., validation or generic)
         if (apiErrors) {
           const formikErrors = {};
           if (apiErrors.email) formikErrors.email = apiErrors.email[0];
@@ -75,12 +92,9 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
               popup.parentNode.style.zIndex = 3000;
             },
             willClose: () => {
-          
-            window.location.reload();
-          },
+              window.location.reload();
+            },
           });
-          setErrors({ password: "Incorrect email or password." });
-          
         }
       } finally {
         setSubmitting(false);
@@ -88,93 +102,94 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
     },
   });
 
-  const handleOverlay = (e) => {
-    if (e.target.classList.contains("modal-overlay")) {
-      onClose();
-    }
-  };
 
-  return (
-    <div className="modal-overlay" onClick={handleOverlay}>
-      <div className="modal-content signup-form login-form">
-        <button className="close-btn" onClick={onClose}>
-          ×
-        </button>
-        <h1 className="text-center">Log In</h1>
-        <p className="other-section text-center m-0">&</p>
-        <p className="other-section text-center pb-3">
-          Let's again read what people have written
-        </p>
+    const handleOverlay = (e) => {
+      if (e.target.classList.contains("modal-overlay")) {
+        onClose();
+      }
+    };
 
-        <form onSubmit={formik.handleSubmit}>
-          {/* Email */}
-          <div className={`form-group ${formik.errors.email ? "error" : ""}`}>
-            <label htmlFor="email">E-mail</label>
-            <div className="input-wrapper">
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Enter email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-              />
-              <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
-            </div>
-            {formik.errors.email && (
-              <p className="field__message error-msg">{formik.errors.email}</p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div className={`form-group ${formik.errors.password ? "error" : ""}`}>
-            <label htmlFor="password">Password</label>
-            <div className="input-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                id="password"
-                placeholder="Enter password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-              />
-              <FontAwesomeIcon
-                icon={showPassword ? faEye : faEyeSlash}
-                className="input-icon"
-                onClick={() => setShowPassword((p) => !p)}
-              />
-            </div>
-            {formik.errors.password && (
-              <p className="field__message error-msg">{formik.errors.password}</p>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="form-footer d-flex justify-content-end">
-            <button
-              type="button"
-              className="link-button btn-border"
-              onClick={openForgot}
-            >
-              Forgot Password?
-            </button>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={formik.isSubmitting}
-          >
-            {formik.isSubmitting ? <ClipLoader size={20} /> : "Log in"}
+    return (
+      <div className="modal-overlay" onClick={handleOverlay}>
+        <div className="modal-content signup-form login-form">
+          <button className="close-btn" onClick={onClose}>
+            ×
           </button>
-        </form>
+          <h1 className="text-center">Log In</h1>
+          <p className="other-section text-center m-0">&</p>
+          <p className="other-section text-center pb-3">
+            Let's again read what people have written
+          </p>
 
-        <p className="account-details text-center mt-3">
-          Want to create an account?
+          <form onSubmit={formik.handleSubmit}>
+            {/* Email */}
+            <div className={`form-group ${formik.errors.email ? "error" : ""}`}>
+              <label htmlFor="email">E-mail</label>
+              <div className="input-wrapper">
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Enter email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                />
+                <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
+              </div>
+              {formik.errors.email && (
+                <p className="field__message error-msg">{formik.errors.email}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className={`form-group ${formik.errors.password ? "error" : ""}`}>
+              <label htmlFor="password">Password</label>
+              <div className="input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  placeholder="Enter password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                />
+                <FontAwesomeIcon
+                  icon={showPassword ? faEye : faEyeSlash}
+                  className="input-icon"
+                  onClick={() => setShowPassword((p) => !p)}
+                />
+              </div>
+              {formik.errors.password && (
+                <p className="field__message error-msg">{formik.errors.password}</p>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="form-footer d-flex justify-content-end">
+              <button
+                type="button"
+                className="link-button btn-border"
+                onClick={openForgot}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={formik.isSubmitting}
+            >
+              {formik.isSubmitting ? <ClipLoader size={20} /> : "Log in"}
+            </button>
+          </form>
+
+          <p className="account-details text-center mt-3">
+            Want to create an account?
           <button
             type="button"
-            className="custom-link border-0 bg-transparent p-0 ms-1"
+            className="custom-link bg-transparent border-0 p-0"
             onClick={openSignup}
           >
             Sign Up
@@ -185,4 +200,4 @@ const LoginModal = ({ onClose, openForgot, openSignup }) => {
   );
 };
 
-export default LoginModal;
+  export default LoginModal;

@@ -74,9 +74,6 @@ function App() {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
         <ThemeProvider>
           <BrowserRouter>
             <PopupManager>
@@ -139,8 +136,7 @@ function App() {
             </PopupManager>
           </BrowserRouter>
         </ThemeProvider>
-      )}
-    </>
+    </>    
   );
 }
 

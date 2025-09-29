@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import useScrollLock from "../useScrollLock";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 import {
   faEnvelope,
   faEye,
@@ -93,7 +94,7 @@ export default function RegisterModal({ onClose, openLogin }) {
             data.token || data.authorisation.token
           );
         }
-
+        Swal.fire('Success!', 'Registred Successfully!', 'success');
         setTimeout(() => {
           onClose();
           window.location.reload();
@@ -121,7 +122,7 @@ export default function RegisterModal({ onClose, openLogin }) {
 
         <section className="signup-section position-relative pt-3">
           
-          <div class="sign-popup mb-4">
+          <div className="sign-popup mb-4">
             <h1 className="text-center ">Once happened...</h1>
             <button className="close-btn" type="button" onClick={onClose}>
               ×
@@ -196,7 +197,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   />
                   {formik.errors.nickname && (
                     <p className="field__message error-msg">
-                      <FontAwesomeIcon icon={faCircleExclamation} className="position-absolute end-0 pe-2" />{" "}
+                      <FontAwesomeIcon icon={faCircleExclamation} />{" "}
                       {formik.errors.nickname}
                     </p>
                   )}
@@ -352,6 +353,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                 </select>
                 {formik.errors.gender && (
                   <p className="field__message error-msg">
+                    <FontAwesomeIcon icon={faCircleExclamation} />{" "}
                     {formik.errors.gender}
                   </p>
                 )}
@@ -372,7 +374,10 @@ export default function RegisterModal({ onClose, openLogin }) {
                   className="form-control ps-2"
                 />
                 {formik.errors.city && (
-                  <p className="field__message error-msg">{formik.errors.city}</p>
+                  <p className="field__message error-msg">
+                    <FontAwesomeIcon icon={faCircleExclamation} />{" "}
+                    {formik.errors.city}
+                  </p>
                 )}
               </div>
               <div className="col">
@@ -395,6 +400,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                 </datalist>
                 {formik.errors.country && (
                   <p className="field__message error-msg">
+                    <FontAwesomeIcon icon={faCircleExclamation} />{" "}
                     {formik.errors.country}
                   </p>
                 )}
@@ -421,7 +427,10 @@ export default function RegisterModal({ onClose, openLogin }) {
                 I have read and agree to Once happened's&nbsp;
               </label>
               {formik.errors.agreed && (
-                <p className="field__message error-msg">{formik.errors.agreed}</p>
+                <p className="field__message error-msg">
+                  <FontAwesomeIcon icon={faCircleExclamation} />{" "}
+                  {formik.errors.agreed}
+                </p>
               )}
             </div>
             <div

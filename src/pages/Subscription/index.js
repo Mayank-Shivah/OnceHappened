@@ -53,24 +53,24 @@ export default function Subscription() {
                       $35.99 <span>for 6 months</span>
                     </a>
                   </div>
-                  <div className="price-item mb-2">
+                  <div className="price-item mb-2 deal-tab-sec">
                     <a
-                 className="price-tab  us-tab"
+                      className="price-tab p-0  border-0 us-tab"
                       href="/"
                     >
                       $65.99 for 12 months
                      
-                      <span> ★ Deal of the day </span> 
+                      
                   
                     
                     </a>
-                  
+                  <span className="d-block"> ★ Deal of the day </span> 
                   </div>
                   <div className="note">
                     (only $65.99 for entire year, about 0.18 cents per day)
                   </div>
                 </div>
-                <hr />
+                <hr />   <hr />
                 <div className="special-offer">
                   <strong className="mb-1">
                     <span className="color-green fw-600">
@@ -78,14 +78,15 @@ export default function Subscription() {
                     </span>
                     , lets try for only a month & read all at once
                   </strong>
-                  <div className="price-item highlight mt-2 mb-2">
+                  <div className="price-item highlight mb-2">
                     <a
                       href="/"
                       className="price-tab"
                       
                     >
-                      $7.50 for a month
-                    </a>
+                   Day pass $2.5 per day
+                    </a> <span>
+                      Or</span> <a href="/" className="price-tab">   $7.50 for a month</a>
                   </div>
                   <div className="note">
                     (That will be around 0.25 cents per day, not much isn't it?)

@@ -15,7 +15,7 @@ header {
       a {
         font-size: 1.2rem;
         font-weight: 600;
-        color: var(--dark-text);
+        color: #000;
         text-decoration:none;
         text-decoration-color: var(--theme-color);
         margin-right: 1rem;
@@ -454,6 +454,9 @@ body {
   padding: 12px;
   box-shadow: -4px 0 18px rgba(0, 0, 0, 0.2);
   animation: slideIn 0.3s ease forwards;
+  @media (max-width:768px){
+    height: 88vh;
+  }
 }
 
 @keyframes slideIn {

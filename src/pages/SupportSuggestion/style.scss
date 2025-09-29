@@ -125,3 +125,14 @@ textarea{
 .form-group label {
     margin-bottom: 2px;
 }
+#sugMessage::placeholder { color: var( --icon-color)!important; opacity: 1; }
+#supMessage::placeholder { color: var( --icon-color)!important; opacity: 1; }
+.form-control.is-invalid:focus, .was-validated .form-control:invalid:focus {
+    border-color: unset;
+    box-shadow: unset;
+}
+.form-control:focus {
+    color: var(--bs-body-color);
+    background-color: #ffffff00;
+  
+}
