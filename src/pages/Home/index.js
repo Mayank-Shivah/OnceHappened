@@ -6,7 +6,8 @@ import { ThemeContext } from "../../components/ThemeProvider";
 import FloatingEditModal from "../../components/FloatingEditModal";
 import { getUser  , isLoggedIn } from "../../services/authService";
 import api from "../../api"; // axios instance
-import Swal from "sweetalert2"; // ✅ Added SweetAlert import
+import Swal from "sweetalert2";
+ import LockCard from "../../components/LockCard"; // ✅ Removed unused import
 import Loader from "../../components/Loader"; // ✅ Added Loader import
 
 function Home() {
@@ -192,6 +193,7 @@ function Home() {
 
               </>
             )}
+          {/* <LockCard question={question} /> */}
           </main>
 
           <SidebarRight />
