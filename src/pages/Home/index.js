@@ -145,7 +145,7 @@ function Home() {
                     className="no-post-box"
                     style={{
                       textAlign: "center",
-                      margin: "40px auto",
+                      margin: "5px auto",
                       padding: "30px",
                       background: "#fff",
                       border: "1px solid #ddd",
@@ -193,7 +193,7 @@ function Home() {
 
               </>
             )}
-          {/* <LockCard question={question} /> */}
+       <LockCard  /> 
           </main>
 
           <SidebarRight />
