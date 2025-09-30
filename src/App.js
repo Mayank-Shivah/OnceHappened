@@ -13,7 +13,7 @@ import MyProfile from "./pages/MyProfile";
 import About from "./pages/AboutUs";
 import Subscription from "./pages/Subscription";
 import { ToastContainer } from "react-toastify";
-
+ // Make sure this exists
 import "react-toastify/dist/ReactToastify.css";
 
 // 🔹 PopupManager

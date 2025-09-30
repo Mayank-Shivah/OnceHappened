@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaHeart, FaThumbsDown, FaTrash, FaEdit } from "react-icons/fa";
 import "./style.scss";
 import api from "../../api";
-
-import { loggedUser      , isLoggedIn } from "../../services/authService";
+import { loggedUser, isLoggedIn } from "../../services/authService";
 import { usePopup } from "../PopupManager";
 import ShareModal from "../ShareModal";
 
