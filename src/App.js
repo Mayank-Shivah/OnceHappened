@@ -55,6 +55,7 @@ function useRestrictInteractions() {
 }
 
 function App() {
+  
   // Font Size state here, at top level
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);
@@ -64,6 +65,21 @@ function App() {
     return isLoggedIn() ? children : <Navigate to="/" replace />;
     // 👆 if not logged in, redirect (e.g. to home or login page)
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem("preferredLanguage");
+      const sel = document.querySelector(".goog-te-combo");
+      if (sel && saved && sel.value !== saved) {
+        sel.value = saved;
+        sel.dispatchEvent(new Event("change"));
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+
+
 
   useEffect(() => {
     // Simulate API call

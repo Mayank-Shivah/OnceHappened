@@ -1,0 +1,27 @@
+.adspace {
+  margin: 16px 0;
+}
+.dark-theme .adspace {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.05);
+  color: #bbb;
+}
+/* ad placeholder style */
+.ad-placeholder {
+  width: 100%;
+  min-height: 260px;          /* reserve height to prevent layout shift */
+  margin: 16px 0;
+  border: 1px dashed rgba(0,0,0,0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  background: rgba(0,0,0,0.02);
+  font-size: 12px;
+}
+.dark-theme .ad-placeholder {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.05);
+  color: #bbb;
+}

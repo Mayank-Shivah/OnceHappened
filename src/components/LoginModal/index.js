@@ -65,10 +65,7 @@
             confirmButtonColor: "#d33",
             didOpen: (popup) => {
               popup.parentNode.style.zIndex = 3000;
-            },
-            willClose: () => {
-              window.location.reload();
-            },
+            }
           });
           setSubmitting(false); // Ensure submitting state resets
           return; // ✅ Exit early to prevent generic error handling
@@ -90,10 +87,7 @@
             confirmTextColor: "#000",
             didOpen: (popup) => {
               popup.parentNode.style.zIndex = 3000;
-            },
-            willClose: () => {
-              window.location.reload();
-            },
+            }
           });
         }
       } finally {

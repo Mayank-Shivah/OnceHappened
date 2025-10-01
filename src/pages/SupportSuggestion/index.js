@@ -5,12 +5,13 @@ import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
 import api from "../../api";
 import { loggedUser } from "../../services/authService";
-   import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./style.scss";
 
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // ✅ Added SweetAlert2
 
 function SupportSuggestion() {
   const { theme } = useContext(ThemeContext);
@@ -24,33 +25,34 @@ function SupportSuggestion() {
 
   const [categories, setCategories] = useState([]);
   const [faqs, setFaqs] = useState([]);
-  
-  // 🔹 Fetch categories from API
+
+  // 🔹 Check user
   useEffect(() => {
     if (!user) {
-      navigate("/"); // or your login route
+      navigate("/"); // no reload, SPA navigation
     }
   }, [user, navigate]);
-  
+
+  // 🔹 Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await api.get("/support-category"); // your API endpoint
+        const res = await api.get("/support-category");
         if (res.data?.status && Array.isArray(res.data.data)) {
           setCategories(res.data.data);
         }
       } catch (err) {
-        console.error("Failed to load categories:", err.response?.data || err.message);
+        Swal.fire("Error", "Failed to load categories", "error");
       }
     };
     fetchCategories();
   }, []);
 
-  // 🔹 Fetch FAQs from API
+  // 🔹 Fetch FAQs
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const res = await api.get("/faqs"); // Laravel API
+        const res = await api.get("/faqs");
         if (res.data?.status && Array.isArray(res.data.data)) {
           const formattedFaqs = res.data.data.map((faq) => ({
             question: faq.title,
@@ -59,7 +61,7 @@ function SupportSuggestion() {
           setFaqs(formattedFaqs);
         }
       } catch (err) {
-        console.error("Failed to load FAQs:", err.response?.data || err.message);
+        Swal.fire("Error", "Failed to load FAQs", "error");
       }
     };
     fetchFaqs();
@@ -83,11 +85,10 @@ function SupportSuggestion() {
           user_id: userId,
         });
 
-        // toast.success("Suggestion submitted successfully!");
+        Swal.fire("Success", "Suggestion submitted successfully!", "success");
         resetForm();
       } catch (err) {
-        console.error("Suggestion submit error:", err.response?.data || err.message);
-        // toast.error("Error while submitting suggestion. Please try again.");
+        Swal.fire("Error", "Error while submitting suggestion. Please try again.", "error");
       } finally {
         setSubmitting(false);
       }
@@ -109,7 +110,7 @@ function SupportSuggestion() {
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
         setSubmitting(true);
-        const support_id = values.supCategory; // ✅ now the ID from API
+        const support_id = values.supCategory;
         const description = values.supMessage.trim();
 
         await api.post("/submit-issue", {
@@ -119,11 +120,10 @@ function SupportSuggestion() {
           description,
         });
 
-        // toast.success("Support issue submitted successfully!");
+        Swal.fire("Success", "Support issue submitted successfully!", "success");
         resetForm();
       } catch (err) {
-        console.error("Support submit error:", err.response?.data || err.message);
-        // toast.error("Error while submitting issue. Please try again.");
+        Swal.fire("Error", "Error while submitting issue. Please try again.", "error");
       } finally {
         setSubmitting(false);
       }
@@ -183,7 +183,6 @@ function SupportSuggestion() {
             <div className="ss-content-section mt-1">
               <div className="details-section">
                 <h4>
-              
                   <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a>
                 </h4>
 
@@ -317,8 +316,6 @@ function SupportSuggestion() {
                 </div>
               </div>
             </div>
-        
-
           </main>
 
           <div className="d-block d-md-none">

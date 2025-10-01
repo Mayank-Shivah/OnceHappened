@@ -5,6 +5,7 @@ import QuestionCard from "../../components/QuestionCard";
 import { ThemeContext } from "../../components/ThemeProvider";
 import FloatingEditModal from "../../components/FloatingEditModal";
 import { getUser  , isLoggedIn } from "../../services/authService";
+import AdSpace from "../../components/AdSpace";
 import api from "../../api"; // axios instance
 import Swal from "sweetalert2";
  import LockCard from "../../components/LockCard"; // ✅ Removed unused import
@@ -166,34 +167,43 @@ function Home() {
                   let adIndex = 0; // which ad to show next
 
                   questions.forEach((q, i) => {
-                    // always push the question
-                    elements.push(<QuestionCard key={q.id} question={q} />);
+                    if (q.lock === 1) {
+                      elements.push(<LockCard key={`lock-${q.id}`} post={q} />);
+                    } else {
+                      elements.push(<QuestionCard key={q.id} question={q} />);
+                    }
 
-                    // after every 3 posts, insert an ad (if any)
-                    if ((i + 1) % 3 === 0 && ads.length > 0) {
-                      const ad = ads[adIndex % ads.length]; // loop through ads if fewer ads than slots
-                      elements.push(
-                        <div className="single-components-ad" key={`ad-${i}-${ad.id}`}>
-                          <a href={ad.url} target="_blank" rel="noopener noreferrer">
-                            <img
-                              src={ad.image_video}
-                              alt="Advertisement"
-                              className="ad-image"
-                              style={{ width: "100%", height: "auto" }}
-                            />
-                          </a>
-                        </div>
-                      );
-                      adIndex++; // go to next ad
+                    // ads after every 3 posts
+                    if ((i + 1) % 3 === 0) {
+                      if (ads.length > 0) {
+                        const ad = ads[adIndex % ads.length];
+                        elements.push(
+                          <div className="single-components-ad" key={`ad-${i}-${ad.id}`}>
+                            <a href={ad.url} target="_blank" rel="noopener noreferrer">
+                              <img
+                                src={ad.image_video}
+                                alt="Advertisement"
+                                className="ad-image"
+                                style={{ width: "100%", height: "auto" }}
+                              />
+                            </a>
+                          </div>
+                        );
+                        adIndex++;
+                      }
+                      // elements.push(
+                      //   <AdSpace key={`adslot-${i}`} label="Sponsored" height={260} />
+                      // ); 
                     }
                   });
+
+
 
                   return elements;
                 })()}
 
               </>
             )}
-       <LockCard  /> 
           </main>
 
           <SidebarRight />
