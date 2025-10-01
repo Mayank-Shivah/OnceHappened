@@ -140,14 +140,24 @@ export default function FloatingEditModal({
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire('Success!', 'Draft updated successfully!', 'success');
+        Swal.fire({
+          icon: "success",
+          title: "Draft Updated",
+          text: "Your draft was updated successfully!",
+          confirmButtonText: "OK"
+        });
       } else {
         await api.post(
           "/posts/submit",
           { content, topic_id: selectedTopics, status: "published" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire('Success!', 'Draft saved successfully!', 'success');
+        Swal.fire({
+          icon: "success",
+          title: "Draft Saved",
+          text: "Your draft was saved successfully!",
+          confirmButtonText: "OK"
+        });
       }
 
       setEditorState(EditorState.createEmpty());
@@ -175,14 +185,27 @@ export default function FloatingEditModal({
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire("", "Draft updated successfully and sent for admin approval", "success");
+        Swal.fire({
+          icon: "success",
+          title: "Post Published",
+          text: "Your draft has been updated and sent for admin approval.",
+          confirmButtonText: "OK"
+        });
       } else {
         await api.post(
           "/posts/submit",
           { content, topic_id: selectedTopics, status: "published" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        Swal.fire("Success!", "Published Successfully.", "success");
+        Swal.fire({
+          icon: "success",
+          title: "Published",
+          text: "Your post has been published successfully.",
+          confirmButtonText: "OK"
+        }).then(() => {
+          // 🔹 reload optional — remove if not needed
+          window.location.reload();
+        });
       }
 
       localStorage.removeItem("postDraft");

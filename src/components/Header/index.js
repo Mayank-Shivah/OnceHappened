@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { FaBars, FaCheckCircle, FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaBars, FaCheckCircle, FaFacebookF, FaInstagram, FaGlobe    } from "react-icons/fa";
 import "./style.scss";
 import ThemeToggleBtn from "../ThemeToggleBtn";
 import FontSizeChanger from "../FontSizeChanger";
 import { isLoggedIn, getUser, logout } from "../../services/authService";
 import { ThemeContext } from "../ThemeProvider";
+import { Link } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
 
 // ✅ Import the Popup hook
@@ -27,10 +28,57 @@ export default function Header() {
   // ✅ Access popup functions
   const { openLogin, openRegister, openForgot } = usePopup();
 
-  // ✅ on click show GoogleTranslate component
+  // ✅ on click show/hide GoogleTranslate component
   const changeLanguage = () => {
-    setShowTranslate(true);
+    const container = document.getElementById("google_translate_container");
+    if (!container) return;
+
+    if (container.style.display === "none") {
+      container.style.display = "block";
+
+      // Apply saved language if any
+      setTimeout(() => {
+        const saved = localStorage.getItem("preferredLanguage");
+        const sel = document.querySelector(".goog-te-combo");
+        if (sel && saved && sel.value !== saved) {
+          sel.value = saved;
+          sel.dispatchEvent(new Event("change"));
+        }
+      }, 500);
+    } else {
+      container.style.display = "none";
+    }
   };
+
+
+  // remember chosen language across the whole site
+  const applySavedLanguage = () => {
+    const saved = localStorage.getItem("preferredLanguage");
+    if (!saved) return;
+    const sel = document.querySelector(".goog-te-combo");
+    if (sel && sel.value !== saved) {
+      sel.value = saved;
+      sel.dispatchEvent(new Event("change"));
+    }
+  };
+
+  // save whenever the dropdown changes
+  useEffect(() => {
+    const onChange = (e) => {
+      const sel = document.querySelector(".goog-te-combo");
+      if (sel && e.target === sel) {
+        localStorage.setItem("preferredLanguage", sel.value);
+      }
+    };
+    document.addEventListener("change", onChange, true);
+    return () => document.removeEventListener("change", onChange, true);
+  }, []);
+
+  // apply language globally after page load
+  useEffect(() => {
+    const timer = setTimeout(applySavedLanguage, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // prevent background scroll when dropdown open
   useEffect(() => {
@@ -66,9 +114,14 @@ export default function Header() {
       <div className="container">
         <div className="quora-header">
           <div className="logo">
-            <a href="/" className="once-text">Once happened..</a>
+            <a href="/" className="once-text notranslate" translate="no">Once happened..</a>
           </div>
-          <div className="happened-sec">
+          <div className="happened-sec d-flex">
+            <div className="lang-option border-bottom-set">
+              <button type="button" className="link-button" onClick={changeLanguage}>
+                <FaGlobe style={{ marginRight: "6px" }} />
+              </button>
+            </div>
             <div className="lang-dropdown-wrapper" ref={langRef}>
               <div
                 className="profile-circle"
@@ -128,8 +181,8 @@ export default function Header() {
                         </div>
                         <div className="after-login">
                           <div className="lang-option border-bottom-set custom-link text-decoration-none">
-                            <a
-                              href="/my-profile"
+                            <Link
+                              to="/my-profile"
                               className="text-decoration-none"
                               onClick={() => setShowLang(false)}
                             >
@@ -138,7 +191,7 @@ export default function Header() {
                               </span>
                               Your Profile
                               <FaCheckCircle className="lang-check" />
-                            </a>
+                            </Link>
                           </div>
                           <div className="lang-option border-bottom-set">
                             <ThemeToggleBtn />
@@ -150,8 +203,13 @@ export default function Header() {
                             <button type="button" className="link-button" onClick={changeLanguage}>
                               Translate To
                             </button>
-                            {/* 🔹 Render GoogleTranslate only when Translate To clicked */}
-                           
+
+                            {/* The Google dropdown mounts here after first click */}
+                            {/* <div
+                              id="google_translate_container"
+                              style={{ display: showTranslate ? "block" : "none", marginTop: 8 }}
+                            /> */}
+                            
                           </div>
                           <div className="lang-option border-bottom-set">
                             <a href="/subscription" className="link-button border-bottom-set" onClick={() => setShowLang(false)}>
@@ -159,9 +217,13 @@ export default function Header() {
                             </a>
                           </div>
                           <div className="lang-option border-bottom-set">
-                            <a href="/support-suggestion" className="link-button border-bottom-set" onClick={() => setShowLang(false)}>
+                            <Link
+                              to="/support-suggestion"
+                              className="link-button border-bottom-set"
+                              onClick={() => setShowLang(false)}
+                            >
                               Suggestion & Support
-                            </a>
+                            </Link>
                           </div>
                           <div className="lang-option ">
                             <button type="button" className="link-button border-bottom-set" onClick={handleLogout}>
