@@ -90,7 +90,9 @@ body.dark-theme {
   display: flex;
   flex-direction: column;
   background-color: var(--desktop-screen);
-
+@media (max-width:600px) {
+  padding-bottom: 23px;
+}
 
 
 }
@@ -1075,4 +1077,18 @@ div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
 div:where(.swal2-icon).swal2-warning, div:where(.swal2-icon).swal2-info {
     border-color: var(--theme-color) !important;
     color:  var(--theme-color) !important;
+}
+
+body {
+  transition: none !important;
+}
+
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-icon {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
 }
