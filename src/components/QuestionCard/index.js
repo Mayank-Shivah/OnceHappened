@@ -16,6 +16,7 @@ export default function QuestionCard({
   status = null,       // ✅ New prop: For My Posts/Drafts tabs (e.g., "approved", "unapproved", "published", "draft")
   onDelete,
   onEdit,
+  onUnlike,
 }) {
   const [expanded, setExpanded] = useState(false);
   const [vote, setVote] = useState(null); // true=like, false=dislike, null=none
@@ -87,7 +88,6 @@ export default function QuestionCard({
     }
 
     if (!user?.id || !question?.id) {
-      // toast.error("Invalid user or question data");
       return;
     }
 
@@ -99,6 +99,11 @@ export default function QuestionCard({
       // case: clicked same button → reset to none
       newVote = null;
       payloadIsLike = 2; // special code for remove
+
+      // ✅ If user unliked and this card was forced liked (Liked tab)
+      if (isLike === true && isLiked) {
+        onUnlike?.(question.id);  // 👈 notify parent to remove immediately
+      }
     } else {
       // case: switch like ↔ dislike
       newVote = isLike;
@@ -123,7 +128,6 @@ export default function QuestionCard({
       await api.post("/posts/like", payload);
     } catch (err) {
       console.error("Vote failed:", err.response?.data || err.message);
-      // toast.error("Something went wrong while voting");
 
       // rollback
       setVote(prevVote);
@@ -152,27 +156,35 @@ export default function QuestionCard({
   }
 
   // ✅ Status display logic (for My Posts/Drafts tabs)
-  const getStatusDisplay = (status) => {
-    if (!status) return null;
-    let displayText = status.charAt(0).toUpperCase() + status.slice(1); // Capitalize
-    if (status === "published") {
-      displayText = "Draft"; // Map "published" to "Draft" (pending admin approval)
-    } else if (status === "draft") {
-      displayText = "Pending for Approval"; // Map "draft" to pending published state
-    }
-    // For "approved" → "Approved", "unapproved" → "Unapproved"
-    return displayText;
-  };
+  // ✅ Status display logic
+    const getStatusDisplay = (status) => {
+      if (!status) return null;
+      switch (status) {
+        case "draft":
+          return "Pending for Approval";
+        case "approved":
+          return "Approved";
+        case "un-approved":
+          return "Unapproved";
+        case "published":
+          return "Draft";
+        default:
+          return null;
+      }
+    };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "approved": return "#28a745"; // Green
-      case "published": 
-      case "draft": return "#ffc107"; // Orange (for drafts/pending)
-      case "unapproved": return "#dc3545"; // Red
-      default: return "#6c757d"; // Gray for unknown
-    }
-  };
+    const getStatusColor = (status) => {
+      switch (status) {
+        case "approved":
+          return "#28a745"; // Green
+        case "draft":
+          return "#ffc107"; // Orange
+        case "unapproved":
+          return "#dc3545"; // Red
+        default:
+          return "#6c757d"; // Gray
+      }
+    };
 
   const statusDisplay = getStatusDisplay(status);
   const statusColor = getStatusColor(status);
@@ -269,7 +281,7 @@ export default function QuestionCard({
             {statusDisplay && (
               <span
                 className="share-btn"
-               
+                style={{ color: statusColor }} // ✅ keep consistent styling
               >
                 {statusDisplay}
               </span>

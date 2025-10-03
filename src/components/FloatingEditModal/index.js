@@ -194,7 +194,7 @@ export default function FloatingEditModal({
       } else {
         await api.post(
           "/posts/submit",
-          { content, topic_id: selectedTopics, status: "published" },
+          { content, topic_id: selectedTopics, status: "draft" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         Swal.fire({

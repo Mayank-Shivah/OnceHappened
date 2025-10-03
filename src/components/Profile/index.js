@@ -22,7 +22,7 @@ const Profile = () => {
   const [wasEditing, setWasEditing] = useState(false); // ✅ New: Track if modal was opened for edit (to trigger refetch on close)
 
   const postsPerPage = 5;
-  const user = loggedUser          ();
+  const user = loggedUser();
   
   // ✅ Extracted fetchPosts as standalone function (fixes ESLint "not defined" error)
   const fetchPosts = async () => {
@@ -56,15 +56,18 @@ const Profile = () => {
       setDraftPosts(userDrafts);
 
       // ✅ my posts: Show only "draft" (published/submitted), "approved", "unapproved" – exclude "published" (drafts) to avoid overlap
-      const mine = posts
-         .filter(
-            (p) => 
-              String(p.user_id) === String(user.id) && 
-              (p.status === "draft" || p.status === "approved" || p.status === "unapproved")
-          )
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      // ✅ my posts: Show only "draft" and "approved"
+    // ✅ My Posts: include both "draft" and "published" as "Pending", plus "approved" and "unapproved"
+    const mine = posts
+      .filter(
+        (p) =>
+          String(p.user_id) === String(user.id) &&
+          (p.status === "draft" || p.status === "approved" || p.status === "un-approved")
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-      setMyPosts(mine);
+    setMyPosts(mine);
+
     } catch (err) {
       // ✅ Replaced console.error with SweetAlert for consistency
       Swal.fire('Error!', 'Failed to load posts', 'error');
@@ -75,7 +78,9 @@ const Profile = () => {
 
   // Initial load on mount
   useEffect(() => {
-    fetchPosts();
+    if (user?.id) {
+      fetchPosts();
+    }
   }, [user?.id]);
 
   // ✅ New: Refetch posts after editing modal closes (to sync new/updated content and status changes)
@@ -166,6 +171,23 @@ const Profile = () => {
     setWasEditing(true); // ✅ Set flag for refetch on close (only for edits, not new drafts)
   };
 
+  // handle toggle like
+  const handleToggleLike = async (postId) => {
+    try {
+      // Call backend API to toggle like
+      await api.post(`/posts/${postId}/toggle-like`);
+
+      // Optimistically update UI: remove post from likedPosts immediately
+      setLikedPosts((prev) => prev.filter((p) => p.id !== postId));
+      
+      // Optional: if you want to also update MyPosts/Drafts counts, you can sync there too
+    } catch (err) {
+      Swal.fire("Error!", "Failed to update like", "error");
+    }
+  };
+
+
+
   return (
     <div>
       {/* Tabs */}
@@ -206,13 +228,13 @@ const Profile = () => {
               key={q.id}
               question={q}
               showActions={activeTab === "Liked"}
+              isLiked={activeTab === "Liked"}
+              onUnlike={(id) =>
+                setLikedPosts((prev) => prev.filter((p) => p.id !== id))
+              }
               showDelete={activeTab === "Drafts"}
               showEdit={activeTab === "Drafts"}
               showCounts={activeTab === "MyPosts"}
-              // ✅ Fix: Pass isLiked prop for "Liked" tab to ensure like icon is red/filled
-              isLiked={activeTab === "Liked"}
-              // ✅ New: Pass status for "My Posts" tab (render at right bottom, parallel to counts)
-              // Note: In QuestionCard, handle "published" as "Draft" if needed for display (but excluded here)
               status={activeTab === "MyPosts" ? q.status : null}
               onEdit={() => handleEditDraft(q)}
               onDelete={() => handleDeleteDraft(q.id)}

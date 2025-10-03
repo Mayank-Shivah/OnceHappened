@@ -71,23 +71,38 @@
           return;
         }
 
-        // 🔹 Validation errors (no reload, just show inline errors)
-        if (apiErrors) {
-          const formikErrors = {};
-          if (apiErrors.email) formikErrors.email = apiErrors.email[0];
-          if (apiErrors.password) formikErrors.password = apiErrors.password[0];
-          setErrors(formikErrors);
-        } else {
+        if (errorData?.error === "Invalid credentials") {
+           // Close modal first
+          onClose();
           MySwal.fire({
             icon: "error",
-            title: "Login Failed",
-            text: "Incorrect email or password. Please try again.",
-            confirmButtonText: "OK",
+            title: "Login Faileds",
+            text: "Please contact support, your account has been disabled",
+            confirmButtonColor: "#d33",
             didOpen: (popup) => {
               popup.parentNode.style.zIndex = 9999;
             }
           });
+          setSubmitting(false);
+          return;
         }
+
+        // if (apiErrors) {
+        //   const formikErrors = {};
+        //   if (apiErrors.email) formikErrors.email = apiErrors.email[0];
+        //   if (apiErrors.password) formikErrors.password = apiErrors.password[0];
+        //   setErrors(formikErrors);
+        //   MySwal.fire({
+        //     icon: "error",
+        //     title: "Login Failed",
+        //     text: "Incorrect email or password. Please try again.",
+        //     confirmButtonText: "OK",
+        //     didOpen: (popup) => {
+        //       popup.parentNode.style.zIndex = 2000;
+        //     }
+        //   });
+        // }
+
       } finally {
         setSubmitting(false);
       }
