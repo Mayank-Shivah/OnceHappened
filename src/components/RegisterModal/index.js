@@ -94,11 +94,19 @@ export default function RegisterModal({ onClose, openLogin }) {
             data.token || data.authorisation.token
           );
         }
-        Swal.fire('Success!', 'Registred Successfully!', 'success');
-        setTimeout(() => {
-          onClose();
+        // ✅ Close modal first
+        onClose();
+
+        // ✅ Then show SweetAlert
+        Swal.fire({
+          title: 'Success!',
+          text: 'Registered Successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          // ✅ Reload only after SweetAlert closed
           window.location.reload();
-        }, 2500);
+        });
       } catch (err) {
         console.error("Register failed:", err.response?.data || err.message);
         // toast.error("The email has already been taken.");

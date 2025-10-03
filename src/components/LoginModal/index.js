@@ -32,61 +32,59 @@
         }
         onClose();
         // ✅ SweetAlert2 success popup (always above modal)
-      MySwal.fire({
-  icon: "success",
-  title: "Login Successful 🎉",
-  text: "Welcome back!",
-  showConfirmButton: false,
-  timer: 2000,
-  backdrop: `rgba(0,0,0,0.4) left top no-repeat`,
-  customClass: {
-    popup: "swal-custom-popup",
-    title: "swal-custom-title",
-  },
-  didOpen: (popup) => {
-    popup.parentNode.style.zIndex = 2000;
-  },
-}).then(() => {
-  window.location.reload();
-});
+        MySwal.fire({
+          icon: "success",
+          title: "Login Successful 🎉",
+          text: "Welcome back!",
+          showConfirmButton: true,
+          confirmButtonText: "OK",
+          backdrop: `rgba(0,0,0,0.4) left top no-repeat`,
+          customClass: {
+            popup: "swal-custom-popup",
+            title: "swal-custom-title",
+          },
+          didOpen: (popup) => {
+            popup.parentNode.style.zIndex = 2000;
+          },
+        }).then(() => {
+          window.location.reload();
+        });
 
       } catch (err) {
-        // ✅ Enhanced error handling: Check for {"error":"Account disabled"}
         const errorData = err.response?.data;
         const apiErrors = errorData?.errors;
 
-        // 🔹 Specific check for disabled account based on response structure
+        // 🔹 Specific check for disabled account
         if (errorData?.error === "Account disabled") {
-          onClose(); // Close modal
+           // Close modal first
+          onClose();
           MySwal.fire({
             icon: "error",
-            title: "Account Disabled", // ✅ Updated title for consistency
-            text: "Please contact support your account has been disabled",
+            title: "Account Disabled",
+            text: "Please contact support, your account has been disabled",
             confirmButtonColor: "#d33",
             didOpen: (popup) => {
-              popup.parentNode.style.zIndex = 3000;
+              popup.parentNode.style.zIndex = 9999;
             }
           });
-          setSubmitting(false); // Ensure submitting state resets
-          return; // ✅ Exit early to prevent generic error handling
+          setSubmitting(false);
+          return;
         }
 
-        // Existing logic for other errors (e.g., validation or generic)
+        // 🔹 Validation errors (no reload, just show inline errors)
         if (apiErrors) {
           const formikErrors = {};
           if (apiErrors.email) formikErrors.email = apiErrors.email[0];
           if (apiErrors.password) formikErrors.password = apiErrors.password[0];
           setErrors(formikErrors);
         } else {
-          onClose();
           MySwal.fire({
             icon: "error",
             title: "Login Failed",
             text: "Incorrect email or password. Please try again.",
-            confirmButtonColor: "var(--theme-color)",
-            confirmTextColor: "#000",
+            confirmButtonText: "OK",
             didOpen: (popup) => {
-              popup.parentNode.style.zIndex = 3000;
+              popup.parentNode.style.zIndex = 9999;
             }
           });
         }
