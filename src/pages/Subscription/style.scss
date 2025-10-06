@@ -68,3 +68,24 @@ hr{
      
     }
 }
+
+.sub-parent-section {
+    display: flex;
+    align-items: start;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.color-green {
+    text-transform: capitalize;
+    background: -webkit-linear-gradient(312deg, #00ea18, /* orange-red */ #24ddda, /* pink */ #4CAF50, /* cyan-blue */ #ff3333, /* purple-blue */ #F44336 /* sky blue */);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+.subscribe-box {
+    text-align: center;
+    border: 2px solid var(--theme-color);
+    padding: 20px;
+    border-radius: 8px;
+}

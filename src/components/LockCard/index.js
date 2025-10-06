@@ -49,8 +49,8 @@ export default function LockCard({
             <div className="lpb-bg-texts question-description has-readmore">
                 <div className="desc-body collapsed">
                     <span>
-                        <strong>{post?.title || "Locked Post"}</strong>
-                        <br />
+           
+                    
                         {stripHtml(post?.description || "")}...
                     </span>
                     <button className="read-more" type="button" onClick={handleButtonClick}>

@@ -47,7 +47,7 @@ function PrivacyPolicy() {
               </p>
               <h2>Your Choices</h2>
               <p>
-                You may update or delete your personal information by contacting us at <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a>.
+                You may update or delete your personal information by contacting us at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.
               </p>
               <h2>Changes to this Privacy Policy</h2>
               <p>
@@ -55,7 +55,7 @@ function PrivacyPolicy() {
               </p>
               <h2>Contact Us</h2>
               <p>
-                For any questions about this policy, please reach out at <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a>.
+                For any questions about this policy, please reach out at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.
               </p>
             </div>
           </main>

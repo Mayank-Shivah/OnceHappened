@@ -87,7 +87,8 @@ export default function Subscription() {
         >
           <main className="main-section-parent p-0">
             {/* ✅ Subscription Packages */}
-            <div className="policy-page mb-1">
+            <div className="policy-page mb-1 sub-parent-section">
+              {/* left-section */}
               <div className="subscribe-box">
                 <h2>
                   <span className="color-red">S</span>ubscribe to
@@ -97,18 +98,32 @@ export default function Subscription() {
                     Unlock every post and Remove all ads in just few bucks.
                   </strong>
                 </p>
-                <div className="price-list">
+                <div class="price-list"><div class="price-item  mb-2 ">
+                  <button class="price-tab  ">$7.50 <span>for 1 month</span></button>
+                  </div>
+                  <div class="price-item  mb-2 ">
+                    <button class="price-tab  ">$35.99 
+                      <span>for 6 months</span>
+                </button>
+                </div>
+                <div class="price-item  mb-2 deal-tab-sec">
+                  <button class="price-tab border-0 ">$65.99 <span>
+                    for 1 year</span>
+                    </button>
+                    <span class="d-block">★ Deal of the day</span>
+                    </div>
+                    <div class="note">(only $65.99 for entire year, about  0.18 per day)</div>
+                    </div>
+                {/* <div className="price-list">
                   {plans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`price-item mb-2 ${
-                        plan.tagline ? "deal-tab-sec" : ""
-                      }`}
+                      className={`price-item  mb-2 ${plan.tagline ? "deal-tab-sec" : ""
+                        }`}
                     >
                       <button
-                        className={`price-tab ${
-                          plan.is_featured ? "p-0 border-0 us-tab" : ""
-                        }`}
+                        className={`price-tab  ${plan.is_featured ? "p-0 border-0 us-tab" : ""
+                          }`}
                         onClick={() => handleCheckout(plan)}
                       >
                         ${plan.price}{" "}
@@ -125,10 +140,116 @@ export default function Subscription() {
                   {plans.length > 0 && (
                     <div className="note">
                       (only ${plans[plans.length - 1].price} for entire year,
+                      about  0.18 per day)
+                    </div>
+                  )}
+                </div> */}
+                <hr />
+                <hr />
+                <div className="special-offer">
+                  <strong className="mb-1">
+                    <span className="color-green fw-600">
+                      {user?.name || "Guest"}
+                    </span>
+                    , lets try for only a month & read all at once
+                  </strong>
+
+                  <div class="price-item highlight mb-2">
+                    <button class="price-tab">Day pass – $2.5 for a day</button>
+                    <span> Or </span>
+                    <button class="price-tab">Monthly package – $7.5 per month</button>
+                  </div>
+
+
+                  {/*                   
+                  {plans.length > 0 && (
+                    <div className="price-item highlight mb-2">
+                      <button
+                        className="price-tab"
+                        onClick={() => handleCheckout(plans[0])}
+                      >
+                        {plans[0].name} – ${plans[0].price}
+                      </button>
+                      {plans[1] && (
+                        <>
+                          <span> Or </span>
+                          <button
+                            className="price-tab"
+                            onClick={() => handleCheckout(plans[1])}
+                          >
+                            {plans[1].name} – ${plans[1].price}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )} */}
+                </div>
+              </div>
+
+
+
+
+              {/* right-section */}
+              <div className="subscribe-box ">
+                <h2>
+                  <span className="color-red">S</span>ubscribe to
+                </h2>
+                <p>
+                  <strong>
+                    Unlock every post and Remove all ads in just few bucks.
+                  </strong>
+                </p>
+
+                <div class="price-list">
+                  <div class="price-item  mb-2 ">
+                    <button class="price-tab  ">Day pass: $2.5 for a day.
+                      <span>for 1 month</span>
+                    </button>
+                  </div>
+                  <div class="price-item  mb-2 ">
+                    <button class="price-tab  ">$35.99 <span>for 6 months</span>
+                    </button>
+                  </div>
+                  <div class="price-item  mb-2 deal-tab-sec">
+                    <button class="price-tab border-0  ">$65.99 <span>for 1 year</span>
+                    </button>
+                    <span class="d-block">★ Deal of the day</span>
+                  </div>
+                  <div class="note">
+                    (only $65.99 for entire year, about 0.18 cents per day)
+                  </div>
+                </div>
+                {/* <div className="price-list">
+                  {plans.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`price-item mb-2 ${plan.tagline ? "deal-tab-sec" : ""
+                        }`}
+                    >
+                      <button
+                        className={`price-tab p-0 border-0 us-tab ${plan.is_featured ? "p-0 border-0 us-tab" : ""
+                          }`}
+                        onClick={() => handleCheckout(plan)}
+                      >
+                        ${plan.price}{" "}
+                        <span>
+                          for {plan.duration} {plan.duration_type}
+                          {plan.duration > 1 ? "s" : ""}
+                        </span>
+                      </button>
+                      
+                      {plan.tagline && (
+                        <span className="d-block">★ {plan.tagline}</span>
+                      )}
+                    </div>
+                  ))}
+                  {plans.length > 0 && (
+                    <div className="note">
+                      (only ${plans[plans.length - 1].price} for entire year,
                       about 0.18 cents per day)
                     </div>
                   )}
-                </div>
+                </div> */}
                 <hr /> <hr />
                 <div className="special-offer">
                   <strong className="mb-1">
@@ -162,9 +283,12 @@ export default function Subscription() {
               </div>
             </div>
 
+
+
+
             {/* ✅ Active Subscription */}
             <div className="policy-page">
-              <div className="subscribe-box">
+              <div className="subscribe-box border-0">
                 <h2>Your ongoing subscription:</h2>
 
                 {!activeSub ? (

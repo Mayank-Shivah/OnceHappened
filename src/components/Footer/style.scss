@@ -90,3 +90,8 @@
     transform: scale(1);
   }
 }
+.bottom-ad-section {
+  @media (min-width:1025px) {
+    display: none;
+  }
+}

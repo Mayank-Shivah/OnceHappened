@@ -36,7 +36,7 @@ function ReturnPolicy() {
               </p>
               <h2>How to Return</h2>
               <p>
-                To initiate a return, contact our customer service team at <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a> with your order details.
+                To initiate a return, contact our customer service team at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a> with your order details.
               </p>
               <h2>Refunds</h2>
               <p>
@@ -44,7 +44,7 @@ function ReturnPolicy() {
               </p>
               <h2>Contact Us</h2>
               <p>
-                For any questions regarding returns, please email <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a>.
+                For any questions regarding returns, please email <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.
               </p>
             </div>
           </main>

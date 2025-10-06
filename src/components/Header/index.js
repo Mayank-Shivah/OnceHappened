@@ -117,9 +117,9 @@ export default function Header() {
             <a href="/" className="once-text notranslate" translate="no">Once happened..</a>
           </div>
           <div className="happened-sec d-flex">
-            <div className="lang-option border-bottom-set">
-              <button type="button" className="link-button" onClick={changeLanguage}>
-                <FaGlobe style={{ marginRight: "6px" }} />
+            <div className="lang-option">
+              <button type="button" className="link-button globe-icons me-2" onClick={changeLanguage}>
+                <FaGlobe />
               </button>
             </div>
             <div className="lang-dropdown-wrapper" ref={langRef}>
@@ -135,7 +135,7 @@ export default function Header() {
               {showLang && (
                 <div className="lang-overlay" onClick={() => setShowLang(false)}>
                   <div
-                    className="lang-dropdown"
+                   className={`lang-dropdown ${loggedIn ? "afterlogin" : ""}`}
                     onClick={(e) => e.stopPropagation()} // prevent close when clicking inside
                   >
                     {/* If not logged in */}
@@ -183,18 +183,19 @@ export default function Header() {
                           <div className="lang-option border-bottom-set custom-link text-decoration-none">
                             <Link
                               to="/my-profile"
-                              className="text-decoration-none"
+                              className="text-decoration-none justify-content-start"
                               onClick={() => setShowLang(false)}
                             >
                               <span className="lang-avatar">
                                 {user?.name?.charAt(0).toUpperCase() || "U"}
                               </span>
                               Your Profile
-                              <FaCheckCircle className="lang-check" />
+                             
                             </Link>
                           </div>
                           <div className="lang-option border-bottom-set">
-                            <ThemeToggleBtn />
+                           <p className="text-set">Mode
+                            </p> <ThemeToggleBtn />
                           </div>
                           <div className="lang-option border-bottom-set">
                             <FontSizeChanger />
