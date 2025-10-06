@@ -457,7 +457,7 @@ height: 468px;
   animation: slideIn 0.3s ease forwards;
 
   @media (max-width:768px){
-    height: 82%;
+    height:fit-content;
   }
 }
 
