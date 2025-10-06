@@ -1,51 +1,132 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../api";
+import Swal from "sweetalert2";
+import "./success-cancel.scss";
 
 export default function Success() {
-  const [msg, setMsg] = useState("Checking your payment...");
+  const [subscription, setSubscription] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
 
+    // ✅ No session_id → redirect immediately
     if (!sessionId) {
-      setMsg("No session ID found.");
+      window.location.href = "/subscription";
       return;
     }
 
     (async () => {
       try {
-        // 1️⃣ Verify payment from Node backend
-        const { data } = await axios.get(
-          `http://localhost:5000/verify-session?session_id=${sessionId}`
-        );
+        // ✅ Step 1: Verify session from Stripe
+        const { data } = await api.get(`/verify-session?session_id=${sessionId}`);
 
-        if (data.isPaid) {
-          setMsg("✅ Payment successful! Activating subscription...");
-          console.log(data);
-
-          // 2️⃣ Call Laravel API to update DB
-          //await api.post("/purchase-subscription", {
-            //subscription_id: data.metadata.subscriptionId, // Laravel package id
-            //paymentid: data.stripe_subscription_id,       // Stripe subscription id
-            //amount: data.metadata.amount || data.amount_total / 100,
-          //});
-
-          //setMsg("🎉 Subscription activated/renewed! Enjoy all posts.");
-        } else {
-          setMsg("❌ Payment not completed.");
+        if (!data.isPaid) {
+          Swal.fire("❌ Payment Not Completed", "Your payment could not be verified.", "error");
+          setErrorMsg("Payment not completed.");
+          setLoading(false);
+          return;
         }
+
+        // ✅ Step 2: Check if session already exists in DB
+        const check = await api.get(`/check-session/${sessionId}`).catch(() => ({ data: { exists: false } }));
+
+        if (check?.data?.exists) {
+          // Already processed — show data instantly
+          setSubscription(check.data.subscription);
+          setLoading(false); // <-- 🩵 important fix here
+          return; // Stop here — no new SweetAlerts
+        }
+
+        // ✅ Step 3: Activate new subscription only once
+        Swal.fire({
+          title: "✅ Payment Successful!",
+          text: "Your subscription is being activated...",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        const activate = await api.post("/purchase-subscription", {
+          subscription_id: data.metadata.plan_id,
+          paymentid: sessionId,
+          amount: data.metadata.amount,
+        });
+
+        setSubscription({
+          user_name: data.metadata.user_name,
+          plan_name: data.metadata.plan_name,
+          amount: data.metadata.amount,
+          payment_id: sessionId,
+          ...activate.data.subscription,
+        });
+
+        Swal.fire({
+          title: "🎉 Subscription Activated!",
+          text: "Enjoy all premium stories without ads.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
       } catch (err) {
-        console.error("Purchase error:", err.response?.data || err.message);
-        setMsg("Error verifying payment.");
+        console.error("Verification error:", err);
+        Swal.fire("Error!", "Something went wrong while verifying payment.", "error");
+        setErrorMsg("Verification failed.");
+      } finally {
+        // ✅ Always turn off loader
+        setLoading(false);
       }
     })();
   }, []);
 
+  // ✅ Show loader only when still processing
+  // if (loading) {
+  //   return (
+  //     <div className="success-cancel-container text-center">
+  //       <h2>⏳ Processing your payment...</h2>
+  //       <p>Please wait while we confirm your subscription.</p>
+  //     </div>
+  //   );
+  // }
+
+  // ✅ Show error if payment failed
+  if (errorMsg) {
+    return (
+      <div className="success-cancel-container text-center">
+        <h2 className="cancel">❌ {errorMsg}</h2>
+        <a href="/" className="btn-back">Go Back</a>
+      </div>
+    );
+  }
+
+  // ✅ Show subscription info
   return (
-    <div className="container">
-      <h2>{msg}</h2>
+    <div className="success-cancel-container">
+      <div className="payment-success-box">
+        <h2 className="success">🎉 Payment & Subscription Confirmed!</h2>
+        <p>Thank you for subscribing to <strong>Once Happened</strong>.</p>
+
+        <div className="subscription-details">
+          <h4>Payment Details</h4>
+          <ul>
+            <li><strong>Plan Name:</strong> {subscription?.plan_name}</li>
+            <li><strong>Amount Paid:</strong> ${subscription?.amount}</li>
+            <li><strong>Start Date:</strong> {new Date(subscription?.start_date).toLocaleString()}</li>
+            <li><strong>End Date:</strong> {new Date(subscription?.end_date).toLocaleString()}</li>
+            <li><strong>Status:</strong> {subscription?.is_active ? "Active" : "Inactive"}</li>
+          </ul>
+
+          <h4>User Info</h4>
+          <ul>
+            <li><strong>User Name:</strong> {subscription?.user_name}</li>
+          </ul>
+
+          <div className="mt-3">
+            <a href="/" className="btn-back">Back to Home</a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
