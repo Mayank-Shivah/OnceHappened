@@ -135,55 +135,13 @@ function SupportSuggestion() {
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
           <main className="main-section-parent">
-            {/* =============== Suggestion Section =============== */}
-            <div className="ss-content-section">
-              <div className="details-section">
-                <h4>Suggestion</h4>
-                <p>What type of content, new topics & website features should we add?</p>
-
-                <form onSubmit={suggestionForm.handleSubmit} noValidate>
-                  <div className="form-group mb-2">
-                    <label htmlFor="sugMessage" className="form-label">
-                      Describe your suggestion
-                    </label>
-                    <textarea
-                      id="sugMessage"
-                      name="sugMessage"
-                      className={`form-control sugggestion-text add-msg ${
-                        suggestionForm.touched.sugMessage && suggestionForm.errors.sugMessage
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      placeholder="Your suggestion..."
-                      rows={2}
-                      onChange={suggestionForm.handleChange}
-                      onBlur={suggestionForm.handleBlur}
-                      value={suggestionForm.values.sugMessage}
-                    />
-                    {suggestionForm.touched.sugMessage &&
-                      suggestionForm.errors.sugMessage && (
-                        <div className="invalid-feedback d-block">
-                          {suggestionForm.errors.sugMessage}
-                        </div>
-                      )}
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="btn btn-custom mt-2"
-                    disabled={suggestionForm.isSubmitting}
-                  >
-                    {suggestionForm.isSubmitting ? "Submitting..." : "Submit"}
-                  </button>
-                </form>
-              </div>
-            </div>
+          
 
             {/* ============================ Support ============================ */}
-            <div className="ss-content-section mt-1">
+            <div className="ss-content-section">
               <div className="details-section">
                 <h4>
-                  <a href="mailto:cs@oncehappend.com">cs@oncehappend.com</a>
+                  <a href="mailto: info@oncehappened.com" > info@oncehappened.com </a>
                 </h4>
 
                 <form onSubmit={supportForm.handleSubmit} noValidate>
@@ -252,7 +210,7 @@ function SupportSuggestion() {
                           ? "is-invalid"
                           : ""
                       }`}
-                      placeholder="Describe your issue..."
+                      placeholder="Describe"
                       rows={1}
                       onChange={supportForm.handleChange}
                       onBlur={supportForm.handleBlur}
@@ -278,7 +236,7 @@ function SupportSuggestion() {
             </div>
 
             {/* ============================= FAQ ============================= */}
-            <div className="ss-content-section mt-1">
+            <div className="ss-content-section mt-2">
               <div className="details-section">
                 <div className="main-accordion-section">
                   <h3>Frequently Asked Questions:</h3>
@@ -314,6 +272,49 @@ function SupportSuggestion() {
                     <div>No FAQs added yet.</div>
                   )}
                 </div>
+              </div>
+            </div>
+              {/* =============== Suggestion Section =============== */}
+            <div className="ss-content-section mt-2">
+              <div className="details-section">
+                <h4>Suggestions</h4>
+                <p>What type of content, new topics & website features should we add more?</p>
+
+                <form onSubmit={suggestionForm.handleSubmit} noValidate>
+                  <div className="form-group mb-2">
+                    <label htmlFor="sugMessage" className="form-label">
+                      Describe your suggestion
+                    </label>
+                    <textarea
+                      id="sugMessage"
+                      name="sugMessage"
+                      className={`form-control sugggestion-text add-msg ${
+                        suggestionForm.touched.sugMessage && suggestionForm.errors.sugMessage
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      placeholder="Your suggestion..."
+                      rows={2}
+                      onChange={suggestionForm.handleChange}
+                      onBlur={suggestionForm.handleBlur}
+                      value={suggestionForm.values.sugMessage}
+                    />
+                    {suggestionForm.touched.sugMessage &&
+                      suggestionForm.errors.sugMessage && (
+                        <div className="invalid-feedback d-block">
+                          {suggestionForm.errors.sugMessage}
+                        </div>
+                      )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn btn-custom mt-2"
+                    disabled={suggestionForm.isSubmitting}
+                  >
+                    {suggestionForm.isSubmitting ? "Submitting..." : "Submit"}
+                  </button>
+                </form>
               </div>
             </div>
           </main>

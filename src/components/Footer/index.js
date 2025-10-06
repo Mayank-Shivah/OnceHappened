@@ -6,10 +6,10 @@ import BottomAd from "../BottomAdd";
 
 export default function Footer() {
   return (
-    <footer className="d-block d-lg-none">
+    <footer className="">
      
    
-        <div class="d-block d-lg-none site-footer">
+        <div class="bottom-ad-section site-footer">
           <BottomAd></BottomAd>
         </div>
       

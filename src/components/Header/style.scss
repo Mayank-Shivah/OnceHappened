@@ -246,7 +246,6 @@ header {
     border: 2px solid var(--theme-color);
     padding: 0.75rem 0rem 0.7rem 0rem;
     z-index: 9999;
-    display: grid;
     gap: 4px;
 
     @media (max-width:1024px) {
@@ -267,7 +266,7 @@ header {
       padding: 14px 10px;
       font-size: 1rem;
       color: var(--category-tex);
-margin: 0px 10px;
+       margin: 0px 10px;
       @media (max-width:1024px) {
         font-size: 0.9rem;
       }
@@ -434,7 +433,7 @@ body {
 /* 🔹 Background overlay for dropdown */
 .lang-overlay {
   position: fixed;
-      top: 60px;
+      top: 51px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -448,7 +447,7 @@ body {
 /* 🔹 Dropdown box */
 .lang-dropdown {
   width: 300px;
-  max-height: 100vh;
+height: 468px;
   overflow-y: auto;
   background: #fff;
   border: 2px solid yellow;
@@ -456,6 +455,7 @@ body {
   padding: 12px;
   box-shadow: -4px 0 18px rgba(0, 0, 0, 0.2);
   animation: slideIn 0.3s ease forwards;
+
   @media (max-width:768px){
     height: 82%;
   }
@@ -485,3 +485,26 @@ iframe#\:1\.container {
     top: 44px;
     z-index: 9999;
 }
+p.text-set {
+    font-size: 1.06rem;
+    color: var(--category-tex);
+    cursor: pointer;
+    border: unset;
+    font-weight: 600;
+    padding: 0;
+    background: transparent;
+    text-decoration: none;
+    font-style: normal;
+    margin: 0px;
+}
+.globe-icons {
+    background: transparent;
+    padding: 0px;
+    border: unset !important;
+    color: var(--dark-text);
+    border-bottom: 1px solid #ffff00 !important;
+}
+.lang-dropdown.afterlogin {
+height: 600px;
+}
+

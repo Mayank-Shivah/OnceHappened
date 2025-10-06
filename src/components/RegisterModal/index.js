@@ -179,7 +179,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                       value={formik.values.email}
                       onChange={formik.handleChange}
                     />
-                    <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
+                    <FontAwesomeIcon icon={faEnvelope} className="input-icon  position-absolute end-0 pe-2" />
                   </div>
                   {formik.errors.email && (
                     <p className="field__message error-msg">
@@ -279,7 +279,7 @@ export default function RegisterModal({ onClose, openLogin }) {
 
             {/* DOB + Gender */}
             <div className="row mb-3">
-              <div className="col-8">
+              <div className="col-6">
                 <label className="d-block pb-1">Date of Birth</label>
                 <div style={{ display: "flex", gap: "2px" }}>
                   <select
@@ -345,7 +345,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   </p>
                 )}
               </div>
-              <div className="col-4">
+              <div className="col-6">
                 <label className="d-block pb-1">Gender</label>
                 <select
                   name="gender"

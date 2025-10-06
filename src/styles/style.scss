@@ -124,10 +124,13 @@ ul {
 
 .main-section-parent {
   flex: 1 1;
-  padding: 0rem 1rem 1rem 1rem;
- 
+  padding: 0rem 1rem 0rem 1rem;
+ @media only screen and (min-width: 600px) and (max-width: 1024px) {
+   padding-bottom: 97px !important;
+   padding: 0;
+  }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 600px) {
     padding: 0;
     padding-bottom: 37px;
   }
@@ -613,19 +616,21 @@ input[type=email],
 .signup-form {
   position: relative;
   background: var(--header-bg);
-  padding: 20px 24px;
+     padding: 20px 5px 20px 14px;
   border-radius: 48px;
-  width: 30% !important;
+  width: 33% !important;
   max-width: 95%;
   animation: popupAnim 0.3s ease;
   border: 2px solid yellow;
 
   @media screen and (max-width: 767px) {
     width: 100% !important;
+  } 
+  @media screen and (min-width:1024px) and (max-width: 1300px){
+ width: 80% !important;
   }
-
-  @media screen and (min-width:768px) and (max-width: 1024px) {
-    width: 70% !important;
+  @media screen and (min-width:768px) and (max-width: 1023px) {
+    width: 76% !important;
   }
 
   /* Scrollable content */
@@ -721,7 +726,7 @@ input[type=email],
   border-radius: 10px;
   padding: 30px;
   background-color: var(--header-bg);
-  margin-bottom: 30px;
+  margin-bottom: 0px;
 
   @media (max-width:768px) {
     margin-bottom: 40px;

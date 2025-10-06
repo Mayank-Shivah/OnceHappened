@@ -287,7 +287,8 @@ export default function FloatingEditModal({
               options: ["Normal", "H1", "H2", "H3", "Blockquote"],
             },
           }}
-          placeholder="Write yours..."
+          placeholder="Start writing your story it will appear here . Write in your posts section.
+"
         />
 
         {/* ✅ Word Counter + Field Validations + Warnings (Bottom of Form Only) */}

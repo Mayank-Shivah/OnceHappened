@@ -81,7 +81,7 @@ const SuggestionSupport = () => {
           className="outline-btn"
           onClick={() => setOpenModal("Suggestion")}
         >
-          Suggestion
+        Suggestions
         </button>
         <button
           className="outline-btn"
@@ -318,7 +318,7 @@ const SuggestionSupport = () => {
                 name="message"
                 id="message"
                 class="add-msg"
-                placeholder="Describe your issue..."
+                placeholder="Describe"
                 value={formik.values.message}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

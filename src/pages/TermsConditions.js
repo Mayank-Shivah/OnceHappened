@@ -60,7 +60,7 @@ function TermsConditions() {
                   <ul>
                     <li>Respect for Intellectual Property: You may only post content that you own or have permission to use. By submitting content to Once Happened, you confirm that it does not infringe on the copyright or other intellectual property rights of any third party.
                     </li>
-                    <li>Notice & Takedown: If you believe your copyrighted work has been used without authorization, you may submit a copyright infringement notice to us at<strong> <a href="mailto:cs@oncehappened.com">cs@oncehappened.com</a>.</strong> The notice should include your contact information, a description of the copyrighted work, and a description of where the infringing material is located.</li>
+                    <li>Notice & Takedown: If you believe your copyrighted work has been used without authorization, you may submit a copyright infringement notice to us at<strong> <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.</strong> The notice should include your contact information, a description of the copyrighted work, and a description of where the infringing material is located.</li>
                     <li>Your contact information.
                     </li>
                     <li>A description of the copyrighted work.
@@ -146,7 +146,7 @@ function TermsConditions() {
               </p>
 
               <p>
-                Posts that violate these rules may be removed or edited, and you can report by contacting customer support <strong><a href="mailto:cs@oncehappened.com">cs@oncehappened.com</a></strong> and highlight what exactly you found to be offensive and what should be added in its place.
+                Posts that violate these rules may be removed or edited, and you can report by contacting customer support <strong><a href="mailto:info@oncehappened.com">info@oncehappened.com</a></strong> and highlight what exactly you found to be offensive and what should be added in its place.
               </p>
               <h2>4) Payments & Subscriptions:</h2>
               <ul>
@@ -190,7 +190,7 @@ function TermsConditions() {
               </p>
               <h2>10) Contact:</h2>
               <p>
-                For questions about these Terms, contact us at <strong><a href="mailto:cs@oncehappened.com">cs@oncehappened.com</a></strong>
+                For questions about these Terms, contact us at <strong><a href="mailto:info@oncehappened.com">info@oncehappened.com</a></strong>
               </p>
             </div>
           </main>
