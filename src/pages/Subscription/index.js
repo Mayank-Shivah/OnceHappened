@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
 import { useNavigate } from "react-router-dom";
-import { loggedUser } from "../../services/authService";
+import { loggedUser  } from "../../services/authService";
 import axios from "axios";
+import api from "../../api";
 import "./style.scss";
 
 export default function Subscription() {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
-  const user = loggedUser();
+  const user = loggedUser ();
 
   const [plans, setPlans] = useState([]);
   const [activeSub, setActiveSub] = useState(null);
@@ -24,9 +25,7 @@ export default function Subscription() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await axios.get(
-          "https://bookmyvocation.com/once-happened/api/subscription"
-        );
+        const res = await api.get("/subscription");
         setPlans(res.data.subscription || []);
       } catch (error) {
         console.error("Error fetching plans:", error);
@@ -40,8 +39,7 @@ export default function Subscription() {
     const fetchActiveSub = async () => {
       if (!user) return;
       try {
-        const res = await axios.get(
-          `https://bookmyvocation.com/once-happened/api/user-subscription/${user.id}`,
+        const res = await api.get(`/user-subscription/${user.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -57,26 +55,52 @@ export default function Subscription() {
     fetchActiveSub();
   }, [user]);
 
-  // ✅ Stripe checkout handler
+  // ✅ Stripe checkout handler (Laravel endpoint)
   const handleCheckout = async (plan) => {
     try {
       const payload = {
-        planId: plan.id, // Laravel subscription id
+        planId: plan.id,
         amount: Math.round(parseFloat(plan.price) * 100),
         interval: plan.duration_type,
         interval_count: plan.duration,
         planName: plan.name,
         userId: user.id,
+        userName: user.name,
       };
-      const { data } = await axios.post(
-        "http://localhost:5000/create-checkout-session",
-        payload
-      );
-      window.location.href = data.url; // redirect to Stripe checkout
+
+      const { data } = await api.post("/create-checkout-session", payload);
+      window.location.href = data.url; // redirect to Stripe checkout page
     } catch (err) {
-      console.error(err);
+      console.error("Stripe checkout error:", err);
     }
   };
+
+  // Helper to get button content for price-list buttons
+  const getPriceListButtonContent = (plan) => {
+    if (!plan) return null;
+    const durationText = `${plan.duration} ${plan.duration_type}${plan.duration > 1 ? "s" : ""}`;
+    if (plan.duration_type === "day") {
+      return (
+        <>
+          {plan.name}: ${plan.price} for a day.
+          <span>for {durationText}</span>
+        </>
+      );
+    } else {
+      return (
+        <>
+          ${plan.price}
+          <span>for {durationText}</span>
+        </>
+      );
+    }
+  };
+
+  // Assume plans order: [0: day, 1: monthly, 2: 6mo, 3: yearly]
+  const dayPlan = plans[0];
+  const monthlyPlan = plans[1];
+  const sixMonthPlan = plans[2];
+  const yearlyPlan = plans[3];
 
   return (
     <div className={`main-layout ${theme}-theme`}>
@@ -98,52 +122,36 @@ export default function Subscription() {
                     Unlock every post and Remove all ads in just few bucks.
                   </strong>
                 </p>
-                <div class="price-list"><div class="price-item  mb-2 ">
-                  <button class="price-tab  ">$7.50 <span>for 1 month</span></button>
-                  </div>
-                  <div class="price-item  mb-2 ">
-                    <button class="price-tab  ">$35.99 
-                      <span>for 6 months</span>
-                </button>
-                </div>
-                <div class="price-item  mb-2 deal-tab-sec">
-                  <button class="price-tab border-0 ">$65.99 <span>
-                    for 1 year</span>
-                    </button>
-                    <span class="d-block">★ Deal of the day</span>
-                    </div>
-                    <div class="note">(only $65.99 for entire year, about  0.18 per day)</div>
-                    </div>
-                {/* <div className="price-list">
-                  {plans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`price-item  mb-2 ${plan.tagline ? "deal-tab-sec" : ""
-                        }`}
+                <div className="price-list">
+                  <div className="price-item  mb-2 ">
+                    <button 
+                      className="price-tab  " 
+                      onClick={() => handleCheckout(monthlyPlan)}
                     >
-                      <button
-                        className={`price-tab  ${plan.is_featured ? "p-0 border-0 us-tab" : ""
-                          }`}
-                        onClick={() => handleCheckout(plan)}
-                      >
-                        ${plan.price}{" "}
-                        <span>
-                          for {plan.duration} {plan.duration_type}
-                          {plan.duration > 1 ? "s" : ""}
-                        </span>
-                      </button>
-                      {plan.tagline && (
-                        <span className="d-block">★ {plan.tagline}</span>
-                      )}
-                    </div>
-                  ))}
-                  {plans.length > 0 && (
-                    <div className="note">
-                      (only ${plans[plans.length - 1].price} for entire year,
-                      about  0.18 per day)
-                    </div>
-                  )}
-                </div> */}
+                      {getPriceListButtonContent(monthlyPlan)}
+                    </button>
+                  </div>
+                  <div className="price-item  mb-2 ">
+                    <button 
+                      className="price-tab  " 
+                      onClick={() => handleCheckout(sixMonthPlan)}
+                    >
+                      {getPriceListButtonContent(sixMonthPlan)}
+                    </button>
+                  </div>
+                  <div className="price-item  mb-2 deal-tab-sec">
+                    <button 
+                      className="price-tab border-0 " 
+                      onClick={() => handleCheckout(yearlyPlan)}
+                    >
+                      {getPriceListButtonContent(yearlyPlan)}
+                    </button>
+                    <span className="d-block">★ {yearlyPlan?.tagline || "Deal of the day"}</span>
+                  </div>
+                  <div className="note">
+                    (only ${yearlyPlan?.price || 65.99} for entire year, about  0.18 per day)
+                  </div>
+                </div>
                 <hr />
                 <hr />
                 <div className="special-offer">
@@ -154,40 +162,23 @@ export default function Subscription() {
                     , lets try for only a month & read all at once
                   </strong>
 
-                  <div class="price-item highlight mb-2">
-                    <button class="price-tab">Day pass – $2.5 for a day</button>
+                  <div className="price-item highlight mb-2">
+                    <button 
+                      className="price-tab" 
+                      onClick={() => handleCheckout(dayPlan)}
+                    >
+                      {dayPlan?.name || "Day pass"} – ${dayPlan?.price || 2.5} for a day
+                    </button>
                     <span> Or </span>
-                    <button class="price-tab">Monthly package – $7.5 per month</button>
+                    <button 
+                      className="price-tab" 
+                      onClick={() => handleCheckout(monthlyPlan)}
+                    >
+                      {monthlyPlan?.name || "Monthly package"} – ${monthlyPlan?.price || 7.5} per month
+                    </button>
                   </div>
-
-
-                  {/*                   
-                  {plans.length > 0 && (
-                    <div className="price-item highlight mb-2">
-                      <button
-                        className="price-tab"
-                        onClick={() => handleCheckout(plans[0])}
-                      >
-                        {plans[0].name} – ${plans[0].price}
-                      </button>
-                      {plans[1] && (
-                        <>
-                          <span> Or </span>
-                          <button
-                            className="price-tab"
-                            onClick={() => handleCheckout(plans[1])}
-                          >
-                            {plans[1].name} – ${plans[1].price}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )} */}
                 </div>
               </div>
-
-
-
 
               {/* right-section */}
               <div className="subscribe-box ">
@@ -200,56 +191,36 @@ export default function Subscription() {
                   </strong>
                 </p>
 
-                <div class="price-list">
-                  <div class="price-item  mb-2 ">
-                    <button class="price-tab  ">Day pass: $2.5 for a day.
-                      <span>for 1 month</span>
+                <div className="price-list">
+                  <div className="price-item  mb-2 ">
+                    <button 
+                      className="price-tab  " 
+                      onClick={() => handleCheckout(dayPlan)}
+                    >
+                      {getPriceListButtonContent(dayPlan)}
                     </button>
                   </div>
-                  <div class="price-item  mb-2 ">
-                    <button class="price-tab  ">$35.99 <span>for 6 months</span>
+                  <div className="price-item  mb-2 ">
+                    <button 
+                      className="price-tab  " 
+                      onClick={() => handleCheckout(sixMonthPlan)}
+                    >
+                      {getPriceListButtonContent(sixMonthPlan)}
                     </button>
                   </div>
-                  <div class="price-item  mb-2 deal-tab-sec">
-                    <button class="price-tab border-0  ">$65.99 <span>for 1 year</span>
+                  <div className="price-item  mb-2 deal-tab-sec">
+                    <button 
+                      className="price-tab border-0  " 
+                      onClick={() => handleCheckout(yearlyPlan)}
+                    >
+                      {getPriceListButtonContent(yearlyPlan)}
                     </button>
-                    <span class="d-block">★ Deal of the day</span>
+                    <span className="d-block">★ {yearlyPlan?.tagline || "Deal of the day"}</span>
                   </div>
-                  <div class="note">
-                    (only $65.99 for entire year, about 0.18 cents per day)
+                  <div className="note">
+                    (only ${yearlyPlan?.price || 65.99} for entire year, about 0.18 cents per day)
                   </div>
                 </div>
-                {/* <div className="price-list">
-                  {plans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`price-item mb-2 ${plan.tagline ? "deal-tab-sec" : ""
-                        }`}
-                    >
-                      <button
-                        className={`price-tab p-0 border-0 us-tab ${plan.is_featured ? "p-0 border-0 us-tab" : ""
-                          }`}
-                        onClick={() => handleCheckout(plan)}
-                      >
-                        ${plan.price}{" "}
-                        <span>
-                          for {plan.duration} {plan.duration_type}
-                          {plan.duration > 1 ? "s" : ""}
-                        </span>
-                      </button>
-                      
-                      {plan.tagline && (
-                        <span className="d-block">★ {plan.tagline}</span>
-                      )}
-                    </div>
-                  ))}
-                  {plans.length > 0 && (
-                    <div className="note">
-                      (only ${plans[plans.length - 1].price} for entire year,
-                      about 0.18 cents per day)
-                    </div>
-                  )}
-                </div> */}
                 <hr /> <hr />
                 <div className="special-offer">
                   <strong className="mb-1">
@@ -282,9 +253,6 @@ export default function Subscription() {
                 </div>
               </div>
             </div>
-
-
-
 
             {/* ✅ Active Subscription */}
             <div className="policy-page">

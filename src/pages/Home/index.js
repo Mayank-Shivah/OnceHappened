@@ -4,7 +4,7 @@ import SidebarRight from "../../components/SidebarRight";
 import QuestionCard from "../../components/QuestionCard";
 import { ThemeContext } from "../../components/ThemeProvider";
 import FloatingEditModal from "../../components/FloatingEditModal";
-import { getUser  , isLoggedIn } from "../../services/authService";
+import { getFullUserData, getUser  , isLoggedIn } from "../../services/authService";
 import AdSpace from "../../components/AdSpace";
 import api from "../../api"; // axios instance
 import Swal from "sweetalert2";
@@ -21,6 +21,15 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState(""); 
   const [singlePostId, setSinglePostId] = useState(null);
   const loggedInUser   = isLoggedIn() ? getUser  () : null;
+  const fullData = isLoggedIn() ? getFullUserData() : null;
+  const subscription = fullData?.subscription;
+
+  // ✅ Try to detect subscription properly
+  const hasActiveSubscription = (() => {
+    if (!subscription || !subscription.is_active) return false;
+    const endDate = new Date(subscription.end_date);
+    return endDate > new Date();
+  })();
 
   useEffect(() => {
     // 🔹 Check URL for ?id=
@@ -167,13 +176,13 @@ function Home() {
                   let adIndex = 0; // which ad to show next
 
                   questions.forEach((q, i) => {
-                    if (q.lock === 1) {
+                    if (q.lock === 1 && !hasActiveSubscription) {
                       elements.push(<LockCard key={`lock-${q.id}`} post={q} />);
                     } else {
                       elements.push(<QuestionCard key={q.id} question={q} />);
                     }
 
-                    // ads after every 3 posts
+                    // ads after every 3 posts (unchanged)
                     if ((i + 1) % 3 === 0) {
                       if (ads.length > 0) {
                         const ad = ads[adIndex % ads.length];
@@ -193,9 +202,10 @@ function Home() {
                       }
                       elements.push(
                         <AdSpace key={`adslot-${i}`} label="Sponsored" height={260} />
-                      ); 
+                      );
                     }
                   });
+
 
 
 
