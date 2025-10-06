@@ -634,35 +634,66 @@ input[type=email],
   }
 
   /* Scrollable content */
-  .scroll-issue-div {
-    height: 642px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 10px;
-    /* ✅ ensures gap so scrollbar doesn’t touch border */
-    box-sizing: content-box;
-  }
+  // .scroll-issue-div {
+  //   height: 642px;
+  //   overflow-y: auto;
+  //   overflow-x: hidden;
+  //   padding-right: 10px;
+   
+  //   box-sizing: content-box;
+  // }
+}
+.scroll-issue-div {
+  height: 642px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  box-sizing: content-box;
 }
 
-/* ✅ Super thin 1px scrollbar */
-.signup-form .scroll-issue-div::-webkit-scrollbar {
-  width: 1px !important;
-  /* only 1px wide */
+/* 🌟 Custom Scrollbar (For WebKit browsers like Chrome, Edge, Safari) */
+.scroll-issue-div::-webkit-scrollbar {
+  width: 0.2px;              /* ✅ Scrollbar width */
 }
 
-.signup-form .scroll-issue-div::-webkit-scrollbar-track {
-  background: transparent;
-  /* clean look */
+.scroll-issue-div::-webkit-scrollbar-track {
+  background: transparent; /* Background area of scrollbar */
 }
 
-.signup-form .scroll-issue-div::-webkit-scrollbar-thumb {
-  background: var(--theme-color);
+.scroll-issue-div::-webkit-scrollbar-thumb {
+  background:var(--theme-color) ;     /* ✅ Scrollbar thumb (yellow) */
   border-radius: 10px;
 }
 
-/* ✅ Thin & styled scrollbar */
+.scroll-issue-div::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-color) ;     /* Slightly darker on hover */
+}
+
+/* 🧩 Firefox support */
+.scroll-issue-div {
+  scrollbar-width: thin;          /* Thin scrollbar */
+  scrollbar-color: var(--theme-color) transparent; /* Yellow thumb, transparent track */
+}
+
+/* ✅ Super thin 1px scrollbar */
+// .signup-form .scroll-issue-div::-webkit-scrollbar {
+//   width: 1px !important;
+ 
+// }
+
+// .signup-form .scroll-issue-div::-webkit-scrollbar-track {
+//   background: transparent;
+
+// }
+
+// .signup-form .scroll-issue-div::-webkit-scrollbar-thumb {
+//   background: var(--theme-color);
+//   border-radius: 10px;
+// }
+
+
 ::-webkit-scrollbar {
-  width: 2px;
+  width: 1px;
 }
 
 ::-webkit-scrollbar-track {
