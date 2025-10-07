@@ -125,7 +125,7 @@ export default function Subscription() {
                 <div className="price-list">
                   <div className="price-item  mb-2 ">
                     <button 
-                      className="price-tab  " 
+                      className="price-tab  one-step" 
                       onClick={() => handleCheckout(monthlyPlan)}
                     >
                       {getPriceListButtonContent(monthlyPlan)}
@@ -133,7 +133,7 @@ export default function Subscription() {
                   </div>
                   <div className="price-item  mb-2 ">
                     <button 
-                      className="price-tab  " 
+                      className="price-tab  two-step" 
                       onClick={() => handleCheckout(sixMonthPlan)}
                     >
                       {getPriceListButtonContent(sixMonthPlan)}
@@ -141,7 +141,7 @@ export default function Subscription() {
                   </div>
                   <div className="price-item  mb-2 deal-tab-sec">
                     <button 
-                      className="price-tab border-0 " 
+                      className="price-tab border-0 p-0" 
                       onClick={() => handleCheckout(yearlyPlan)}
                     >
                       {getPriceListButtonContent(yearlyPlan)}
@@ -194,7 +194,7 @@ export default function Subscription() {
                 <div className="price-list">
                   <div className="price-item  mb-2 ">
                     <button 
-                      className="price-tab  " 
+                      className="price-tab  one-step" 
                       onClick={() => handleCheckout(dayPlan)}
                     >
                       {getPriceListButtonContent(dayPlan)}
@@ -202,7 +202,7 @@ export default function Subscription() {
                   </div>
                   <div className="price-item  mb-2 ">
                     <button 
-                      className="price-tab  " 
+                      className="price-tab  two-step" 
                       onClick={() => handleCheckout(sixMonthPlan)}
                     >
                       {getPriceListButtonContent(sixMonthPlan)}
@@ -210,7 +210,7 @@ export default function Subscription() {
                   </div>
                   <div className="price-item  mb-2 deal-tab-sec">
                     <button 
-                      className="price-tab border-0  " 
+                      className="price-tab border-0 p-0" 
                       onClick={() => handleCheckout(yearlyPlan)}
                     >
                       {getPriceListButtonContent(yearlyPlan)}
@@ -256,7 +256,7 @@ export default function Subscription() {
 
             {/* ✅ Active Subscription */}
             <div className="policy-page">
-              <div className="subscribe-box border-0">
+              <div className="subscribe-box border-0 w-100">
                 <h2>Your ongoing subscription:</h2>
 
                 {!activeSub ? (
