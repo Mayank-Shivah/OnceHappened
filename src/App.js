@@ -89,9 +89,9 @@ function App() {
 
   return (
     <>
-      
+     <AuthProvider>
+      <BrowserRouter>
       <ThemeProvider>
-        <BrowserRouter>
           <PopupManager>
             <Routes>
               {/* All routes inside Layout */}
@@ -153,8 +153,9 @@ function App() {
               theme="light"
             />
           </PopupManager>
-        </BrowserRouter>
       </ThemeProvider>
+      </BrowserRouter>
+    </AuthProvider>
     </>
   );
 }

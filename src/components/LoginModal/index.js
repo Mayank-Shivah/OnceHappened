@@ -8,12 +8,17 @@
   import withReactContent from "sweetalert2-react-content";
   import "./style.scss";
   import { login } from "../../services/authService";
+  import { useAuth } from "../../context/AuthContext"; // add at top
+
 
   const MySwal = withReactContent(Swal);
+
 
   const LoginModal = ({ onClose, openForgot, openSignup }) => {
     useScrollLock(true); // ✅ lock background scroll when modal is open
     const [showPassword, setShowPassword] = useState(false);
+      const { loginUser } = useAuth();
+
 
     const formik = useFormik({
     initialValues: { email: "", password: "" },
@@ -24,89 +29,91 @@
       return errors;
     },
     onSubmit: async (values, { setSubmitting, setErrors }) => {
-      try {
-        const data = await login(values.email, values.password);
+  try {
+    const data = await login(values.email, values.password);
 
-        if (data?.token) {
-          localStorage.setItem("token", data.token);
-        }
-        onClose();
-        // ✅ SweetAlert2 success popup (always above modal)
-        MySwal.fire({
-          icon: "success",
-          title: "Login Successful 🎉",
-          text: "Welcome back!",
-          showConfirmButton: true,
-          confirmButtonText: "OK",
-          backdrop: `rgba(0,0,0,0.4) left top no-repeat`,
-          customClass: {
-            popup: "swal-custom-popup",
-            title: "swal-custom-title",
-          },
-          didOpen: (popup) => {
-            popup.parentNode.style.zIndex = 2000;
-          },
-        }).then(() => {
-          window.location.reload();
-        });
+    if (data?.token && data?.user) {
+      // ✅ Update React AuthContext instead of reloading
+      loginUser(data);
+    }
 
-      } catch (err) {
-        const errorData = err.response?.data;
-        const apiErrors = errorData?.errors;
+    // ✅ Close login modal first
+    onClose();
 
-        // 🔹 Specific check for disabled account
-        if (errorData?.error === "Account disabled") {
-           // Close modal first
-          onClose();
-          MySwal.fire({
-            icon: "error",
-            title: "Account Disabled",
-            text: "Please contact support, your account has been disabled",
-            confirmButtonColor: "#d33",
-            didOpen: (popup) => {
-              popup.parentNode.style.zIndex = 9999;
-            }
-          });
-          setSubmitting(false);
-          return;
-        }
+    // ✅ SweetAlert2 success popup (no reload)
+    MySwal.fire({
+      icon: "success",
+      title: "Login Successful 🎉",
+      text: "Welcome back!",
+      confirmButtonText: "OK",
+      backdrop: `rgba(0,0,0,0.4) left top no-repeat`,
+      customClass: {
+        popup: "swal-custom-popup",
+        title: "swal-custom-title",
+      },
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 2000;
+      },
+    });
 
-        if (errorData?.error === "Invalid credentials") {
-           // Close modal first
-          onClose();
-          MySwal.fire({
-            icon: "error",
-            title: "Login Faileds",
-            text: "Please contact support, your account has been disabled",
-            confirmButtonColor: "#d33",
-            didOpen: (popup) => {
-              popup.parentNode.style.zIndex = 9999;
-            }
-          });
-          setSubmitting(false);
-          return;
-        }
+  } catch (err) {
+    const errorData = err.response?.data;
+    const apiErrors = errorData?.errors;
 
-        // if (apiErrors) {
-        //   const formikErrors = {};
-        //   if (apiErrors.email) formikErrors.email = apiErrors.email[0];
-        //   if (apiErrors.password) formikErrors.password = apiErrors.password[0];
-        //   setErrors(formikErrors);
-        //   MySwal.fire({
-        //     icon: "error",
-        //     title: "Login Failed",
-        //     text: "Incorrect email or password. Please try again.",
-        //     confirmButtonText: "OK",
-        //     didOpen: (popup) => {
-        //       popup.parentNode.style.zIndex = 2000;
-        //     }
-        //   });
-        // }
+    // 🔹 Account disabled case
+    if (errorData?.error === "Account disabled") {
+      onClose();
+      MySwal.fire({
+        icon: "error",
+        title: "Account Disabled",
+        text: "Please contact support, your account has been disabled.",
+        confirmButtonColor: "#d33",
+        didOpen: (popup) => {
+          popup.parentNode.style.zIndex = 9999;
+        },
+      });
+      setSubmitting(false);
+      return;
+    }
 
-      } finally {
-        setSubmitting(false);
-      }
-    },
+    // 🔹 Invalid credentials
+    if (errorData?.error === "Invalid credentials") {
+      onClose();
+      MySwal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "Incorrect email or password. Please try again.",
+        confirmButtonColor: "#d33",
+        didOpen: (popup) => {
+          popup.parentNode.style.zIndex = 9999;
+        },
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    // 🔹 Form validation errors from API (if any)
+    if (apiErrors) {
+      const formikErrors = {};
+      if (apiErrors.email) formikErrors.email = apiErrors.email[0];
+      if (apiErrors.password) formikErrors.password = apiErrors.password[0];
+      setErrors(formikErrors);
+
+      MySwal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "Please check your details and try again.",
+        confirmButtonText: "OK",
+        didOpen: (popup) => {
+          popup.parentNode.style.zIndex = 2000;
+        },
+      });
+    }
+  } finally {
+    setSubmitting(false);
+  }
+},
+
   });
 
 
