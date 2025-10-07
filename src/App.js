@@ -89,8 +89,6 @@ function App() {
 
   return (
     <>
-     <AuthProvider>
-      <BrowserRouter>
       
       <ThemeProvider>
         <BrowserRouter>
@@ -157,8 +155,6 @@ function App() {
           </PopupManager>
         </BrowserRouter>
       </ThemeProvider>
-      </BrowserRouter>
-    </AuthProvider>
     </>
   );
 }
