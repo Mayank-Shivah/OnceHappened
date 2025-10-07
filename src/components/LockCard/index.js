@@ -54,7 +54,7 @@ export default function LockCard({
                         {stripHtml(post?.description || "")}...
                     </span>
                     <button className="read-more" type="button" onClick={handleButtonClick}>
-                        Once Happened +
+                      Read More
                     </button>
                 </div>
             </div>
@@ -99,7 +99,7 @@ export default function LockCard({
                 <div className="lpb-yellow-box">
                     <div className="lpb-main-title">
                         <button className="once-btn" onClick={handleButtonClick}>
-                            <span className="button-text">Unlock this Story</span>
+                            <span className="button-text">  Once Happened +</span>
                         </button>
                     </div>
                     <ul className="lpb-features">
