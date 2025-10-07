@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api";
 import Swal from "sweetalert2";
 import "./success-cancel.scss";
+import { FaDoorClosed } from "react-icons/fa";
 
 export default function Success() {
   const [subscription, setSubscription] = useState(null);
@@ -24,8 +25,8 @@ export default function Success() {
         const { data } = await api.get(`/verify-session?session_id=${sessionId}`);
 
         if (!data.isPaid) {
-          Swal.fire("❌ Payment Not Completed", "Your payment could not be verified.", "error");
-          setErrorMsg("Payment not completed.");
+          Swal.fire(" Payment Not Completed", "Your payment could not be verified.", "error");
+          setErrorMsg("× Payment not completed.");
           setLoading(false);
           return;
         }
@@ -94,7 +95,7 @@ export default function Success() {
   if (errorMsg) {
     return (
       <div className="success-cancel-container text-center">
-        <h2 className="cancel">❌ {errorMsg}</h2>
+        <h2 className="cancel">× {errorMsg}</h2>
         <a href="/" className="btn-back">Go Back</a>
       </div>
     );
@@ -102,19 +103,21 @@ export default function Success() {
 
   // ✅ Show subscription info
   return (
-    <div className="success-cancel-container">
+ <>
+ <div class="main-container-success">
+     <div className="success-cancel-container">
       <div className="payment-success-box">
         <h2 className="success">🎉 Payment & Subscription Confirmed!</h2>
-        <p>Thank you for subscribing to <strong>Once Happened</strong>.</p>
+        <p>Thank you for subscribing to <strong class="logo-setyle">Once Happened</strong>.</p>
 
         <div className="subscription-details">
           <h4>Payment Details</h4>
           <ul>
-            <li><strong>Plan Name:</strong> {subscription?.plan_name}</li>
-            <li><strong>Amount Paid:</strong> ${subscription?.amount}</li>
-            <li><strong>Start Date:</strong> {new Date(subscription?.start_date).toLocaleString()}</li>
-            <li><strong>End Date:</strong> {new Date(subscription?.end_date).toLocaleString()}</li>
-            <li><strong>Status:</strong> {subscription?.is_active ? "Active" : "Inactive"}</li>
+            <li><span>Plan Name:</span> {subscription?.plan_name}</li>
+            <li><span>Amount Paid:</span> ${subscription?.amount}</li>
+            <li><span>Start Date:</span> {new Date(subscription?.start_date).toLocaleString()}</li>
+            <li><span>End Date:</span> {new Date(subscription?.end_date).toLocaleString()}</li>
+            <li><span>Status:</span> {subscription?.is_active ? "Active" : "Inactive"}</li>
           </ul>
 
           <h4>User Info</h4>
@@ -128,5 +131,7 @@ export default function Success() {
         </div>
       </div>
     </div>
+ </div>
+ </>
   );
 }
