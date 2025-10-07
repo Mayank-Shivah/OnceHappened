@@ -15,6 +15,10 @@ import Subscription from "./pages/Subscription";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { startIdleTimer } from "./services/authService";
+import { AuthProvider } from "./context/AuthContext";
+
+
 // 🔹 PopupManager
 import PopupManager from "./components/PopupManager";
 import { isLoggedIn } from "./services/authService"; // ✅ import auth check
@@ -63,6 +67,9 @@ function App() {
   };
 
   useEffect(() => {
+     if (isLoggedIn()) {
+      startIdleTimer(30 * 60 * 1000); // e.g., 4 minutes as you wanted
+    }
     const timer = setTimeout(() => {
       const saved = localStorage.getItem("preferredLanguage");
       const sel = document.querySelector(".goog-te-combo");
@@ -82,6 +89,9 @@ function App() {
 
   return (
     <>
+     <AuthProvider>
+      <BrowserRouter>
+      
       <ThemeProvider>
         <BrowserRouter>
           <PopupManager>
@@ -147,6 +157,8 @@ function App() {
           </PopupManager>
         </BrowserRouter>
       </ThemeProvider>
+      </BrowserRouter>
+    </AuthProvider>
     </>
   );
 }

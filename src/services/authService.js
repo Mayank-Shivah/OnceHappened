@@ -99,32 +99,89 @@ export const logout = () => {
 };
 
 // 🔹 Idle timeout management
-let idleTimer = null;
+// let idleTimer = null;
 
-export const startIdleTimer = (timeout = 30000) => {
+// export const startIdleTimer = (timeout = 2000) => {
+//   if (!isLoggedIn()) return;
+
+//   const resetTimer = () => {
+//     if (idleTimer) clearTimeout(idleTimer);
+//     idleTimer = setTimeout(() => {
+//       logout();
+//     }, timeout);
+//   };
+
+//   const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+//   events.forEach((event) =>
+//     window.addEventListener(event, resetTimer, { passive: true })
+//   );
+
+//   resetTimer();
+// };
+
+
+
+// authService.js
+let idleTimer = null;
+// Keep a stable reference to the handler so removeEventListener works
+let _idleResetHandler = null;
+const _idleEvents = ["mousemove", "keydown", "click", "scroll", "touchstart", "visibilitychange"];
+
+export const startIdleTimer = (timeout = 2 * 60 * 1000) => { // e.g., 2 minutes default
   if (!isLoggedIn()) return;
+
+  // If already set up, reset the countdown and exit
+  if (_idleResetHandler) {
+    _idleResetHandler(); // just reset the timer
+    return;
+  }
 
   const resetTimer = () => {
     if (idleTimer) clearTimeout(idleTimer);
+    // If page is hidden, you can choose to logout immediately or keep the timer—here we keep it
     idleTimer = setTimeout(() => {
-      logout();
+      logout(); // removes token/user and reloads
     }, timeout);
   };
 
-  const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
-  events.forEach((event) =>
-    window.addEventListener(event, resetTimer, { passive: true })
+  // Save handler so we can remove later
+  _idleResetHandler = (evt) => {
+    if (evt?.type === "visibilitychange") {
+      // Optional: if user hides tab, treat as idle immediately:
+      // if (document.hidden) logout();
+      // Otherwise, just reset like any other event:
+      resetTimer();
+      return;
+    }
+    resetTimer();
+  };
+
+  _idleEvents.forEach((event) =>
+    window.addEventListener(event, _idleResetHandler, { passive: true })
   );
 
-  resetTimer();
+  resetTimer(); // start countdown immediately
 };
 
 export const stopIdleTimer = () => {
   if (idleTimer) clearTimeout(idleTimer);
   idleTimer = null;
 
-  const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
-  events.forEach((event) =>
-    window.removeEventListener(event, () => {}, false)
-  );
+  if (_idleResetHandler) {
+    _idleEvents.forEach((event) =>
+      window.removeEventListener(event, _idleResetHandler)
+    );
+    _idleResetHandler = null;
+  }
 };
+
+
+// export const stopIdleTimer = () => {
+//   if (idleTimer) clearTimeout(idleTimer);
+//   idleTimer = null;
+
+//   const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+//   events.forEach((event) =>
+//     window.removeEventListener(event, () => {}, false)
+//   );
+// };
