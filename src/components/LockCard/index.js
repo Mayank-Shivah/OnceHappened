@@ -54,7 +54,7 @@ export default function LockCard({
                         {stripHtml(post?.description || "")}...
                     </span>
                     <button className="read-more" type="button" onClick={handleButtonClick}>
-                        Unlock to Read More
+                        Once Happened +
                     </button>
                 </div>
             </div>

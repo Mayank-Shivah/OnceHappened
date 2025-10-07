@@ -1,5 +1,8 @@
 .subscribe-box {
     text-align: center;
+    p{
+           color: var(--dark-text);
+    }
 }
 
 .deal-tab-sec {
@@ -30,17 +33,18 @@
     font-weight: 600;
     padding: 7px 20px;
     font-size: 15px;
-    border-radius: 10px;
+    border-radius: 25px;
     background: var(--light-yellow);
     letter-spacing: 1px;
     color: var(--dark-text);
 
     a {
-        text-decoration: none;
+        text-decoration: none;   color: var(--dark-text);
     }
 
     span {
-        color: var(--dark-text);
+        color: var(--dark-text);   width: 100%;
+    display: block;
     }
 }
 
@@ -130,6 +134,7 @@ hr {
     width: 41%;
 h2{
     font-size: 1.9rem;
+    color: var(--dark-text);
 }
     @media only screen and (min-width:993px) and (max-width:1269px) {
         width: 48%;
@@ -146,4 +151,10 @@ h2{
 
 .two-step {
     width: 237px;
+}
+.border-price{
+    border-bottom: 2px solid var(--theme-color);
+}
+span.color-red {
+    text-transform: capitalize;
 }
