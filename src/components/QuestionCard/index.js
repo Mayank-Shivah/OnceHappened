@@ -259,8 +259,7 @@ export default function QuestionCard({
                 </button>
               </div>
             )}
-
-            {/* ✅ Static Like/Dislike counts (for My Posts tab) – Left bottom */}
+{/* 
             {showCounts && (
               <div className="d-flex" style={{ gap: "15px" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -272,8 +271,40 @@ export default function QuestionCard({
                   {dislikeCount}
                 </span>
               </div>
-            )}
+            )} */}
+
+            {/* ✅ Static Like/Dislike counts (for My Posts tab) – Left bottom */}
+{showCounts && (
+  <div className="d-flex" style={{ gap: "15px" }}>
+    {likeCount > 0 && (
+      <button
+        type="button"
+        className="count-btn border-0 bg-transparent"
+        onClick={() => {/* optional: open list of likers */}}
+        aria-label={`${likeCount} likes`}
+      >
+        <FaHeart color="red" size={16} />
+        <span className="count-number ms-1">{likeCount}</span>
+      </button>
+    )}
+
+    {dislikeCount > 0 && (
+      <button
+        type="button"
+        className="count-btn border-0 bg-transparent"
+        onClick={() => {/* optional: open list of dislikers */}}
+        aria-label={`${dislikeCount} dislikes`}
+      >
+        <FaThumbsDown size={16} />
+        <span className="count-number ms-1">{dislikeCount}</span>
+      </button>
+    )}
+  </div>
+)}
+
           </div>
+
+
 
           {/* Right: Status Badge (if status) + Share/Edit/Delete */}
           <div className="right-actions d-flex align-items-center gap-2">
