@@ -759,11 +759,14 @@ input[type=email],
   background-color: var(--header-bg);
   margin-bottom: 0px;
 
-  @media (max-width:768px) {
+  @media (max-width:600px) {
     margin-bottom: 40px;
     padding: 10px;
   }
-
+  @media only screen and (min-width: 600px) and (max-width: 1024px) {
+    margin-bottom: 10px;
+    
+  }
   h1 {
     font-size: 1.6rem;
     font-weight: 600;
