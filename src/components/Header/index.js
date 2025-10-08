@@ -114,7 +114,15 @@ export default function Header() {
       <div className="container">
         <div className="quora-header">
           <div className="logo">
-            <a href="/" className="once-text notranslate" translate="no">Once happened..</a>
+            <Link
+              to="/"
+              className="once-text notranslate"
+              translate="no"
+              onClick={() => setShowLang(false)} // optional: close dropdown when clicking logo
+            >
+              Once happened..
+          </Link>
+            {/* <a href="/" className="once-text notranslate" translate="no">Once happened..</a> */}
           </div>
           <div className="happened-sec d-flex">
             <div className="lang-option">

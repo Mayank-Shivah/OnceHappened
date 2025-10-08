@@ -6,14 +6,26 @@ import { loggedUser } from "../../services/authService";
 import axios from "axios";
 import api from "../../api";
 import "./style.scss";
+import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+
 
 export default function Subscription() {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const user = loggedUser();
+  const { user: loggedInUser, isAuth, fullUserData } = useAuth()
+  const [setFullUserData] = useState(null);;
+
+  const hasActiveSubscription = (() => {
+  if (!fullUserData?.subscription || !fullUserData.subscription.is_active)
+    return false;
+  const endDate = new Date(fullUserData.subscription.end_date);
+  return endDate > new Date();
+})();
+  
 
   const [plans, setPlans] = useState([]);
-  const [activeSub, setActiveSub] = useState(null);
+  // const [activeSub, setActiveSub] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -34,26 +46,7 @@ export default function Subscription() {
     fetchPlans();
   }, []);
 
-  // ✅ Fetch user’s active subscription
-  useEffect(() => {
-    const fetchActiveSub = async () => {
-      if (!user) return;
-      try {
-        const res = await api.get(`/user-subscription/${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              Accept: "application/json",
-            },
-          }
-        );
-        setActiveSub(res.data.subscription || null);
-      } catch (error) {
-        console.error("Error fetching active subscription:", error);
-      }
-    };
-    fetchActiveSub();
-  }, [user]);
+
 
   // ✅ Stripe checkout handler (Laravel endpoint)
   const handleCheckout = async (plan) => {
@@ -176,9 +169,9 @@ export default function Subscription() {
                       onClick={() => handleCheckout(monthlyPlan)}
                     >
                       <span class="custom-price-label">
-                        6 Monthly
+                        Half Yearly
                       </span>
-                      ${monthlyPlan?.price || 2.5} for 6 months
+                      ${monthlyPlan?.price || 2.5} for six months
                     </button>
 
                   </div>
@@ -274,35 +267,7 @@ export default function Subscription() {
                 </div>
                
                 
-                {/* <div className="special-offer">
-                  <strong className="mb-1">
-                    <span className="color-green fw-600">
-                      {user?.name || "Guest"}
-                    </span>
-                    , lets try for only a month & read all at once
-                  </strong>
-                  {plans.length > 0 && (
-                    <div className="price-item highlight mb-2">
-                      <button
-                        className="price-tab"
-                        onClick={() => handleCheckout(plans[0])}
-                      >
-                        {plans[0].name} – ${plans[0].price}
-                      </button>
-                      {plans[1] && (
-                        <>
-                          <span> Or </span>
-                          <button
-                            className="price-tab"
-                            onClick={() => handleCheckout(plans[1])}
-                          >
-                            {plans[1].name} – ${plans[1].price}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div> */}
+                
               </div>
             </div>
 
@@ -310,38 +275,39 @@ export default function Subscription() {
             <div className="policy-page">
               <div className="subscribe-box onging-sub border-0 w-100">
                 <h2>Your ongoing subscription:</h2>
-
-                {!activeSub ? (
+                {!fullUserData?.subscription ? (
                   <>
                     <p>
-                      You currently don’t have any, lets get and see how its like
-                    </p>
-                    <h6>
-                      <strong>write this if any</strong>
-                    </h6>
+                      You currently don’t have any, let’s get and see how it’s like
+                    </p>                    
                   </>
                 ) : (
                   <div className="price-list">
                     <div className="price-item">
-                      Your current subscription: ${activeSub.amount}{" "}
-                      <span>per {activeSub.subscription?.duration_type}</span>
+                      Your current subscription: ${fullUserData.subscription.amount}{" "}
+                      <span>
+                        per {fullUserData.subscription.subscription?.duration_type}
+                      </span>
                     </div>
                     <div className="price-item">
                       Your subscription expiring on:{" "}
-                      {new Date(activeSub.end_date).toLocaleString()}
+                      {new Date(fullUserData.subscription.end_date).toLocaleString()}
                     </div>
                     <div className="price-item ">
                       <button
-                        className="price-tab "
+                        className="price-tab"
                         onClick={() =>
-                          handleCheckout(activeSub.subscription)
+                          handleCheckout(fullUserData.subscription.subscription)
                         }
                       >
-                        extend 1 more {activeSub.subscription?.duration_type}
+                        extend 1 more {fullUserData.subscription.subscription?.duration_type}
                       </button>
                     </div>
                   </div>
                 )}
+
+
+                
               </div>
             </div>
           </main>
