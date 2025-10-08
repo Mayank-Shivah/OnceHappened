@@ -45,7 +45,7 @@ export default function LockCard({
     };
 
     return (
-        <div className="question-card position-relative" ref={descRef} id={`lock-${post?.id || "noid"}`}>
+        <div className="question-card position-relative  overflow-hidden" ref={descRef} id={`lock-${post?.id || "noid"}`}>
             <div className="lpb-bg-texts question-description has-readmore">
                 <div className="desc-body collapsed">
                     <span>

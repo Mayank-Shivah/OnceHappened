@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useScrollLock from "../useScrollLock";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import ClipLoader from "react-spinners/ClipLoader";
+import Swal from "sweetalert2"; 
+import withReactContent from "sweetalert2-react-content";
 import { toast } from "react-toastify";  // ✅ import toast
 import "react-toastify/dist/ReactToastify.css"; // ✅ ensure css is included
 import './style.scss';
@@ -13,6 +15,8 @@ import { forgotPassword, verifyOtp, resetPassword } from "../../services/authSer
 
 const ForgotPopup = ({ onClose }) => {
 useScrollLock(true);
+  const MySwal = withReactContent(Swal);
+
 
   const [step, setStep] = useState(1); // 1: email, 2: otp, 3: reset password, 4: success
   const [email, setEmail] = useState("");
@@ -26,16 +30,43 @@ useScrollLock(true);
   // Step 1: Send email for OTP
   const handleEmailSend = async () => {
     if (!email) {
-      toast.error("Please enter your email");
+
+      MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Please enter your email",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
       return;
     }
     try {
       setLoadingState(true);
       await forgotPassword(email);
-      toast.success("OTP has been sent to your email");
+      MySwal.fire({
+      icon: "success",
+      title: "Success",
+      text: "OTP has been sent to your email",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
       setStep(2);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to send OTP");
+
+      MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to send OTP",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+      // toast.error(err.response?.data?.message || "Failed to send OTP");
     } finally {
       setLoadingState(false);
     }
@@ -56,16 +87,48 @@ useScrollLock(true);
   const handleOtpSubmit = async () => {
     const code = otp.join("");
     if (code.length !== 6) {
-      toast.error("Please enter all 6 digits");
+
+
+      MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Please enter all 6 digits",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+      // toast.error("Please enter all 6 digits");
       return;
     }
     try {
       setLoadingState(true);
       await verifyOtp(email, code); // ✅ call verify API
-      toast.success("OTP verified successfully");
+
+      MySwal.fire({
+      icon: "success",
+      title: "Success",
+      text: "OTP verified successfully",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+      
+      // toast.success("OTP verified successfully");
       setStep(3);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid OTP");
+
+      MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Invalid OTP",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+
+      // toast.error(err.response?.data?.message || "Invalid OTP");
     } finally {
       setLoadingState(false);
     }
@@ -74,11 +137,30 @@ useScrollLock(true);
   // Step 3: Reset password
   const handleResetPassword = async () => {
     if (!newPassword) {
-      toast.error("New Password is required");
+      MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "New Password is required",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+      // toast.error("New Password is required");
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match");
+     
+    MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Passwords do not match",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+      // toast.error("Passwords do not match");
       return;
     }
     try {
@@ -89,12 +171,32 @@ useScrollLock(true);
         password: newPassword,
         password_confirmation: confirmPassword,
       });
-      toast.success("Password reset successfully");
+
+      MySwal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Password reset successfully",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+      // toast.success("Password reset successfully");
       setTimeout(() => {
         onClose();
       }, 1500);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to reset password");
+
+      MySwal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to reset password",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 9999;
+      },      
+    });
+
+      // toast.error(err.response?.data?.message || "Failed to reset password");
     } finally {
       setLoadingState(false);
     }
