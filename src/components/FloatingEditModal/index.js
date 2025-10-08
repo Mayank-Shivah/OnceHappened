@@ -287,7 +287,7 @@ export default function FloatingEditModal({
               options: ["Normal", "H1", "H2", "H3", "Blockquote"],
             },
           }}
-          placeholder="Start writing your story it will appear here . Write in your posts section.
+          placeholder="Start writing your story it will appear here...
 "
         />
 
