@@ -127,7 +127,7 @@ let idleTimer = null;
 let _idleResetHandler = null;
 const _idleEvents = ["mousemove", "keydown", "click", "scroll", "touchstart", "visibilitychange"];
 
-export const startIdleTimer = (timeout = 2 * 60 * 1000) => { // e.g., 2 minutes default
+export const startIdleTimer = (timeout = 30 * 60 * 1000) => { // e.g., 2 minutes default
   if (!isLoggedIn()) return;
 
   // If already set up, reset the countdown and exit

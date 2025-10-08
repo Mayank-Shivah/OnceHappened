@@ -25,7 +25,7 @@ export default function Success() {
         const { data } = await api.get(`/verify-session?session_id=${sessionId}`);
 
         if (!data.isPaid) {
-          Swal.fire(" Payment Not Completed", "Your payment could not be verified.", "error");
+          // Swal.fire(" Payment Not Completed", "Your payment could not be verified.", "error");
           setErrorMsg("× Payment not completed.");
           setLoading(false);
           return;
