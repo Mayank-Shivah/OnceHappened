@@ -278,7 +278,7 @@ export default function Subscription() {
                 {!fullUserData?.subscription ? (
                   <>
                     <p>
-                      You currently don’t have any, let’s get and see how it’s like
+                      No active plan found. Subscribe today and enjoy the benefits!
                     </p>                    
                   </>
                 ) : (
