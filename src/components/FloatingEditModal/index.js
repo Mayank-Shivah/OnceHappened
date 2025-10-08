@@ -97,9 +97,23 @@ export default function FloatingEditModal({
     setSelectedTopics([topicId]);
   };
 
+
+  // small helper: returns word count for an EditorState
+  const getWordsFromEditorState = (state) => {
+    try {
+      const plainText = state.getCurrentContent().getPlainText("\u0001");
+      const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0);
+      return words.length;
+    } catch (e) {
+      return 0;
+    }
+  };
+
   // ✅ Floating button click
   const handleClick = () => {
     if (isLoggedIn()) {
+      setEditorState(EditorState.createEmpty());
+      setWordCount(0);
       setModalOpen(true);
     } else {
       openRegister(); // 🔹 open signup popup instead of tooltip
@@ -107,12 +121,17 @@ export default function FloatingEditModal({
   };
 
   // ✅ track word count
+  // const handleEditorChange = (state) => {
+  //   setEditorState(state);
+  //   const plainText = state.getCurrentContent().getPlainText("\u0001");
+  //   const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0);
+  //   setWordCount(words.length);
+  // };
   const handleEditorChange = (state) => {
-    setEditorState(state);
-    const plainText = state.getCurrentContent().getPlainText("\u0001");
-    const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0);
-    setWordCount(words.length);
-  };
+  setEditorState(state);
+  setWordCount(getWordsFromEditorState(state));
+};
+
 
   const cleanContent = () => {
     const raw = convertToRaw(editorState.getCurrentContent());
@@ -161,6 +180,7 @@ export default function FloatingEditModal({
       }
 
       setEditorState(EditorState.createEmpty());
+      setWordCount(0);
       setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
       setModalOpen(false);
       onClose?.();
@@ -211,6 +231,7 @@ export default function FloatingEditModal({
       localStorage.removeItem("postDraft");
       setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
       setEditorState(EditorState.createEmpty());
+      setWordCount(0);
       setModalOpen(false);
       onClose?.();
     } catch (err) {

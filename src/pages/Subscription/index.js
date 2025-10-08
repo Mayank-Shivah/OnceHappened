@@ -171,7 +171,7 @@ export default function Subscription() {
                       <span class="custom-price-label">
                         Half Yearly
                       </span>
-                      ${monthlyPlan?.price || 2.5} for six months
+                      ${monthlyPlan?.price || 2.5} for 6 months
                     </button>
 
                   </div>
