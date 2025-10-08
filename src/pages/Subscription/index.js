@@ -82,15 +82,13 @@ export default function Subscription() {
     if (plan.duration_type === "day") {
       return (
         <>
-          {plan.name}: ${plan.price} for a day.
-          <span>for {durationText}</span>
+          ${plan.price}
         </>
       );
     } else {
       return (
         <>
           ${plan.price}
-          <span>for {durationText}</span>
         </>
       );
     }
@@ -126,24 +124,24 @@ export default function Subscription() {
                   <div className="price-item  mb-2 ">
                     <button
                       className="price-tab  one-step"
-                      onClick={() => handleCheckout(monthlyPlan)}
+                      onClick={() => handleCheckout(yearlyPlan)}
                     >
                       <span class="custom-price-label">
                         Day pass
                       </span>
 
-                      {getPriceListButtonContent(monthlyPlan)}
+                      {getPriceListButtonContent(yearlyPlan)} for a day
                     </button>
                   </div>
                   <div className="price-item  mb-2 ">
                     <button
                       className="price-tab one-step"
-                      onClick={() => handleCheckout(sixMonthPlan)}
+                      onClick={() => handleCheckout(dayPlan)}
                     >
                       <span class="custom-price-label">
                         Monthly
                       </span>
-                      {getPriceListButtonContent(sixMonthPlan)}
+                      {getPriceListButtonContent(dayPlan)} per month
                     </button>
                   </div>
                   {/* <div className="price-item  mb-2 deal-tab-sec">
@@ -160,7 +158,7 @@ export default function Subscription() {
                       0.25 per day</span>, not much isn’t it?
 
                     {/* remove this line olny */}
-                    (only ${yearlyPlan?.price || 65.99} for entire year, about  0.18 per day)
+                  
                   </div>
                 </div>
 
@@ -175,12 +173,12 @@ export default function Subscription() {
                   <div className="price-item highlight mb-2">
                     <button
                       className="price-tab one-step"
-                      onClick={() => handleCheckout(dayPlan)}
+                      onClick={() => handleCheckout(monthlyPlan)}
                     >
                       <span class="custom-price-label">
-                        6 monthly
+                        6 Monthly
                       </span>
-                      {dayPlan?.name || "Day pass"} – ${dayPlan?.price || 2.5} for a day
+                      ${monthlyPlan?.price || 2.5} for 6 months
                     </button>
 
                   </div>
@@ -188,12 +186,12 @@ export default function Subscription() {
 
                     <button
                       className="price-tab one-step"
-                      onClick={() => handleCheckout(monthlyPlan)}
+                      onClick={() => handleCheckout(sixMonthPlan)}
                     >
                       <span class="custom-price-label ">
                         Yearly
                       </span>
-                      {monthlyPlan?.name || "Monthly package"} – ${monthlyPlan?.price || 7.5} per month
+                      ${sixMonthPlan?.price || 7.5} per year
                     </button>
                   </div>
                   <p class="text-center">
@@ -228,12 +226,12 @@ export default function Subscription() {
                   <div className="price-item  mb-2 ">
                     <button
                       className="price-tab  one-step"
-                      onClick={() => handleCheckout(dayPlan)}
+                      onClick={() => handleCheckout(yearlyPlan)}
                     >
                       <span class="custom-price-label">
                         Day pass
                       </span>
-                      {getPriceListButtonContent(dayPlan)}
+                      {getPriceListButtonContent(yearlyPlan)} only for a day
                     </button>
                   </div>
                   <p>
@@ -244,12 +242,12 @@ export default function Subscription() {
                   <div className="price-item  mb-2 ">
                     <button
                       className="price-tab  one-step"
-                      onClick={() => handleCheckout(sixMonthPlan)}
+                      onClick={() => handleCheckout(dayPlan)}
                     >
                       <span class="custom-price-label">
                         Monthly
                       </span>
-                      {getPriceListButtonContent(sixMonthPlan)}
+                      {getPriceListButtonContent(dayPlan)} per month
                     </button>
                   </div>
                   {/* <div className="price-item  mb-2 deal-tab-sec">
@@ -263,10 +261,10 @@ export default function Subscription() {
                   </div> */}
                   <div className="note">
                     That will be around <span class="border-price">0.25 per day</span>, not that much isn’t it?
-                    (only ${yearlyPlan?.price || 65.99} for entire year, about 0.18 cents per day)
+                    
                   </div>
                    <div>
-                  <h4>
+                  <h4 class="mt-1">
                     <strong>
                       Thanks.
                     </strong>
@@ -310,7 +308,7 @@ export default function Subscription() {
 
             {/* ✅ Active Subscription */}
             <div className="policy-page">
-              <div className="subscribe-box border-0 w-100">
+              <div className="subscribe-box onging-sub border-0 w-100">
                 <h2>Your ongoing subscription:</h2>
 
                 {!activeSub ? (
