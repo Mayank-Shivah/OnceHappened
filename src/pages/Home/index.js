@@ -10,6 +10,8 @@ import api from "../../api"; // axios instance
 import Swal from "sweetalert2";
  import LockCard from "../../components/LockCard"; // ✅ Removed unused import
 import Loader from "../../components/Loader"; // ✅ Added Loader import
+import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+
 
 function Home() {
   const { theme } = useContext(ThemeContext);
@@ -20,16 +22,19 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [singlePostId, setSinglePostId] = useState(null);
-  const loggedInUser   = isLoggedIn() ? getUser  () : null;
-  const fullData = isLoggedIn() ? getFullUserData() : null;
-  const subscription = fullData?.subscription;
+  // const loggedInUser   = isLoggedIn() ? getUser  () : null;
+  // const fullData = isLoggedIn() ? getFullUserData() : null;
+  // const subscription = fullData?.subscription;
 
-  // ✅ Try to detect subscription properly
-  const hasActiveSubscription = (() => {
-    if (!subscription || !subscription.is_active) return false;
-    const endDate = new Date(subscription.end_date);
-    return endDate > new Date();
-  })();
+  // // ✅ Try to detect subscription properly
+  // const hasActiveSubscription = (() => {
+  //   if (!subscription || !subscription.is_active) return false;
+  //   const endDate = new Date(subscription.end_date);
+  //   return endDate > new Date();
+  // })();
+   const { user: loggedInUser, isAuth, fullUserData, hasActiveSubscription } = useAuth();
+
+  
 
   useEffect(() => {
     // 🔹 Check URL for ?id=
@@ -183,6 +188,7 @@ function Home() {
                     }
 
                     // ads after every 3 posts (unchanged)
+                     if (!hasActiveSubscription) {
                     if ((i + 1) % 3 === 0) {
                       if (ads.length > 0) {
                         const ad = ads[adIndex % ads.length];
@@ -204,6 +210,7 @@ function Home() {
                         <AdSpace key={`adslot-${i}`} label="Sponsored" height={260} />
                       );
                     }
+                  }
                   });
 
 

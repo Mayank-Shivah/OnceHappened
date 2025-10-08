@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./style.scss";
 import api from "../../api"; // axios instance
 import Swal from "sweetalert2"; // ✅ Added SweetAlert import
+import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+
 
 export default function SidebarRight() {
   const [ads, setAds] = useState([]);
   const [trialEnded, setTrialEnded] = useState(false);
+  const { hasActiveSubscription } = useAuth();
+  
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -42,6 +46,7 @@ export default function SidebarRight() {
         <div className="ad-section">
           {ads.length > 0 ? (
             ads.map((ad) => (
+               !hasActiveSubscription && (
               <div key={ad.id} className="ad-card">
                 <a href={ad.url} target="_blank" rel="noopener noreferrer">
                   <img
@@ -51,6 +56,7 @@ export default function SidebarRight() {
                   />
                 </a>
               </div>
+               )
             ))
           ) : (
             <p>Loading Ads...</p>
@@ -74,5 +80,6 @@ export default function SidebarRight() {
         </div>
       )}
     </aside>
+    
   );
 }
