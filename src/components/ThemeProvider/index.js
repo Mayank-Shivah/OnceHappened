@@ -1,23 +1,24 @@
-// src/components/ThemeProvider.jsx
 import React, { createContext, useState, useLayoutEffect } from "react";
 
 export const ThemeContext = createContext();
 
 function ThemeProvider({ children }) {
-  // Use useLayoutEffect for synchronous execution before paint
+  // Always default to "light" unless LS value exists
   const getInitialTheme = () => localStorage.getItem("theme") || "light";
   const [theme, setTheme] = useState(getInitialTheme);
 
   useLayoutEffect(() => {
-    // Always immediately set correct class before render
+    // Apply the saved theme before rendering content
     document.body.classList.remove("light-theme", "dark-theme");
     document.body.classList.add(`${theme}-theme`);
+    // Persist theme to localStorage
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  // Toggle and save to localStorage
   const toggleTheme = () => {
-    setTheme(t => t === "light" ? "dark" : "light");
-    // localStorage updated in effect above
+    setTheme(current => (current === "light" ? "dark" : "light"));
+    // localStorage will automatically update in effect above
   };
 
   return (
