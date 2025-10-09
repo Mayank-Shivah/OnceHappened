@@ -291,8 +291,16 @@ export default function Subscription() {
                       </span>
                     </div>
                     <div className="price-item">
-                      Your subscription expiring on:{" "}
-                      {new Date(fullUserData.subscription.end_date).toLocaleString()}
+                      Your subscription expiring ons:{" "}
+                      {new Date(fullUserData.subscription.end_date).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                      })}
+
                     </div>
                     <div className="price-item ">
                       <button

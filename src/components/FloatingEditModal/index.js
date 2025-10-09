@@ -16,6 +16,7 @@ Modal.setAppElement("#root");
 const MIN_WORDS = 45;
 const MAX_WORDS = 500;
 
+
 export default function FloatingEditModal({
   editPost = null,
   onClose,
@@ -27,6 +28,9 @@ export default function FloatingEditModal({
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [topics, setTopics] = useState([]);
   const [wordCount, setWordCount] = useState(0); // ✅ word count state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+
 
   const dropdownRef = useRef();
   const user = loggedUser   ();
@@ -146,6 +150,10 @@ export default function FloatingEditModal({
 
   // ✅ Save Draft
   const handleSaveDraft = async () => {
+
+  if (isSubmitting) return; // 🚫 prevent double-click spam
+  setIsSubmitting(true);
+
     try {
       const content = cleanContent();
       const token = localStorage.getItem("token");
@@ -179,6 +187,8 @@ export default function FloatingEditModal({
         });
       }
 
+
+      setModalOpen(false);
       setEditorState(EditorState.createEmpty());
       setWordCount(0);
       setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
@@ -187,10 +197,16 @@ export default function FloatingEditModal({
     } catch (err) {
       Swal.fire('Error!', 'Failed to save draft', 'error');
     }
+    finally {
+    setIsSubmitting(false); // ✅ re-enable buttons
+  }
   };
 
   // ✅ Publish Post
   const handlePublish = async () => {
+
+  if (isSubmitting) return; // 🚫 block multiple calls
+  setIsSubmitting(true);
     try {
       const content = cleanContent();  // ✅ cleaned HTML (like your example)
 
@@ -222,7 +238,8 @@ export default function FloatingEditModal({
           title: "Published",
           text: "Your post has been published successfully.",
           confirmButtonText: "OK"
-        }).then(() => {
+        }
+      ).then(() => {
           // 🔹 reload optional — remove if not needed
           window.location.reload();
         });
@@ -237,6 +254,9 @@ export default function FloatingEditModal({
     } catch (err) {
       Swal.fire("Error!", "Failed to publish post", "error");
     }
+    finally {
+    setIsSubmitting(false);
+  }
   };
 
   // ✅ Validation checks for bottom messages
@@ -361,7 +381,8 @@ export default function FloatingEditModal({
               <button
                 className="modal-btn modal-btn-light"
                 onClick={handleSaveDraft}
-                disabled={!isSaveDraftValid}  // ✅ Allows 1+ words + topic, disables on empty or >500 or no topic
+                // disabled={!isSaveDraftValid}  // ✅ Allows 1+ words + topic, disables on empty or >500 or no topic
+                 disabled={!isSaveDraftValid || isSubmitting}
               >
                 Save Draft
               </button>
@@ -369,7 +390,8 @@ export default function FloatingEditModal({
             <button
               className="modal-btn modal-btn-custom"
               onClick={handlePublish}
-              disabled={!isPublishValid}  // ✅ Strict: 45-500 words + topic
+              // disabled={!isPublishValid}  // ✅ Strict: 45-500 words + topic
+              disabled={!isPublishValid || isSubmitting}
             >
               {editPost ? "Publish" : "Publish"}
             </button>
