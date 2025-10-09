@@ -3,15 +3,15 @@ import api from "../../api";
 import Swal from "sweetalert2";
 import "./success-cancel.scss";
 import { FaDoorClosed } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+import { useAuth } from "../../context/AuthContext";
 
 
 export default function Success() {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-    const { hasActiveSubscription } = useAuth();
-  
+  const { fullUserData, loginUser } = useAuth();
+
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -46,13 +46,13 @@ export default function Success() {
         }
 
         // ✅ Step 3: Activate new subscription only once
-        Swal.fire({
-          title: "✅ Payment Successful!",
-          text: "Your subscription is being activated...",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        // Swal.fire({
+        //   title: "✅ Payment Successful!",
+        //   text: "Your subscription is being activated...",
+        //   icon: "success",
+        //   timer: 2000,
+        //   showConfirmButton: false,
+        // });
 
         const activate = await api.post("/purchase-subscription", {
           subscription_id: data.metadata.plan_id,
@@ -60,13 +60,28 @@ export default function Success() {
           amount: data.metadata.amount,
         });
 
-        setSubscription({
+        const newSub = {
           user_name: data.metadata.user_name,
           plan_name: data.metadata.plan_name,
           amount: data.metadata.amount,
           payment_id: sessionId,
           ...activate.data.subscription,
-        });
+        };
+
+        // ✅ Update local state
+        setSubscription(newSub);
+
+        // ✅ Merge and update localStorage userData
+        const existing = JSON.parse(localStorage.getItem("userData") || "{}");
+        const updatedUserData = {
+          ...existing,
+          subscription: newSub,
+        };
+        localStorage.setItem("userData", JSON.stringify(updatedUserData));
+
+        // ✅ Also update AuthContext (for live reactivity)
+        loginUser(updatedUserData);
+
 
         Swal.fire({
           title: "🎉 Subscription Activated!",
@@ -130,8 +145,7 @@ export default function Success() {
           </ul>
 
           <div className="mt-3">
-              { !hasActiveSubscription &&  <a href="/" className="btn-back">Back to Home</a> }
-           
+            <a href="/" className="btn-back">Back to Home</a>
           </div>
         </div>
       </div>
