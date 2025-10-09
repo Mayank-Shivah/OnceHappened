@@ -1,5 +1,6 @@
+// src/App.js
 import React, { useState, useEffect } from "react";
-import ThemeProvider from "./components/ThemeProvider";
+import ThemeProvider from "./components/ThemeProvider"; // Persisted theme!
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -14,24 +15,17 @@ import About from "./pages/AboutUs";
 import Subscription from "./pages/Subscription";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { startIdleTimer } from "./services/authService";
 import { AuthProvider } from "./context/AuthContext";
-
-
-// 🔹 PopupManager
 import PopupManager from "./components/PopupManager";
-import { isLoggedIn } from "./services/authService"; // ✅ import auth check
-
-// ✅ Import Success & Cancel pages
+import { isLoggedIn } from "./services/authService";
 import Success from "./pages/Subscription/Success";
 import Cancel from "./pages/Subscription/Cancel";
 
-// Custom hook to restrict copy, paste, cut, right-click, and certain shortcuts globally
+// Custom hook to restrict copy, paste, cut, right-click, and shortcuts
 function useRestrictInteractions() {
   useEffect(() => {
     const preventDefault = e => e.preventDefault();
-
     document.addEventListener("copy", preventDefault);
     document.addEventListener("cut", preventDefault);
     document.addEventListener("paste", preventDefault);
@@ -59,17 +53,21 @@ function useRestrictInteractions() {
 }
 
 function App() {
+  // useRestrictInteractions(); // globally restrict interactions
+
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);
 
+  // Protect routes based on authentication
   const PrivateRoute = ({ children }) => {
     return isLoggedIn() ? children : <Navigate to="/" replace />;
   };
 
   useEffect(() => {
-     if (isLoggedIn()) {
-      startIdleTimer(30 * 60 * 1000); // e.g., 4 minutes as you wanted
+    if (isLoggedIn()) {
+      startIdleTimer(30 * 60 * 1000); // e.g., 30 minutes
     }
+    // Apply saved language preference to Google translate widget
     const timer = setTimeout(() => {
       const saved = localStorage.getItem("preferredLanguage");
       const sel = document.querySelector(".goog-te-combo");
@@ -88,23 +86,20 @@ function App() {
   }, []);
 
   return (
-    <>
-     <AuthProvider>
+    <AuthProvider>
       <BrowserRouter>
-      <ThemeProvider>
+        <ThemeProvider>
           <PopupManager>
             <Routes>
-              {/* All routes inside Layout */}
+              {/* Main layout wraps all content pages */}
               <Route element={<Layout fontSize={fontSize} />}>
-                {/* ✅ Public Routes */}
                 <Route path="/" element={<Home fontSize={fontSize} />} />
                 <Route path="/blog" element={<Blog fontSize={fontSize} />} />
                 <Route path="/about-us" element={<About />} />
                 <Route path="/terms-conditions" element={<TermsConditions />} />
                 <Route path="/return-policy" element={<ReturnPolicy />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
-                {/* ✅ Protected Routes (login required) */}
+                {/* Protected routes */}
                 <Route
                   path="/support-suggestion"
                   element={
@@ -130,16 +125,13 @@ function App() {
                   }
                 />
               </Route>
-
-              {/* Auth routes outside Layout */}
+              {/* Routes outside layout */}
               <Route path="/topics" element={<Topics fontSize={fontSize} />} />
-
-              {/* ✅ Stripe payment return routes */}
+              {/* Stripe payment return routes */}
               <Route path="/success" element={<Success />} />
               <Route path="/cancel" element={<Cancel />} />
             </Routes>
-
-            {/* ✅ Toast notifications */}
+            {/* Toast notifications */}
             <ToastContainer
               position="top-center"
               autoClose={3000}
@@ -153,10 +145,9 @@ function App() {
               theme="light"
             />
           </PopupManager>
-      </ThemeProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </AuthProvider>
-    </>
   );
 }
 

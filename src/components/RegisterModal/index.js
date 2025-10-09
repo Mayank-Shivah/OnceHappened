@@ -447,16 +447,16 @@ export default function RegisterModal({ onClose, openLogin }) {
             >
               <a
                 href="/privacy-policy"
-                className="tag-links"
+                className="tag-links me-1"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Privacy Policy
-              </a>{" "}
-              and&nbsp;
+              </a>
+              <span className="and-text">and</span>
               <a
                 href="/terms-conditions"
-                className="tag-links"
+                className="tag-links ms-1"
                 target="_blank"
                 rel="noopener noreferrer"
               >
