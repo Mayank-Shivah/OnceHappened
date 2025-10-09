@@ -6,6 +6,7 @@ import FontSizeChanger from "../FontSizeChanger";
 import { isLoggedIn, getUser, logout } from "../../services/authService";
 import { ThemeContext } from "../ThemeProvider";
 import { Link } from "react-router-dom";
+
 // import { useTranslation } from "react-i18next";
 
 // ✅ Import the Popup hook
