@@ -306,10 +306,11 @@ export default function Subscription() {
                       <button
                         className="price-tab"
                         onClick={() =>
-                          handleCheckout(fullUserData.subscription.subscription)
+                          handleCheckout(dayPlan)
+                          // handleCheckout(fullUserData.subscription.subscription)
                         }
                       >
-                        extend 1 more {fullUserData.subscription.subscription?.duration_type}
+                        extend 1 more Month
                       </button>
                     </div>
                   </div>
