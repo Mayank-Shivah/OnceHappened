@@ -10,7 +10,7 @@ function TermsConditions() {
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
 
-          <main className="main-section-parent p-0">
+          <main className="main-section-parent prive-main-sec">
             <div className="privacy-card d-flex align-items-center justify-content-between ">
               <div class="d-flex align-items-center">
                 <BackButton />
