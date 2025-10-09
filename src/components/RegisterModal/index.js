@@ -279,7 +279,7 @@ export default function RegisterModal({ onClose, openLogin }) {
 
             {/* DOB + Gender */}
             <div className="row mb-3">
-              <div className="col-6">
+              <div className="col-md-6">
                 <label className="d-block pb-1">Date of Birth</label>
                 <div style={{ display: "flex", gap: "2px" }}>
                   <select
@@ -345,7 +345,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   </p>
                 )}
               </div>
-              <div className="col-6">
+              <div className="col-md-6">
                 <label className="d-block pb-1">Gender</label>
                 <select
                   name="gender"
