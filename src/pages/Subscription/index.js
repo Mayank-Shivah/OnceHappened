@@ -286,22 +286,31 @@ export default function Subscription() {
                   <div className="price-list">
                     <div className="price-item">
                       Your current subscription: ${fullUserData.subscription.amount}{" "}
-                      <span>
+                      {/* <span>
                         per {fullUserData.subscription.subscription?.duration_type}
-                      </span>
+                      </span> */}
                     </div>
                     <div className="price-item">
-                      Your subscription expiring on:{" "}
-                      {new Date(fullUserData.subscription.end_date).toLocaleString()}
+                      Your subscription expiring ons:{" "}
+                      {new Date(fullUserData.subscription.end_date).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                      })}
+
                     </div>
                     <div className="price-item ">
                       <button
                         className="price-tab"
                         onClick={() =>
-                          handleCheckout(fullUserData.subscription.subscription)
+                          handleCheckout(dayPlan)
+                          // handleCheckout(fullUserData.subscription.subscription)
                         }
                       >
-                        extend 1 more {fullUserData.subscription.subscription?.duration_type}
+                        extend 1 more Month
                       </button>
                     </div>
                   </div>
