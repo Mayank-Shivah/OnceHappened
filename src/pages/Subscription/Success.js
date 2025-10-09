@@ -82,10 +82,12 @@ export default function Success() {
         // ✅ Also update AuthContext (for live reactivity)
         loginUser(updatedUserData);
 
+        const mainParent = document.querySelector(".main-section-parent");
+        if (mainParent) mainParent.classList.add("sub-main-padding");
 
         Swal.fire({
           title: "🎉 Subscription Activated!",
-          text: "Enjoy all premium stories without ads.",
+          text: "Enjoy all premium stories without ads.", 
           icon: "success",
           confirmButtonText: "OK",
         });
