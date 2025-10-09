@@ -3,11 +3,15 @@ import api from "../../api";
 import Swal from "sweetalert2";
 import "./success-cancel.scss";
 import { FaDoorClosed } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+
 
 export default function Success() {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+    const { hasActiveSubscription } = useAuth();
+  
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -37,7 +41,7 @@ export default function Success() {
         if (check?.data?.exists) {
           // Already processed — show data instantly
           setSubscription(check.data.subscription);
-          setLoading(false); // <-- 🩵 important fix here
+          // setLoading(false); // <-- 🩵 important fix here
           return; // Stop here — no new SweetAlerts
         }
 
@@ -126,7 +130,8 @@ export default function Success() {
           </ul>
 
           <div className="mt-3">
-            <a href="/" className="btn-back">Back to Home</a>
+              { !hasActiveSubscription &&  <a href="/" className="btn-back">Back to Home</a> }
+           
           </div>
         </div>
       </div>
