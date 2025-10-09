@@ -200,8 +200,8 @@ export default function Subscription() {
               {/* right-section */}
               <div className="subscribe-box ">
                 <h2 class="text-start">
-                  <span className="color-red g-color"> {user?.name || "Guest"}</span>
-                </h2>
+                  <span className="color-red g-color"> {user?.name || "Guest"},</span>
+                  </h2>
                 <p className="text-start">
                   <strong>
                     lets try for a <span class="border-price">day </span> or  <span class="border-price">a month

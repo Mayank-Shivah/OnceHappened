@@ -182,7 +182,7 @@ export default function QuestionCard({
         case "unapproved":
           return "#dc3545"; // Red
         default:
-          return "#6c757d"; // Gray
+          return "#dc3545"; // Gray
       }
     };
 

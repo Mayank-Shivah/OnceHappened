@@ -46,7 +46,7 @@
   --light-yellow: #464646;
   --border-color: #ffffff;
   --category-text: #f1f1f1;
-   --lockpost:linear-gradient(10deg, rgb(77 74 71 / 98%) 7%, rgb(68 68 68 / 96%) 100%);
+  --lockpost: linear-gradient(10deg, rgb(77 74 71 / 98%) 7%, rgb(68 68 68 / 96%) 100%);
   --shadow: 0 2px 16px #1e1f1f;
   --active-bg: #3e3e3f;
   --after-gradient: linear-gradient(180deg, #4646467d 11%, #464646e3 45%);
@@ -91,9 +91,10 @@ body.dark-theme {
   display: flex;
   flex-direction: column;
   background-color: var(--desktop-screen);
-@media (max-width:600px) {
-  padding-bottom: 23px;
-}
+
+  @media (max-width:600px) {
+    padding-bottom: 23px;
+  }
 
 
 }
@@ -126,9 +127,10 @@ ul {
 .main-section-parent {
   flex: 1 1;
   padding: 0rem 1rem 0rem 1rem;
- @media only screen and (min-width: 600px) and (max-width: 1024px) {
-   padding-bottom: 97px !important;
-   padding: 0;
+
+  @media only screen and (min-width: 600px) and (max-width: 1024px) {
+    padding-bottom: 97px !important;
+    padding: 0;
   }
 
   @media (max-width: 600px) {
@@ -617,7 +619,7 @@ input[type=email],
 .signup-form {
   position: relative;
   background: var(--header-bg);
-     padding: 20px 5px 20px 14px;
+  padding: 20px 5px 20px 14px;
   border-radius: 48px;
   width: 33% !important;
   max-width: 95%;
@@ -626,10 +628,12 @@ input[type=email],
 
   @media screen and (max-width: 767px) {
     width: 100% !important;
-  } 
-  @media screen and (min-width:1024px) and (max-width: 1300px){
- width: 80% !important;
   }
+
+  @media screen and (min-width:1024px) and (max-width: 1300px) {
+    width: 80% !important;
+  }
+
   @media screen and (min-width:768px) and (max-width: 1023px) {
     width: 76% !important;
   }
@@ -640,10 +644,11 @@ input[type=email],
   //   overflow-y: auto;
   //   overflow-x: hidden;
   //   padding-right: 10px;
-   
+
   //   box-sizing: content-box;
   // }
 }
+
 .scroll-issue-div {
   height: 642px;
   overflow-y: auto;
@@ -654,26 +659,32 @@ input[type=email],
 
 /* 🌟 Custom Scrollbar (For WebKit browsers like Chrome, Edge, Safari) */
 .scroll-issue-div::-webkit-scrollbar {
-  width: 0.2px;              /* ✅ Scrollbar width */
+  width: 0.2px;
+  /* ✅ Scrollbar width */
 }
 
 .scroll-issue-div::-webkit-scrollbar-track {
-  background: transparent; /* Background area of scrollbar */
+  background: transparent;
+  /* Background area of scrollbar */
 }
 
 .scroll-issue-div::-webkit-scrollbar-thumb {
-  background:var(--theme-color) ;     /* ✅ Scrollbar thumb (yellow) */
+  background: var(--theme-color);
+  /* ✅ Scrollbar thumb (yellow) */
   border-radius: 10px;
 }
 
 .scroll-issue-div::-webkit-scrollbar-thumb:hover {
-  background: var(--theme-color) ;     /* Slightly darker on hover */
+  background: var(--theme-color);
+  /* Slightly darker on hover */
 }
 
 /* 🧩 Firefox support */
 .scroll-issue-div {
-  scrollbar-width: thin;          /* Thin scrollbar */
-  scrollbar-color: var(--theme-color) transparent; /* Yellow thumb, transparent track */
+  scrollbar-width: thin;
+  /* Thin scrollbar */
+  scrollbar-color: var(--theme-color) transparent;
+  /* Yellow thumb, transparent track */
 }
 
 ::-webkit-scrollbar {
@@ -747,10 +758,12 @@ input[type=email],
     margin-bottom: 2px;
     padding: 10px;
   }
+
   @media only screen and (min-width: 601px) and (max-width: 1024px) {
     margin-bottom: 10px;
-    
+
   }
+
   h1 {
     font-size: 1.6rem;
     font-weight: 600;
@@ -947,7 +960,7 @@ input[type=email],
 
 .form-control {
   border-radius: 0px;
-  color: var(--icon-color)  !important;
+  color: var(--icon-color) !important;
 }
 
 input::placeholder {
@@ -1051,7 +1064,7 @@ input:-internal-autofill-selected {
   background: none;
   font-size: 22px;
   cursor: pointer;
-   color: var(--category-text);
+  color: var(--category-text);
 }
 
 .no-post-box {
@@ -1093,13 +1106,28 @@ div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
 
   background-color: var(--theme-color) !important;
 }
-#sugMessage::placeholder { color: #fff !important; opacity: 1; }
-#sugMessage::-webkit-input-placeholder { color:#fff !important; }
-#sugMessage:-ms-input-placeholder { color:#fff !important; }
-#sugMessage::-ms-input-placeholder { color:#fff !important; }
-div:where(.swal2-icon).swal2-warning, div:where(.swal2-icon).swal2-info {
-    border-color: var(--theme-color) !important;
-    color:  var(--theme-color) !important;
+
+#sugMessage::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
+
+#sugMessage::-webkit-input-placeholder {
+  color: #fff !important;
+}
+
+#sugMessage:-ms-input-placeholder {
+  color: #fff !important;
+}
+
+#sugMessage::-ms-input-placeholder {
+  color: #fff !important;
+}
+
+div:where(.swal2-icon).swal2-warning,
+div:where(.swal2-icon).swal2-info {
+  border-color: var(--theme-color) !important;
+  color: var(--theme-color) !important;
 }
 
 body {
@@ -1121,35 +1149,60 @@ input::placeholder {
   color: var(--icon-color);
   opacity: 1;
 }
+
 /* For textarea, if needed */
 textarea::placeholder {
   color: var(--icon-color);
   opacity: 1;
 }
+
 /* For older WebKit browsers */
 input::-webkit-input-placeholder {
   color: var(--icon-color);
 }
+
 /* For Firefox */
 input::-moz-placeholder {
   color: var(--icon-color);
 }
+
 /* For IE */
 input:-ms-input-placeholder {
   color: var(--icon-color);
 }
+
 /* For Edge */
 input::-ms-input-placeholder {
   color: var(--icon-color);
 }
 
-.and-text{
+.and-text {
   color: var(--category-text);
 }
 
 
-select, option {
+select,
+option {
   color: #000;
   background: #fff;
   margin: 0px 2px;
+}
+
+.custom-no-post {
+  text-align: center;
+  margin: 5px auto;
+  padding: 30px;
+
+  background-color: var(--header-bg);
+  border: 1px solid var(--theme-color);
+  border-radius: 42px;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+h5{
+  color: var(--dark-text);
+}
+p{
+    color: var(--dark-text);
+    margin-top: 10px;
+}
 }

@@ -157,20 +157,11 @@ function Home() {
               <>
                 {!loading && questions.length === 0 && (
                   <div
-                    className="no-post-box"
-                    style={{
-                      textAlign: "center",
-                      margin: "5px auto",
-                      padding: "30px",
-                      background: "#fff",
-                      border: "1px solid #ddd",
-                      borderRadius: "8px",
-                      maxWidth: "500px",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
+                    className="no-post-box custom-no-post"
+                   
                   >
                     <h5>No posts in this topic yet</h5>
-                    <p style={{ marginTop: "8px", color: "#666" }}>
+                    <p >
                       Be the first to share something here!
                     </p>
                   </div>
