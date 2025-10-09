@@ -100,7 +100,7 @@ export default function Subscription() {
           className="content-wrapper"
           style={{ display: "flex", marginTop: "2px" }}
         >
-          <main className="main-section-parent p-0">
+          <main className="main-section-parent prive-main-sec">
             {/* ✅ Subscription Packages */}
             <div className="policy-page mb-1 sub-parent-section">
               {/* left-section */}

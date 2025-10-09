@@ -93,7 +93,7 @@ body.dark-theme {
   background-color: var(--desktop-screen);
 
   @media (max-width:600px) {
-    padding-bottom: 23px;
+    padding-bottom: 0px;
   }
 
 
@@ -135,7 +135,7 @@ ul {
 
   @media (max-width: 600px) {
     padding: 0;
-    padding-bottom: 37px;
+    padding-bottom: 98px;
   }
 }
 
@@ -1205,4 +1205,12 @@ p{
     color: var(--dark-text);
     margin-top: 10px;
 }
+}
+
+a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
+    display: none;
+}
+
+.main-section-parent,.sub-main-padding{
+  padding-bottom: 0px  !important;
 }
