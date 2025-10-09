@@ -286,9 +286,9 @@ export default function Subscription() {
                   <div className="price-list">
                     <div className="price-item">
                       Your current subscription: ${fullUserData.subscription.amount}{" "}
-                      <span>
+                      {/* <span>
                         per {fullUserData.subscription.subscription?.duration_type}
-                      </span>
+                      </span> */}
                     </div>
                     <div className="price-item">
                       Your subscription expiring ons:{" "}
