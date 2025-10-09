@@ -476,7 +476,7 @@ input[type="text"]:focus,
 input[type="password"]:focus {
   box-shadow: none;
   outline: none;
-  color: #000;
+  color: var(--dark-text);
   background-color: transparent;
   /* Change to any color you want */
 }
@@ -588,7 +588,7 @@ input[type=email],
   .submit-btn {
     background-color: #ffffff00;
     border: none;
-    border-radius: 6px;
+    border-radius: 0px;
     color: var(--dark-text);
     font-weight: 600;
     margin-top: 10px;
@@ -674,23 +674,6 @@ input[type=email],
   scrollbar-width: thin;          /* Thin scrollbar */
   scrollbar-color: var(--theme-color) transparent; /* Yellow thumb, transparent track */
 }
-
-/* ✅ Super thin 1px scrollbar */
-// .signup-form .scroll-issue-div::-webkit-scrollbar {
-//   width: 1px !important;
- 
-// }
-
-// .signup-form .scroll-issue-div::-webkit-scrollbar-track {
-//   background: transparent;
-
-// }
-
-// .signup-form .scroll-issue-div::-webkit-scrollbar-thumb {
-//   background: var(--theme-color);
-//   border-radius: 10px;
-// }
-
 
 ::-webkit-scrollbar {
   width: 1px;
@@ -1130,4 +1113,42 @@ body {
 .goog-text-highlight {
   background: none !important;
   box-shadow: none !important;
+}
+
+/* For all modern browsers */
+input::placeholder {
+  color: var(--icon-color);
+  opacity: 1;
+}
+/* For textarea, if needed */
+textarea::placeholder {
+  color: var(--icon-color);
+  opacity: 1;
+}
+/* For older WebKit browsers */
+input::-webkit-input-placeholder {
+  color: var(--icon-color);
+}
+/* For Firefox */
+input::-moz-placeholder {
+  color: var(--icon-color);
+}
+/* For IE */
+input:-ms-input-placeholder {
+  color: var(--icon-color);
+}
+/* For Edge */
+input::-ms-input-placeholder {
+  color: var(--icon-color);
+}
+
+.and-text{
+  color: var(--category-text);
+}
+
+
+select, option {
+  color: #000;
+  background: #fff;
+  margin: 0px 2px;
 }

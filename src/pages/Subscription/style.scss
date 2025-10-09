@@ -161,3 +161,9 @@ h2{
 span.color-red {
     text-transform: capitalize;
 }
+.g-color{
+        background: linear-gradient(45deg, #ee0000, #ffb000, #00d1ff, #00e3a7, #5f27cd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

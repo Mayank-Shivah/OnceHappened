@@ -200,7 +200,7 @@ export default function Subscription() {
               {/* right-section */}
               <div className="subscribe-box ">
                 <h2 class="text-start">
-                  <span className="color-red"> {user?.name || "Guest"}</span>
+                  <span className="color-red g-color"> {user?.name || "Guest"}</span>
                 </h2>
                 <p className="text-start">
                   <strong>
@@ -278,7 +278,8 @@ export default function Subscription() {
                 {!fullUserData?.subscription ? (
                   <>
                     <p>
-                      No active plan found. Subscribe today and enjoy the benefits!
+                     You currently don’t have any, let’s get and see how it’s like
+ 
                     </p>                    
                   </>
                 ) : (
