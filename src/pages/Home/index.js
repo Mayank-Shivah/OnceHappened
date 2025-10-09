@@ -34,7 +34,24 @@ function Home() {
   // })();
    const { user: loggedInUser, isAuth, fullUserData, hasActiveSubscription } = useAuth();
 
-  
+  useEffect(() => {
+    let metaTag = document.querySelector('meta[name="robots"]');
+
+    if (!metaTag) {
+      // Create it if it doesn’t exist
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "robots");
+      document.head.appendChild(metaTag);
+    }
+
+    // Set the desired content
+    metaTag.setAttribute("content", "noindex, nofollow");
+
+    // Optional cleanup (restore or remove when leaving page)
+    return () => {
+      metaTag.setAttribute("content", "noindex, nofollow");
+    };
+  }, []);
 
   useEffect(() => {
     // 🔹 Check URL for ?id=

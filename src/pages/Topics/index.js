@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import TopicCard from "../../components/TopicCard"; // create this component or reuse existing card component if any
 import { ThemeContext } from "../../components/ThemeProvider";
 
@@ -20,6 +20,27 @@ const topics = [
 
 function Topics() {
   const { theme } = useContext(ThemeContext);
+
+
+  useEffect(() => {
+    let metaTag = document.querySelector('meta[name="robots"]');
+
+    if (!metaTag) {
+      // Create it if it doesn’t exist
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "robots");
+      document.head.appendChild(metaTag);
+    }
+
+    // Set the desired content
+    metaTag.setAttribute("content", "noindex, nofollow");
+
+    // Optional cleanup (restore or remove when leaving page)
+    return () => {
+      metaTag.setAttribute("content", "noindex, nofollow");
+    };
+  }, []);
+
 
   return (
     <div className={`main-layout ${theme}-theme`}>

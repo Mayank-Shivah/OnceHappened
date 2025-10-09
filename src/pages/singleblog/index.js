@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Header from "../../components/Header";
 import SidebarLeft from "../../components/SidebarLeft";
 import SidebarRight from "../../components/SidebarRight";
@@ -31,6 +31,24 @@ const questions = [
 function Blog() {
   const { theme } = useContext(ThemeContext);
 
+  useEffect(() => {
+    let metaTag = document.querySelector('meta[name="robots"]');
+
+    if (!metaTag) {
+      // Create it if it doesn’t exist
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "robots");
+      document.head.appendChild(metaTag);
+    }
+
+    // Set the desired content
+    metaTag.setAttribute("content", "noindex, nofollow");
+
+    // Optional cleanup (restore or remove when leaving page)
+    return () => {
+      metaTag.setAttribute("content", "noindex, nofollow");
+    };
+  }, []);
   return (
     <div className={`main-layout ${theme}-theme`}>
  
