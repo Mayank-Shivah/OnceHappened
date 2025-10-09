@@ -1,13 +1,30 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaWhatsapp, FaTelegram } from "react-icons/fa";
+import Swal from "sweetalert2"; 
+import withReactContent from "sweetalert2-react-content";
 
 export default function ShareModal({ url, onClose }) {
+  const MySwal = withReactContent(Swal);
   const handleCopy = () => {
   if (navigator.clipboard && window.isSecureContext) {
     // Modern way
     navigator.clipboard.writeText(url)
-      .then(() => alert("Link copied!"))
-      .catch((err) => alert("Failed to copy link"));
+      .then(() => MySwal.fire({
+      icon: "success",
+      title: "Link copied!",
+      confirmButtonText: "OK",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 2000;
+      },
+    }))
+      .catch((err) => MySwal.fire({
+      icon: "error",
+      title: "Failed to copy link",
+      confirmButtonText: "OK",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 2000;
+      },
+    }));
   } else {
     // Fallback for insecure context or older browsers
     const textArea = document.createElement("textarea");
@@ -19,8 +36,23 @@ export default function ShareModal({ url, onClose }) {
     textArea.select();
     try {
       document.execCommand('copy');
-      alert("Link copied!");
+      MySwal.fire({
+      icon: "success",
+      title: "Link copied!",
+      confirmButtonText: "OK",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 2000;
+      },
+    });
     } catch (err) {
+      MySwal.fire({
+      icon: "error",
+      title: "Failed to copy link",
+      confirmButtonText: "OK",
+      didOpen: (popup) => {
+        popup.parentNode.style.zIndex = 2000;
+      },
+    });
       alert("Failed to copy link");
     }
     document.body.removeChild(textArea);

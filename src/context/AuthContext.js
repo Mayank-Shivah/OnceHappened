@@ -72,6 +72,19 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  
+  // ✅ Conditionally add/remove class based on subscription
+  useEffect(() => {
+    const mainParent = document.querySelector(".main-section-parent");
+    if (!mainParent) return;
+
+    if (hasActiveSubscription) {
+      mainParent.classList.add("sub-main-padding");
+    } else {
+      mainParent.classList.remove("sub-main-padding");
+    }
+  }, [hasActiveSubscription]);
+
   const loginUser = (data) => {
     // Save to localStorage
     localStorage.setItem("token", data.token);
@@ -92,6 +105,7 @@ export const AuthProvider = ({ children }) => {
     setFullUserData(null);
     setIsAuth(false);
   };
+  
 
   return (
     <AuthContext.Provider value={{

@@ -106,7 +106,7 @@ export default function Header() {
   const handleLogout = () => {
     logout();
     setShowLang(false);
-    resetTheme();
+    // resetTheme();
   };
 
   return (
