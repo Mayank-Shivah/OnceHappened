@@ -1,8 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
 function About() {
     const { theme } = useContext(ThemeContext);
+
+     useEffect(() => {
+    let metaTag = document.querySelector('meta[name="robots"]');
+
+    if (!metaTag) {
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "robots");
+      document.head.appendChild(metaTag);
+    }
+
+    metaTag.setAttribute("content", "index, follow");
+
+    return () => {
+      // Optional: restore default behavior when leaving About page
+      metaTag.setAttribute("content", "noindex, nofollow");
+    };
+  }, []);
+
+
     return (
         <div className={`main-layout ${theme}-theme`}>
 

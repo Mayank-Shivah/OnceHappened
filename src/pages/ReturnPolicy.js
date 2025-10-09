@@ -1,9 +1,29 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "../components/ThemeProvider";
 import SidebarRight from "../components/SidebarRight";
 import BackButton from "../components/BackButton";
 function ReturnPolicy() {
   const { theme } = useContext(ThemeContext);
+
+
+  useEffect(() => {
+    let metaTag = document.querySelector('meta[name="robots"]');
+
+    if (!metaTag) {
+      // Create it if it doesn’t exist
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "robots");
+      document.head.appendChild(metaTag);
+    }
+
+    // Set the desired content
+    metaTag.setAttribute("content", "noindex, nofollow");
+
+    // Optional cleanup (restore or remove when leaving page)
+    return () => {
+      metaTag.setAttribute("content", "noindex, nofollow");
+    };
+  }, []);
 
 
   return (
