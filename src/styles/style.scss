@@ -776,6 +776,7 @@ input[type=email],
 
   p,
   a {
+    padding-left: 15px;
     font-size: 0.9rem;
     color: var(--category-text);
   }
@@ -790,7 +791,7 @@ input[type=email],
     color: var(--category-text);
   }
 
-  ul or ol {
+  ul,ol {
     margin-left: 10px;
     margin-bottom: 10px;
 
@@ -1213,4 +1214,14 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
 
 .main-section-parent .sub-main-padding{
   padding-bottom: 0px  !important;
+}
+.accepted-sec {
+    padding-top: 10px;
+    padding-left: 8px;
+}
+.accepted-sec h3 {
+    font-size: 1.1rem;
+}
+.about-text p{
+  padding: 0px;
 }
