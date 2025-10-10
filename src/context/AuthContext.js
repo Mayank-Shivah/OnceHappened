@@ -79,9 +79,9 @@ export const AuthProvider = ({ children }) => {
     if (!mainParent) return;
 
     if (hasActiveSubscription) {
-      mainParent.classList.add("sub-main-padding");
+      mainParent.classList.add("sub-main-paddings");
     } else {
-      mainParent.classList.remove("sub-main-padding");
+      mainParent.classList.remove("sub-main-paddings");
     }
   }, [hasActiveSubscription]);
 
