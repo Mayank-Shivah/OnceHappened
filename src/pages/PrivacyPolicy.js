@@ -33,7 +33,7 @@ function PrivacyPolicy() {
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
 
-          <main className="main-section-parent prive-main-sec">
+          <main className="main-section-parent prive-main-sec px-0">
             <div className="privacy-card d-flex align-items-center justify-content-between ">
               <div class="d-flex align-items-center">
                 <BackButton />
@@ -44,7 +44,7 @@ function PrivacyPolicy() {
             </div>
             <div className="policy-page" >
 
-              <p>
+              <p className="p-0">
                 Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you visit our website.
               </p>
               <h2>Information We Collect</h2>
@@ -69,7 +69,7 @@ function PrivacyPolicy() {
               </p>
               <h2>Your Choices</h2>
               <p>
-                You may update or delete your personal information by contacting us at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.
+                You may update or delete your personal information by contacting us at <a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a>.
               </p>
               <h2>Changes to this Privacy Policy</h2>
               <p>
@@ -77,7 +77,7 @@ function PrivacyPolicy() {
               </p>
               <h2>Contact Us</h2>
               <p>
-                For any questions about this policy, please reach out at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.
+                For any questions about this policy, please reach out at <a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a>.
               </p>
             </div>
           </main>

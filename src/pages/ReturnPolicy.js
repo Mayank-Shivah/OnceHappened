@@ -32,39 +32,158 @@ function ReturnPolicy() {
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
 
-          <main className="main-section-parent prive-main-sec">
-            
-              <div className="privacy-card d-flex align-items-center justify-content-between ">
-                          <div class="d-flex align-items-center">
-                            <BackButton />
-                            <h1 >Return Policy</h1>
-                          </div>
-            
-                          <h1 > <span> (Update Date:- 10/08/2025)</span></h1>
-                        </div>
+          <main className="main-section-parent prive-main-sec px-0">
+
+            <div className="privacy-card d-flex align-items-center justify-content-between ">
+              <div class="d-flex align-items-center">
+                <BackButton />
+                <h1 >Return Policy</h1>
+              </div>
+
+              <h1 > <span> (Update Date:- 10/08/2025)</span></h1>
+            </div>
             <div className="policy-page">
+              <h4 className="mb-3">
+                Contact Email: <a href="matlto:info@oncehappened.com" className="p-0">
+                  info@oncehappened.com
+                </a>
+              </h4>
+              <h2>
+                1. Overview
+
+              </h2>
               <p>
-                We want you to be fully satisfied with your purchase. If you are not happy with your order, please review the return policy below.
+                At Once Happened, we aim to maintain fairness, clarity, and transparency in all financial transactions. This policy outlines how we handle payments, subscriptions, billing, and refunds for all users who access premium features or paid services through our platform.
+                All payments on our platform are processed securely via Stripe, our authorized payment processor.
               </p>
-              <h2>Returns</h2>
+              <h2>2. Payments and Billing
+              </h2>
+              <div className="accepted-sec">
+                <h3>
+                  2.1 Accepted Payment Methods
+                </h3>
+                <p>
+                  We accept all major debit and credit cards and any other payment methods supported by Stripe in your region.
+                </p>
+                <h3>
+                  2.2 Secure Processing
+                </h3>
+                <p>
+                  Stripe handles all payment information in compliance with PCI DSS standards.
+
+                  We do not store your complete card details on our servers.
+
+                  Your payment information is encrypted and transmitted directly to Stripe’s secure infrastructure.
+                </p>
+                <h3>
+                  2.3 Subscription Billing
+                </h3>
+                <p>
+                  When you subscribe to a paid plan, the subscription automatically renews at the end of each billing cycle (monthly or yearly), unless canceled before the renewal date.
+                  You authorize Once Happened (via Stripe) to charge the payment method associated with your account for each renewal period.
+                </p>
+                <h3>
+                  2.4 Price Changes
+                </h3>
+                <p>
+                  We may modify subscription prices occasionally.
+                  If prices change, we’ll notify you in advance, and the new rates will apply from your next billing cycle unless you cancel beforehand.
+                </p>
+
+                <h3>
+                  2.5 Taxes
+                </h3>
+                <p>
+                  Prices shown on our website may or may not include applicable taxes (e.g., VAT, GST).
+                  Taxes are calculated automatically based on your billing address and added during checkout if required by law.
+                </p>
+
+              </div>
+
+              <h2>3. Subscription Management</h2>
+              <div className="accepted-sec">
+                <h3>
+                  3.1 Cancelling a Subscription
+                </h3>
+                <p>
+                  You can cancel your subscription anytime through your account settings or by using the Stripe billing portal link provided in your email receipts.
+
+                  Cancelling stops future renewals but does not automatically refund past payments.
+
+                  After cancellation, you will retain access to premium features until the end of your current billing cycle.
+
+                </p>
+                <h3>
+                  3.2 Failed Payments
+                </h3>
+                <p>
+                  If a payment fails, Stripe will retry the charge automatically for a limited period.
+
+                  If payment remains unsuccessful, your subscription may be suspended or downgraded to a free plan until valid payment details are provided.
+
+                </p>
+              </div>
+
+              <h2>
+                4. Refund Policy
+              </h2>
+              <div className="accepted-sec">
+                <h3>
+                  4.1 General Refund Terms
+                </h3>
+                <p>
+                  As our platform provides instant digital access to story-sharing features and premium tools, all payments are generally non-refundable once access has been granted.
+                  However, we may grant refunds in exceptional cases such as:
+                </p>
+                <ol>
+                  <li>
+                    Duplicate or accidental charges.
+                  </li>
+                  <li>
+                    Technical issues preventing access to premium features.
+                  </li>
+                  <li>
+                    Unauthorized transactions verified through Stripe’s dispute process.
+                  </li>
+                  <li>
+                    Other extenuating circumstances at our discretion.
+                  </li>
+                </ol>
+              </div>
+
+              <h2>4.2 Requesting a Refund</h2>
               <p>
-                Items can be returned within 30 days of receipt for a full refund or exchange. Items must be in original condition with tags attached.
+                To request a refund:
+
+                Contact us at<a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com
+                </a>  within 7 days of your transaction.
+
+                Provide your registered email, transaction ID, payment date, and reason for the request.
+
+                We may require additional information to verify your identity.
               </p>
-              <h2>Non-Returnable Items</h2>
+              <h2>4.3 Refund Processing</h2>
               <p>
-                Some items like personalized products and digital downloads are non-returnable.
+                pproved refunds are processed via Stripe to the same payment method used for the original transaction.
+
+                Refunds typically take 5–10 business days to appear, depending on your bank or card issuer.
+
+                Stripe’s transaction fees may not be refundable in all cases.
+
               </p>
-              <h2>How to Return</h2>
+              <h2>4.4 Non-Refundable Situations</h2>
               <p>
-                To initiate a return, contact our customer service team at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a> with your order details.
-              </p>
-              <h2>Refunds</h2>
-              <p>
-                Refunds will be processed within 7-10 business days after we receive the returned item.
-              </p>
-              <h2>Contact Us</h2>
-              <p>
-                For any questions regarding returns, please email <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.
+
+                Refunds are not issued for:
+
+                Change of mind or personal dissatisfaction.
+
+                Content-related preferences.
+
+                Accounts terminated for violating our Terms of Service.
+
+                Misuse or fraudulent activities.
+
               </p>
             </div>
           </main>

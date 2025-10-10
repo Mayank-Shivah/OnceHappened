@@ -35,7 +35,7 @@ function TermsConditions() {
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
 
-          <main className="main-section-parent prive-main-sec">
+          <main className="main-section-parent prive-main-sec px-0">
             <div className="privacy-card d-flex align-items-center justify-content-between ">
               <div class="d-flex align-items-center">
                 <BackButton />
@@ -73,7 +73,7 @@ function TermsConditions() {
               </ul>
               <h2>2) Content Ownership & License:</h2>
               <ul>
-                <li><b>Content Submission:</b> Once you share content on this platform, it automatically becomes the property of <strong><a href="/">
+                <li><b>Content Submission:</b> Once you share content on this platform, it automatically becomes the property of <strong><a href="/" className="p-0">
                   oncehappened.com</a></strong>. Unauthorized use of this content may result in legal action.
                 </li>
                 <li><b>Editing & Moderation:</b>  Our team of editors may edit, enhance, or moderate your content to improve presentation, remove unpermitted words, and ensure it meets platform standards.
@@ -85,7 +85,7 @@ function TermsConditions() {
                   <ul>
                     <li>Respect for Intellectual Property: You may only post content that you own or have permission to use. By submitting content to Once Happened, you confirm that it does not infringe on the copyright or other intellectual property rights of any third party.
                     </li>
-                    <li>Notice & Takedown: If you believe your copyrighted work has been used without authorization, you may submit a copyright infringement notice to us at<strong> <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.</strong> The notice should include your contact information, a description of the copyrighted work, and a description of where the infringing material is located.</li>
+                    <li>Notice & Takedown: If you believe your copyrighted work has been used without authorization, you may submit a copyright infringement notice to us at<strong> <a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a>.</strong> The notice should include your contact information, a description of the copyrighted work, and a description of where the infringing material is located.</li>
                     <li>Your contact information.
                     </li>
                     <li>A description of the copyrighted work.
@@ -171,7 +171,7 @@ function TermsConditions() {
               </p>
 
               <p>
-                Posts that violate these rules may be removed or edited, and you can report by contacting customer support <strong><a href="mailto:info@oncehappened.com">info@oncehappened.com</a></strong> and highlight what exactly you found to be offensive and what should be added in its place.
+                Posts that violate these rules may be removed or edited, and you can report by contacting customer support <strong><a href="mailto:info@oncehappened.com" className="p-0"> info@oncehappened.com</a></strong> and highlight what exactly you found to be offensive and what should be added in its place.
               </p>
               <h2>4) Payments & Subscriptions:</h2>
               <ul>
@@ -206,7 +206,7 @@ function TermsConditions() {
                 We are not liable for any loss or damage arising from your use of the platform.
               </p>
               <h2>7) Privacy:</h2>
-              <p>Your use of the Service is also governed by our <strong><a href="/privacy-policy">Privacy Policy</a></strong></p>
+              <p>Your use of the Service is also governed by our <strong><a href="/privacy-policy" className="p-0">Privacy Policy</a></strong></p>
               <h2>8) Changes to Terms:</h2>
               <p>We may update these Terms from time to time. Continued use of the Service constitutes acceptance of the updated Terms.</p>
               <h2>9) Governing Law:</h2>
@@ -215,7 +215,7 @@ function TermsConditions() {
               </p>
               <h2>10) Contact:</h2>
               <p>
-                For questions about these Terms, contact us at <strong><a href="mailto:info@oncehappened.com">info@oncehappened.com</a></strong>
+                For questions about these Terms, contact us at <strong><a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a></strong>
               </p>
             </div>
           </main>

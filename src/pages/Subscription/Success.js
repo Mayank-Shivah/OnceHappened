@@ -125,7 +125,7 @@ export default function Success() {
   // ✅ Show subscription info
   return (
  <>
- <div class="main-container-success">
+ <div class="main-container-success ">
      <div className="success-cancel-container">
       <div className="payment-success-box">
         <h2 className="success">🎉 Payment & Subscription Confirmed!</h2>

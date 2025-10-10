@@ -28,11 +28,11 @@ function About() {
             <div className="container">
                 <div className="content-wrapper" style={{ display: "flex" }}>
 
-                    <main className="main-section-parent prive-main-sec">
+                    <main className="main-section-parent prive-main-sec px-0">
                         {/* <div className="privacy-card">
                             <h1 >Privacy Policy <span> (Update Date:- 10/08/2025)</span></h1>
                         </div> */}
-                        <div className="policy-page" >
+                        <div className="policy-page about-text" >
                             <p>
                                 We are a personal experiences sharing platform where people post what they have read somewhere, remember about, have personally experienced, or somebody they know experienced, so that all readers learn a thing or two from it and enrich their wisdom which can help them in future interactions with the world.
                             </p>
