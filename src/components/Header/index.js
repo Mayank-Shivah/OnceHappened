@@ -262,7 +262,7 @@ export default function Header() {
                       </div>
                       <div className="lang-options">
                         <ul>
-                          <li><a href="/" className="facebook"><FaFacebookF /></a></li>
+                          <li><a href="https://www.facebook.com/share/1BLWoK8zGE/" className="facebook"><FaFacebookF /></a></li>
                           <li><a href="https://www.instagram.com/once.happened" className="instagram"><FaInstagram /></a></li>
                         </ul>
                       </div>
