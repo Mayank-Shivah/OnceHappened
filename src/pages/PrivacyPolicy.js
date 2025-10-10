@@ -45,39 +45,111 @@ function PrivacyPolicy() {
             <div className="policy-page" >
 
               <p className="p-0">
-                Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you visit our website.
+                
+This Privacy Policy explains how Once Happened ("we", "us", "our") collects, uses, and shares information when you use our platform. It is designed to meet global standards and includes region‑specific disclosures for the European Economic Area/United Kingdom (GDPR) and California (CCPA/CPRA).
+
+At Once Happened (“Once Happened.com,” “we,” or “us”), we are dedicated to protecting your privacy and keeping your information secure. We handle information about you in several ways. This Privacy Policy explains how we collect, use, disclose, and safeguard information that can identify you (“Personal Information”) when you create an Once Happened account and use oncehappened.com (the “Site”) or our mobile applications to post content to the Once Happened community platform , including stories you share (the “Services”).
+
+Our terms of service apply to this Privacy Policy. By creating an account with Once Happened, using the Services, visiting the platform or submitting any Personal Information through the Services, you acknowledge that we will collect, use, and disclose your Personal Information as described in this Privacy Policy. This Policy also applies to the Service and any related communications or support channels.
+
+If you do not agree with this policy and with the ways we use your Personal Information, you should discontinue use of the Services.
+
+You can contact us at <a href="mailto:info@oncehappened.com" className="p-0"> (info@oncehappened.com)</a>
+
               </p>
-              <h2>Information We Collect</h2>
+              <h2>Personal information:
+</h2>
               <p>
-                We collect information you provide directly to us such as name, email address, phone number, and any other details you enter into our forms.
+                Personal Information (sometimes called personal data) is: Any information that can be used to identify you as a person, either directly or indirectly.
+
+Examples of Personal Information:
+
+Direct identifiers: your name, email address, phone number.
+Indirect identifiers: your IP address, device ID, or location (city/country).
+Demographic info: age, gender, date of birth.
+Financial info:  bank account number, credit card details, payment transaction details (though usually handled by secure processors) etc
+
               </p>
-              <h2>How We Use Information</h2>
+              <h2>Eligibility:</h2>
               <p>
-                We use the information to provide, maintain, and improve our services, communicate with you, and comply with legal obligations.
+               Our Services are intended for individuals 18 years of age or older. By creating an account, you confirm that you meet this age requirement.
+
+
               </p>
-              <h2>Sharing Information</h2>
+              <h2>Children’s privacy:</h2>
               <p>
-                We do not sell or rent your personal information. We may share information with trusted service providers as necessary to operate our business.
+               The Service is not directed to children under 18, and we do not knowingly collect personal information from children under 18.
+If you are a parent/guardian and believe your child provided personal data, contact us <a href="(cs@oncehappened.com)">
+  (cs@oncehappened.com)</a> to request deletion. Please be detailed what exactly you want to be removed in the query. 
+Where local law requires a higher age (e.g., 16 in some EEA countries), we rely on parental consent or deny service.
+
               </p>
-              <h2>Security</h2>
+              <h2> The information we collect:</h2>
               <p>
-                We implement reasonable security measures to protect your information from unauthorized access and disclosure.
+               We collect only what we need to operate the Service and give you best user experience:
+
+Account data (you provide):
+
+Email address.
+Password.
+Date of birth.
+Country.
+City.
+Gender.
+
+Technical & log data (collected automatically):
+
               </p>
-              <h2>Cookies</h2>
+              
               <p>
-                Our website uses cookies to enhance user experience. You can control cookie preferences through your browser settings.
+                IP address.
+Device identifiers (e.g., device ID, OS, app version, browser).
+Basic usage logs (date/time, pages/screens viewed, features used).
+
+Payments & subscriptions (via our payment processor):
+
+We use a third‑party payment processor to handle subscription payments. We receive limited billing metadata (e.g., transaction ID, status, plan, renewal dates) and do not receive full card numbers or bank details.
+
+💡 Readers are advised to use their “Secondary email” (which is not your official/personal/primary email with which your financial or social media information is associated) as a “sign up/ login” email inorder to add an extra precautionary measure to your privacy as we care deeply for privacy and data protection of our users.
+
+We do not intentionally collect special or sensitive categories of data (e.g., health, race, precise geolocation) and we do not profile users for targeted advertising.
+
               </p>
-              <h2>Your Choices</h2>
+              <h2>Cookies and similar technologies:</h2>
               <p>
-                You may update or delete your personal information by contacting us at <a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a>.
+                YWe use only what is necessary to run the Service (e.g., authentication, load balancing, security). If we add analytics or other optional cookies, we will present a consent banner and controls. You can also manage cookies via your browser settings.
+
+Global Privacy Control (GPC): If your browser sends a GPC or other recognized opt‑out preference signal, we will treat it as a valid request to opt out of any sale or sharing (if ever applicable).
+
+Do Not Track (DNT): We respond to GPC signals; industry standards for DNT are not uniform, but we strive to honor widely adopted controls.
+
+.
               </p>
-              <h2>Changes to this Privacy Policy</h2>
+              <h2>How We Use Your Information:</h2>
               <p>
-                We may update this policy from time to time. We encourage you to review this page periodically for any changes.
+                Your information is used to:
+
+Create and manage your account.
+Identify you across the Services and enable posting, sharing, and reading.
+Personalize your experience on the platform, communicate with you and provide you with technical and customer support services.
+Process payments, manage subscriptions, display advertisements.
+Detect and prevent fraud or unauthorized use.
+Comply with legal requirements.
+Analyse statistics to better understand our users, improve our Services, and develop new features in future.
+
               </p>
-              <h2>Contact Us</h2>
+              <h2>Why we use your data:</h2>
               <p>
-                For any questions about this policy, please reach out at <a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a>.
+               We use your personal information to provide, maintain, and improve the Once Happened Services safely and effectively. Specifically, your data helps us to:
+Create and Manage Accounts: Your email and password allow you to sign in and access your account securely.
+Provide and Improve Services: Your profile and demographic information (age, gender, location) help us personalize your experience. We can know our audience better and ensure quality content.
+Enable Story Sharing and Interaction: Your data allows you to post stories, share and interact with the community.
+Process Payments and Subscriptions: Payment information is securely handled through third-party processors to manage subscriptions.
+Security and Fraud Prevention: Device IDs, IP addresses, and login activity help us detect and prevent unauthorized access, abuse, or fraud.
+Legal and Regulatory Compliance: Some information may be used to comply with applicable laws or respond to legal requests.
+Communicate with You: We may use your email to send account-related notifications, subscription confirmations, or important updates about the platform.
+We also may use your Personal Information to enforce this Policy or our Terms of Service, to defend our legal rights and to comply with our legal obligations and internal policies.
+
               </p>
             </div>
           </main>
