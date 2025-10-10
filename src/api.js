@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2"; // Optional: For global error alerts (if using SweetAlert elsewhere)
 
 const api = axios.create({
-  baseURL: "http://dashboard.oncehappened.com/api",
+  baseURL: "https://dashboard.oncehappened.com/api",
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
