@@ -28,7 +28,7 @@ function About() {
             <div className="container">
                 <div className="content-wrapper" style={{ display: "flex" }}>
 
-                    <main className="main-section-parent prive-main-sec">
+                    <main className="main-section-parent prive-main-sec px-0">
                         {/* <div className="privacy-card">
                             <h1 >Privacy Policy <span> (Update Date:- 10/08/2025)</span></h1>
                         </div> */}

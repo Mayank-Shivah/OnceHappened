@@ -32,7 +32,7 @@ function ReturnPolicy() {
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
 
-          <main className="main-section-parent prive-main-sec">
+          <main className="main-section-parent prive-main-sec px-0">
 
             <div className="privacy-card d-flex align-items-center justify-content-between ">
               <div class="d-flex align-items-center">

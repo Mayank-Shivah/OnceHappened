@@ -134,7 +134,7 @@ function SupportSuggestion() {
     <div className={`main-layout ${theme}-theme`}>
       <div className="container">
         <div className="content-wrapper" style={{ display: "flex" }}>
-          <main className="main-section-parent">
+          <main className="main-section-parent px-0">
           
 
             {/* ============================ Support ============================ */}
