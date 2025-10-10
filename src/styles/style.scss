@@ -104,7 +104,7 @@ body.dark-theme {
   display: flex;
   // background: var(--bg-color);
   margin-top: 7px;
-  margin-bottom: 20px;
+
 
   @media (max-width: 1024px) {
     flex-wrap: wrap;
@@ -124,7 +124,7 @@ ul {
   margin: 0;
 }
 
-.main-section-parent {
+.main-section-parent:not(.sub-main-padding) {
   flex: 1 1;
   padding: 0rem 1rem 0rem 1rem;
 
@@ -1212,8 +1212,8 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
     display: none;
 }
 
-.main-section-parent .sub-main-padding{
-  padding-bottom: 0px  !important;
+.main-section-parent, .sub-main-padding{
+  padding-bottom: 0px !important;
 }
 .accepted-sec {
     padding-top: 10px;
@@ -1224,4 +1224,8 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
 }
 .about-text p{
   padding: 0px;
+}
+
+.main-section-parent:not(.sub-main-padding) {
+  padding-bottom: 20px; /* ya jo bhi default value chahiye */
 }
