@@ -502,9 +502,69 @@ p.text-set {
     padding: 0px;
     border: unset !important;
     color: var(--dark-text);
+    font-size: 19px;
     border-bottom: 1px solid #ffff00 !important;
 }
 .lang-dropdown.afterlogin {
 height: 600px;
 }
 
+.goog-te-combo, .VIpgJd-ZVi9od-ORHb *, .VIpgJd-ZVi9od-SmfZ *, .VIpgJd-ZVi9od-xl07Ob *, .VIpgJd-ZVi9od-vH1Gmf *, .VIpgJd-ZVi9od-l9xktf * {
+    font-family: arial;
+    font-size: 11pt;
+}
+
+.swal2-container.swal2-center.swal2-backdrop-show {
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+}
+
+div:where(.swal2-container) div:where(.swal2-popup) {
+
+    border-radius: var(--swal2-border-radius);
+    background: var(--header-bg) !important;
+    color: var(--dark-text) !important;
+    
+}
+
+.swal2-success-circular-line-left {
+    background: #00000000 !important;
+}
+
+.swal2-success-circular-line-right {
+    background: #00000000 !important;
+}
+div:where(.swal2-icon) {
+  border: unset; 
+}
+
+/* Main overlay with blur effect */
+.ReactModal__Overlay.ReactModal__Overlay--after-open {
+    position: fixed !important;
+    inset: 0px !important;
+    background-color: #d5d4d4c7 !important;
+    z-index: 1201 !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    overflow: hidden !important;
+   
+}
+
+/* Prevent background scrolling */
+body.ReactModal__Body--open,
+html.ReactModal__Html--open {
+    overflow: hidden !important;
+    position: fixed !important;
+   
+}
+
+/* Modal content styling */
+.ReactModal__Content.ReactModal__Content--after-open {
+
+
+    background: var(--header-bg) !important;
+    overflow: auto !important;
+
+   
+}

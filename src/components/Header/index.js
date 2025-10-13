@@ -222,9 +222,9 @@ export default function Header() {
                             
                           </div>
                           <div className="lang-option border-bottom-set">
-                            <a href="/subscription" className="link-button border-bottom-set" onClick={() => setShowLang(false)}>
+                            <Link to="/subscription" className="link-button border-bottom-set" onClick={() => setShowLang(false)}>
                               Subscription
-                            </a>
+                            </Link>
                           </div>
                           <div className="lang-option border-bottom-set">
                             <Link
