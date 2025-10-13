@@ -543,10 +543,10 @@ div:where(.swal2-icon) {
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
     position: fixed !important;
     inset: 0px !important;
-    background-color: #d5d4d4c7 !important;
+    background-color: #0606066e  !important;
     z-index: 1201 !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
     overflow: hidden !important;
    
 }
