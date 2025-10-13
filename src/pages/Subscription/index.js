@@ -1,31 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
 import { useNavigate } from "react-router-dom";
 import { loggedUser } from "../../services/authService";
-import axios from "axios";
 import api from "../../api";
+import Loader from "../../components/Loader";
 import "./style.scss";
-import { useAuth } from "../../context/AuthContext";  // adjust path as needed
-
+import { useAuth } from "../../context/AuthContext";
 
 export default function Subscription() {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const user = loggedUser();
-  const { user: loggedInUser, isAuth, fullUserData } = useAuth()
-  const [setFullUserData] = useState(null);;
-
-  const hasActiveSubscription = (() => {
-  if (!fullUserData?.subscription || !fullUserData.subscription.is_active)
-    return false;
-  const endDate = new Date(fullUserData.subscription.end_date);
-  return endDate > new Date();
-})();
-  
+  const { user: loggedInUser, isAuth, fullUserData } = useAuth();
 
   const [plans, setPlans] = useState([]);
-  // const [activeSub, setActiveSub] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Prevent duplicate API calls in Strict Mode (runs useEffect twice)
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
     if (!user) {
@@ -33,22 +26,26 @@ export default function Subscription() {
     }
   }, [user, navigate]);
 
-  // ✅ Fetch subscription plans
   useEffect(() => {
     const fetchPlans = async () => {
       try {
+        // 🧠 Prevent double execution
+        if (fetchedRef.current) return;
+        fetchedRef.current = true;
+
+        setLoading(true);
         const res = await api.get("/subscription");
         setPlans(res.data.subscription || []);
       } catch (error) {
         console.error("Error fetching plans:", error);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchPlans();
   }, []);
 
-
-
-  // ✅ Stripe checkout handler (Laravel endpoint)
   const handleCheckout = async (plan) => {
     try {
       const payload = {
@@ -62,32 +59,17 @@ export default function Subscription() {
       };
 
       const { data } = await api.post("/create-checkout-session", payload);
-      window.location.href = data.url; // redirect to Stripe checkout page
+      window.location.href = data.url;
     } catch (err) {
       console.error("Stripe checkout error:", err);
     }
   };
 
-  // Helper to get button content for price-list buttons
   const getPriceListButtonContent = (plan) => {
     if (!plan) return null;
-    const durationText = `${plan.duration} ${plan.duration_type}${plan.duration > 1 ? "s" : ""}`;
-    if (plan.duration_type === "day") {
-      return (
-        <>
-          ${plan.price}
-        </>
-      );
-    } else {
-      return (
-        <>
-          ${plan.price}
-        </>
-      );
-    }
+    return <>{`$${plan.price}`}</>;
   };
 
-  // Assume plans order: [0: day, 1: monthly, 2: 6mo, 3: yearly]
   const dayPlan = plans[0];
   const monthlyPlan = plans[1];
   const sixMonthPlan = plans[2];
@@ -101,225 +83,141 @@ export default function Subscription() {
           style={{ display: "flex", marginTop: "2px" }}
         >
           <main className="main-section-parent sub-main-sec px-0">
-            {/* ✅ Subscription Packages */}
-            <div className="policy-page mb-1 sub-parent-section">
-              {/* left-section */}
-              <div className="subscribe-box">
-                <h2 className="text-start">
-                  <span className="color-red">S</span>ubscribe to
-                </h2>
-                <p className="text-start">
-                  <strong>
-                    To unlock every post<br />and Remove all ads in just few bucks.
-                  </strong>
-                </p>
-                <div className="price-list">
-                  <div className="price-item  mb-2 ">
-                    <button
-                      className="price-tab  one-step"
-                      onClick={() => handleCheckout(yearlyPlan)}
-                    >
-                      <span class="custom-price-label">
-                        Day pass
-                      </span>
+            {loading ? (
+              <Loader />
+            ) : (
+              <>
+                {/* Subscription Packages */}
+                <div className="policy-page mb-1 sub-parent-section">
+                  <div className="subscribe-box">
+                    <h2 className="text-start">
+                      <span className="color-red">S</span>ubscribe to
+                    </h2>
+                    <p className="text-start">
+                      <strong>
+                        To unlock every post<br />and Remove all ads in just few bucks.
+                      </strong>
+                    </p>
 
-                      {getPriceListButtonContent(yearlyPlan)} for a day
-                    </button>
-                  </div>
-                  <div className="price-item  mb-2 ">
-                    <button
-                      className="price-tab one-step"
-                      onClick={() => handleCheckout(dayPlan)}
-                    >
-                      <span class="custom-price-label">
-                        Monthly
-                      </span>
-                      {getPriceListButtonContent(dayPlan)} per month
-                    </button>
-                  </div>
-                  {/* <div className="price-item  mb-2 deal-tab-sec">
-                    <button
-                      className="price-tab border-0 p-0"
-                      onClick={() => handleCheckout(yearlyPlan)}
-                    >
-                      {getPriceListButtonContent(yearlyPlan)}
-                    </button>
-                    <span className="d-block">★ {yearlyPlan?.tagline || "Deal of the day"}</span>
-                  </div> */}
-                  <div className="note">
-                    That will be around <span class="border-price">
-                      0.25 per day</span>, not much isn’t it?
+                    <div className="price-list">
+                      <div className="price-item mb-2">
+                        <button
+                          className="price-tab one-step"
+                          onClick={() => handleCheckout(yearlyPlan)}
+                        >
+                          <span className="custom-price-label">Day pass</span>
+                          {getPriceListButtonContent(yearlyPlan)} for a day
+                        </button>
+                      </div>
 
-                    {/* remove this line olny */}
-                  
-                  </div>
-                </div>
+                      <div className="price-item mb-2">
+                        <button
+                          className="price-tab one-step"
+                          onClick={() => handleCheckout(dayPlan)}
+                        >
+                          <span className="custom-price-label">Monthly</span>
+                          {getPriceListButtonContent(dayPlan)} per month
+                        </button>
+                      </div>
 
-                <div className="special-offer">
-                  {/* <strong className="mb-1">
-                    <span className="color-green fw-600">
-                      {user?.name || "Guest"}
-                    </span>
-                    , lets try for only a month & read all at once
-                  </strong> */}
-
-                  <div className="price-item highlight mb-2">
-                    <button
-                      className="price-tab one-step"
-                      onClick={() => handleCheckout(monthlyPlan)}
-                    >
-                      <span class="custom-price-label">
-                        Half Yearly
-                      </span>
-                      ${monthlyPlan?.price || 2.5} for 6 months
-                    </button>
-
-                  </div>
-                  <div className="price-item">
-
-                    <button
-                      className="price-tab one-step"
-                      onClick={() => handleCheckout(sixMonthPlan)}
-                    >
-                      <span class="custom-price-label ">
-                        Yearly
-                      </span>
-                      ${sixMonthPlan?.price || 7.5} per year
-                    </button>
-                  </div>
-                  <p class="text-center">
-               
-                    Deal of the day, around <span class="border-price"> 0.18 cents per day,</span> it sounds good.
-                    
-                
-                </p>
-
-                </div>
-              </div>
-
-              {/* right-section */}
-              <div className="subscribe-box ">
-                <h2 class="text-start">
-                  <span className="color-red g-color"> {user?.name || "Guest"},</span>
-                  </h2>
-                <p className="text-start">
-                  <strong>
-                    lets try for a <span class="border-price">day </span> or  <span class="border-price">a month
-                    </span> <span class="border-price">&
-                    </span>
-                    <span class="border-price">  read
-                    </span> all <br/>stories in one go.
-                  </strong>
-                </p>
-                <p className="text-start">
-                  <strong>Let’s begin with,
-                  </strong>
-                </p>
-                <div className="price-list">
-                  <div className="price-item  mb-2 ">
-                    <button
-                      className="price-tab  one-step"
-                      onClick={() => handleCheckout(yearlyPlan)}
-                    >
-                      <span class="custom-price-label">
-                        Day pass
-                      </span>
-                      {getPriceListButtonContent(yearlyPlan)} only for a day
-                    </button>
-                  </div>
-                  <p>
-                    That will be  <span className="border-price">
-                      0.10 per hour.
-                    </span>
-                  </p>
-                  <div className="price-item  mb-2 ">
-                    <button
-                      className="price-tab  one-step"
-                      onClick={() => handleCheckout(dayPlan)}
-                    >
-                      <span class="custom-price-label">
-                        Monthly
-                      </span>
-                      {getPriceListButtonContent(dayPlan)} per month
-                    </button>
-                  </div>
-                  {/* <div className="price-item  mb-2 deal-tab-sec">
-                    <button
-                      className="price-tab border-0 p-0"
-                      onClick={() => handleCheckout(yearlyPlan)}
-                    >
-                      {getPriceListButtonContent(yearlyPlan)}
-                    </button>
-                    <span className="d-block">★ {yearlyPlan?.tagline || "Deal of the day"}</span>
-                  </div> */}
-                  <div className="note">
-                    That will be around <span class="border-price">0.25 per day</span>, not that much isn’t it?
-                    
-                  </div>
-                   <div>
-                  <h4 class="mt-1">
-                    <strong>
-                      Thanks.
-                    </strong>
-                    </h4>
-
-                </div>
-                </div>
-               
-                
-                
-              </div>
-            </div>
-
-            {/* ✅ Active Subscription */}
-            <div className="policy-page">
-              <div className="subscribe-box onging-sub border-0 w-100">
-                <h2>Your ongoing subscription:</h2>
-                {!fullUserData?.subscription ? (
-                  <>
-                    <p>
-                     You currently don’t have any, let’s get and see how it’s like
- 
-                    </p>                    
-                  </>
-                ) : (
-                  <div className="price-list">
-                    <div className="price-item">
-                      Your current subscription: ${fullUserData.subscription.amount}{" "}
-                      {/* <span>
-                        per {fullUserData.subscription.subscription?.duration_type}
-                      </span> */}
-                    </div>
-                    <div className="price-item">
-                      Your subscription expiring ons:{" "}
-                      {new Date(fullUserData.subscription.end_date).toLocaleString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true,
-                      })}
-
-                    </div>
-                    <div className="price-item ">
-                      <button
-                        className="price-tab"
-                        onClick={() =>
-                          handleCheckout(dayPlan)
-                          // handleCheckout(fullUserData.subscription.subscription)
-                        }
-                      >
-                        extend 1 more Month
-                      </button>
+                      <div className="note">
+                        That will be around{" "}
+                        <span className="border-price">0.25 per day</span>, not much isn’t it?
+                      </div>
                     </div>
                   </div>
-                )}
 
+                  {/* right-section */}
+                  <div className="subscribe-box">
+                    <h2 className="text-start">
+                      <span className="color-red g-color">{user?.name || "Guest"},</span>
+                    </h2>
+                    <p className="text-start">
+                      <strong>
+                        lets try for a <span className="border-price">day</span> or{" "}
+                        <span className="border-price">a month</span> & read all stories in one go.
+                      </strong>
+                    </p>
+                    <p className="text-start">
+                      <strong>Let’s begin with,</strong>
+                    </p>
 
-                
-              </div>
-            </div>
+                    <div className="price-list">
+                      <div className="price-item mb-2">
+                        <button
+                          className="price-tab one-step"
+                          onClick={() => handleCheckout(yearlyPlan)}
+                        >
+                          <span className="custom-price-label">Day pass</span>
+                          {getPriceListButtonContent(yearlyPlan)} only for a day
+                        </button>
+                      </div>
+
+                      <p>
+                        That will be{" "}
+                        <span className="border-price">0.10 per hour.</span>
+                      </p>
+
+                      <div className="price-item mb-2">
+                        <button
+                          className="price-tab one-step"
+                          onClick={() => handleCheckout(dayPlan)}
+                        >
+                          <span className="custom-price-label">Monthly</span>
+                          {getPriceListButtonContent(dayPlan)} per month
+                        </button>
+                      </div>
+
+                      <div className="note">
+                        That will be around{" "}
+                        <span className="border-price">0.25 per day</span>, not that much isn’t it?
+                      </div>
+
+                      <div>
+                        <h4 className="mt-1">
+                          <strong>Thanks.</strong>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Active Subscription */}
+                <div className="policy-page">
+                  <div className="subscribe-box onging-sub border-0 w-100">
+                    <h2>Your ongoing subscription:</h2>
+                    {!fullUserData?.subscription ? (
+                      <p>You currently don’t have any, let’s get and see how it’s like</p>
+                    ) : (
+                      <div className="price-list">
+                        <div className="price-item">
+                          Your current subscription: ${fullUserData.subscription.amount}
+                        </div>
+                        <div className="price-item">
+                          Your subscription expires on:{" "}
+                          {new Date(fullUserData.subscription.end_date).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </div>
+                        <div className="price-item">
+                          <button
+                            className="price-tab"
+                            onClick={() => handleCheckout(dayPlan)}
+                          >
+                            Extend 1 more month
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </main>
 
           <div className="d-block d-md-none">

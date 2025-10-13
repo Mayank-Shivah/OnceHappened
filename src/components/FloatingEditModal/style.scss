@@ -1,9 +1,9 @@
 .fab-pen-animate {
     position: fixed;
     right: 3px;
-    background: #fff;
+    background: var(--header-bg);
     bottom: 150px;
-    color: #000000;
+    color: var(--dark-text);
     width: 47px;
     height: 48px;
     border-radius: 15px;
@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #000;
+    border: 1px solid var(--dark-text);
     cursor: pointer;
     transition: box-shadow 0.22s, transform 0.22s;
     opacity: 9;
