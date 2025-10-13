@@ -124,19 +124,50 @@ ul {
   margin: 0;
 }
 
-.main-section-parent:not(.sub-main-padding) {
+// .main-section-parent:not(.sub-main-padding) {
+//   flex: 1 1;
+//   padding: 0rem 1rem 0rem 1rem;
+
+//   @media only screen and (min-width: 600px) and (max-width: 1024px) {
+//     padding-bottom: 97px !important;
+//     padding: 0;
+//   }
+
+//   @media (max-width: 600px) {
+//     padding: 0;
+//     padding-bottom: 98px;
+//   }
+// }
+.main-section-parent {
   flex: 1 1;
   padding: 0rem 1rem 0rem 1rem;
+}
 
-  @media only screen and (min-width: 600px) and (max-width: 1024px) {
-    padding-bottom: 97px !important;
+@media only screen and (min-width: 600px) and (max-width: 1024px) {
+  .main-section-parent {
     padding: 0;
+    padding-bottom: 97px !important;
   }
+}
 
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
+  .main-section-parent {
     padding: 0;
     padding-bottom: 98px;
   }
+
+}
+@media (max-width:1024px) {
+    .main-section-parent.sub-main-padding{
+    padding: 0px !important;
+  }
+}
+/* If you want `.sub-main-padding` to override these, add its styles below: */
+.main-section-parent.sub-main-padding {
+    padding: 2px 0px;
+    flex: 1 1;
+    padding: 0px 10px 0px 10px;
+  
 }
 
 /* Add your layout styles for header, sidebar, footer etc. */
@@ -1212,9 +1243,7 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
     display: none;
 }
 
-.main-section-parent, .sub-main-padding{
-  padding-bottom: 0px !important;
-}
+
 .accepted-sec {
     padding-top: 10px;
     padding-left: 8px;
@@ -1226,6 +1255,3 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
   padding: 0px;
 }
 
-.main-section-parent:not(.sub-main-padding) {
-  padding-bottom: 20px; /* ya jo bhi default value chahiye */
-}
