@@ -3,12 +3,14 @@ import "./style.scss";
 import api from "../../api"; // axios instance
 import Swal from "sweetalert2"; // ✅ Added SweetAlert import
 import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+import { Link } from "react-router-dom";
 
 
 export default function SidebarRight() {
   const [ads, setAds] = useState([]);
   const [trialEnded, setTrialEnded] = useState(false);
-  const { hasActiveSubscription } = useAuth();
+  const { user, isAuth, hasActiveSubscription } = useAuth();
+
   
 
   useEffect(() => {
@@ -62,21 +64,42 @@ export default function SidebarRight() {
             <p>Loading Ads...</p>
           )}
 
-          <div className="ad-label d-none d-md-block">Advertisement</div>
+          {isAuth && !hasActiveSubscription && (
+          <div className="ad-label d-none d-md-block">Go add-free?</div>
+          )}
+          {isAuth && !hasActiveSubscription && (
+          <div className="trials-sece d-none d-md-block">
+            <Link to="/subscription" className="trial-complete-btn">
+              Subscribe Now
+            </Link>
+          </div>
+          )}
+          {hasActiveSubscription && (
 
-          {/* Demo trial complete button */}
+           <div className="ad-label d-none d-md-block">Enjoy add-free content</div>
+          )}
+          {hasActiveSubscription && (
           <div className="trials-sece d-none d-md-block">
             <button
               onClick={() => setTrialEnded(true)}
               className="trial-complete-btn"
             >
-              Simulate Trial Complete
+              Subscription Status.
             </button>
           </div>
+          )}
+
+
         </div>
       ) : (
+
         <div className="trial-ended-message d-none d-md-block">
-          <strong>Your free trial has ended.</strong>
+          {hasActiveSubscription && (
+          <strong>You have an active subscription.</strong>
+          )}
+          {!hasActiveSubscription && (
+          <span>You don't have an active subscription</span>
+          )}
         </div>
       )}
     </aside>

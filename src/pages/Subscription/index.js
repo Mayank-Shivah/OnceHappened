@@ -116,7 +116,9 @@ export default function Subscription() {
                           </button>
                         </div>
                       )}
-
+                      <div className="note">
+                        That will be around <span className="border-price">0.25 per day</span>, not much isn’t it?
+                      </div>
                       {/* Six Month Plan */}
                       {sixMonthPlan && (
                         <div className="price-item highlight mb-2">
@@ -136,9 +138,7 @@ export default function Subscription() {
                         </div>
                       )}
 
-                      <div className="note">
-                        That will be around <span className="border-price">0.25 per day</span>, not much isn’t it?
-                      </div>
+                      
 
                       <p className="text-center">
                         Deal of the day, around <span className="border-price">0.18 cents per day,</span> it sounds good.
