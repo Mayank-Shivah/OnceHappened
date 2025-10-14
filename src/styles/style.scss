@@ -1295,3 +1295,12 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
 .count-number{
   color: var(--dark-text);
 }
+.custom-otp{
+background-color: rgba(255, 255, 255, 0);
+    border: none;
+    border-radius: 0px;
+    color: var(--dark-text);
+    font-weight: 600;
+        padding: 10px;
+    border-bottom: 2px solid yellow !important;
+}

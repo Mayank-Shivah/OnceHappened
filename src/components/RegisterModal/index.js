@@ -187,7 +187,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                       type="email"
                       name="email"
                       id="email"
-                      className="form-control ps-2"
+                      className="form-controls ps-2"
                       placeholder="Enter your email"
                       value={formik.values.email}
                       onChange={formik.handleChange}
@@ -215,7 +215,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                     type="email"
                     name="email"
                     id="email"
-                    className="form-control ps-2"
+                    className="form-controls ps-2"
                     placeholder="Enter your email"
                     value={formik.values.email}
                     onChange={formik.handleChange}
@@ -228,7 +228,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                 {!otpSent && (
                   <button
                     type="button"
-                    className="btn btn-sm btn-secondary mt-2"
+                    className="btn btn-sm custom-otp mt-2"
                     disabled={!formik.values.email || otpLoading}
                     onClick={async () => {
                       if (!formik.values.email) return Swal.fire("Error", "Please enter email", "error");
@@ -250,17 +250,17 @@ export default function RegisterModal({ onClose, openLogin }) {
 
                 {/* ✅ OTP Field */}
                 {otpSent && !verified && (
-                  <div className="mt-2">
+                  <div className="mt-2 form-group">
                     <input
                       type="text"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      className="form-control ps-2"
+                      className="form-controls ps-2"
                       placeholder="Enter OTP"
                     />
                     <button
                       type="button"
-                      className="btn btn-sm btn-success mt-2"
+                      className="btn btn-sm custom-otp mt-2"
                       onClick={async () => {
                         try {
                           const res = await verifyOtps(formik.values.email, otp);
@@ -282,7 +282,7 @@ export default function RegisterModal({ onClose, openLogin }) {
 
                 {/* ✅ Status */}
                 {verified && (
-                  <p className="text-success small mt-2">✅ Email verified successfully</p>
+                  <p className=" small mt-2">✅ Email verified successfully</p>
                 )}
 
                 {formik.errors.email && (
@@ -303,7 +303,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                     type="text"
                     name="nickname"
                     id="nickname"
-                    className="form-control ps-2"
+                    className="form-controls ps-2"
                     placeholder="Nickname"
                     value={formik.values.nickname}
                     onChange={formik.handleChange}
@@ -330,7 +330,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       id="password"
-                      className="form-control ps-2"
+                      className="form-controls ps-2"
                       placeholder="Enter your password"
                       value={formik.values.password}
                       onChange={formik.handleChange}
@@ -360,7 +360,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                       type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       id="confirmPassword"
-                      className="form-control ps-2"
+                      className="form-controls ps-2"
                       placeholder="Re-enter your password"
                       value={formik.values.confirmPassword}
                       onChange={formik.handleChange}
@@ -484,7 +484,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   value={formik.values.city}
                   maxLength={15}
                   onChange={formik.handleChange}
-                  className="form-control ps-2"
+                  className="form-controls ps-2"
                 />
                 {formik.errors.city && (
                   <p className="field__message error-msg">
@@ -503,7 +503,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                   maxLength={15}
                   value={formik.values.country}
                   onChange={formik.handleChange}
-                  className="form-control ps-2"
+                  className="form-controls ps-2"
                   autoComplete="off"
                 />
                 <datalist id="country-list">
