@@ -12,6 +12,8 @@ import {
 import ClipLoader from "react-spinners/ClipLoader";
 import { register } from "../../services/authService";
 import { toast } from "react-toastify";
+import { sendOtp, verifyOtps } from "../../services/authService";
+
 
 export default function RegisterModal({ onClose, openLogin }) {
   useScrollLock(true);
@@ -19,6 +21,12 @@ export default function RegisterModal({ onClose, openLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [verified, setVerified] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+
 
   const formik = useFormik({
     initialValues: {
@@ -72,6 +80,11 @@ export default function RegisterModal({ onClose, openLogin }) {
     validateOnChange: false, // show errors only when clicking Sign Up
     validateOnBlur: false,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
+       if (!verified) {
+        Swal.fire("Verify Email", "Please verify your email with OTP before signing up.", "warning");
+        return;
+      }
+
       setLoading(true);
       try {
         const payload = {
@@ -165,7 +178,7 @@ export default function RegisterModal({ onClose, openLogin }) {
             {/* Email + Nickname */}
             <div className="row">
               <div className="col-md-6">
-                <div className="form-group mt-2">
+                <div className="form-group mt-2 d-none">
                   <label htmlFor="email" className="d-block pb-2">
                     Email id
                   </label>
@@ -189,7 +202,99 @@ export default function RegisterModal({ onClose, openLogin }) {
                   )}
                 </div>
               </div>
-              <div className="col-md-6">
+
+
+
+
+              <div className="form-group mt-2">
+                <label htmlFor="email" className="d-block pb-2">
+                  Email id
+                </label>
+                <div className="position-relative d-flex align-items-center pt-1">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="form-control ps-2"
+                    placeholder="Enter your email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    disabled={otpSent || verified}
+                  />
+                  <FontAwesomeIcon icon={faEnvelope} className="input-icon position-absolute end-0 pe-2" />
+                </div>
+
+                {/* ✅ Send OTP Button */}
+                {!otpSent && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-secondary mt-2"
+                    disabled={!formik.values.email || otpLoading}
+                    onClick={async () => {
+                      if (!formik.values.email) return Swal.fire("Error", "Please enter email", "error");
+                      setOtpLoading(true);
+                      try {
+                        await sendOtp(formik.values.email);
+                        Swal.fire("OTP Sent!", "Check your email inbox", "success");
+                        setOtpSent(true);
+                      } catch (err) {
+                        Swal.fire("Error", "Failed to send OTP", "error");
+                      } finally {
+                        setOtpLoading(false);
+                      }
+                    }}
+                  >
+                    {otpLoading ? "Sending..." : "Send OTP"}
+                  </button>
+                )}
+
+                {/* ✅ OTP Field */}
+                {otpSent && !verified && (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="form-control ps-2"
+                      placeholder="Enter OTP"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-success mt-2"
+                      onClick={async () => {
+                        try {
+                          const res = await verifyOtps(formik.values.email, otp);
+                          if (res.data.success) {
+                            Swal.fire("Verified!", "Email verified successfully", "success");
+                            setVerified(true);
+                          } else {
+                            Swal.fire("Invalid OTP", "Please try again", "error");
+                          }
+                        } catch {
+                          Swal.fire("Error", "Failed to verify OTP", "error");
+                        }
+                      }}
+                    >
+                      Verify OTP
+                    </button>
+                  </div>
+                )}
+
+                {/* ✅ Status */}
+                {verified && (
+                  <p className="text-success small mt-2">✅ Email verified successfully</p>
+                )}
+
+                {formik.errors.email && (
+                  <p className="field__message error-msg">
+                    <FontAwesomeIcon icon={faCircleExclamation} /> {formik.errors.email}
+                  </p>
+                )}
+              </div>
+
+
+
+              <div className="col-md-12">
                 <div className="form-group mt-2">
                   <label htmlFor="nickname" className="d-block pb-2">
                     Your Nickname
