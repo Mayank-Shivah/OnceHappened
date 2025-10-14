@@ -53,7 +53,7 @@ function useRestrictInteractions() {
 }
 
 function App() {
-  // useRestrictInteractions(); // globally restrict interactions
+   useRestrictInteractions(); // globally restrict interactions
 
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);

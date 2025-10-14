@@ -124,6 +124,9 @@ export default function Subscription() {
                         That will be around{" "}
                         <span className="border-price">0.25 per day</span>, not much isn’t it?
                       </div>
+
+
+                      <div className="special-offer"> {/* <strong className="mb-1"> <span className="color-green fw-600"> {user?.name || "Guest"} </span> , lets try for only a month & read all at once </strong> */} <div className="price-item highlight mb-2"> <button className="price-tab one-step" onClick={() => handleCheckout(monthlyPlan)} > <span class="custom-price-label"> Half Yearly </span> ${monthlyPlan?.price || 2.5} for 6 months </button> </div> <div className="price-item"> <button className="price-tab one-step" onClick={() => handleCheckout(sixMonthPlan)} > <span class="custom-price-label "> Yearly </span> ${sixMonthPlan?.price || 7.5} per year </button> </div> <p class="text-center"> Deal of the day, around <span class="border-price"> 0.18 cents per day,</span> it sounds good. </p> </div>
                     </div>
                   </div>
 
