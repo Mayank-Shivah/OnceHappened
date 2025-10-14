@@ -22,6 +22,16 @@ export const login = async (email, password) => {
   return response.data;
 };
 
+
+
+
+// send OTP
+export const sendOtp = (email) => api.post("/send-otp", { email });
+
+// verify OTP
+export const verifyOtps = (email, otp) => api.post("/verify-otps", { email, otp });
+
+
 // 🔹 Register user
 export const register = async (payload) => {
   const response = await api.post("/register", payload);
