@@ -17,7 +17,7 @@ export default function Subscription() {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Prevent duplicate API calls in Strict Mode (runs useEffect twice)
+  // Prevent duplicate API calls in Strict Mode (runs useEffect twice)
   const fetchedRef = useRef(false);
 
   useEffect(() => {
@@ -29,7 +29,6 @@ export default function Subscription() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        // 🧠 Prevent double execution
         if (fetchedRef.current) return;
         fetchedRef.current = true;
 
@@ -70,18 +69,16 @@ export default function Subscription() {
     return <>{`$${plan.price}`}</>;
   };
 
-  const dayPlan = plans[0];
-  const monthlyPlan = plans[1];
-  const sixMonthPlan = plans[2];
-  const yearlyPlan = plans[3];
+  // Assign plans safely by array index if they exist
+  const dayPlan = plans.find(p => p.name.toLowerCase().includes("day")) || null;
+  const monthlyPlan = plans.find(p => p.name.toLowerCase().includes("month")) || null;
+  const sixMonthPlan = plans.find(p => p.name.toLowerCase().includes("6 month") || p.name.toLowerCase().includes("half year")) || null;
+  const yearlyPlan = plans.find(p => p.name.toLowerCase().includes("year")) || null;
 
   return (
     <div className={`main-layout ${theme}-theme`}>
       <div className="container">
-        <div
-          className="content-wrapper"
-          style={{ display: "flex", marginTop: "2px" }}
-        >
+        <div className="content-wrapper" style={{ display: "flex", marginTop: "2px" }}>
           <main className="main-section-parent sub-main-sec px-0">
             {loading ? (
               <Loader />
@@ -100,45 +97,63 @@ export default function Subscription() {
                     </p>
 
                     <div className="price-list">
-                      <div className="price-item mb-2">
-                        <button
-                          className="price-tab one-step"
-                          onClick={() => handleCheckout(yearlyPlan)}
-                        >
-                          <span className="custom-price-label">Day pass</span>
-                          {getPriceListButtonContent(yearlyPlan)} for a day
-                        </button>
-                      </div>
+                      {/* Day Pass */}
+                      {dayPlan && (
+                        <div className="price-item mb-2">
+                          <button className="price-tab one-step" onClick={() => handleCheckout(dayPlan)}>
+                            <span className="custom-price-label">Day Pass</span>
+                            {getPriceListButtonContent(dayPlan)} for a day
+                          </button>
+                        </div>
+                      )}
 
-                      <div className="price-item mb-2">
-                        <button
-                          className="price-tab one-step"
-                          onClick={() => handleCheckout(dayPlan)}
-                        >
-                          <span className="custom-price-label">Monthly</span>
-                          {getPriceListButtonContent(dayPlan)} per month
-                        </button>
-                      </div>
+                      {/* Monthly Plan */}
+                      {monthlyPlan && (
+                        <div className="price-item mb-2">
+                          <button className="price-tab one-step" onClick={() => handleCheckout(monthlyPlan)}>
+                            <span className="custom-price-label">Monthly</span>
+                            {getPriceListButtonContent(monthlyPlan)} per month
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Six Month Plan */}
+                      {sixMonthPlan && (
+                        <div className="price-item highlight mb-2">
+                          <button className="price-tab one-step" onClick={() => handleCheckout(sixMonthPlan)}>
+                            <span className="custom-price-label">Half Yearly</span> {getPriceListButtonContent(sixMonthPlan)} for 6 months
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Yearly Plan */}
+                      {yearlyPlan && (
+                        <div className="price-item">
+                          <button className="price-tab one-step" onClick={() => handleCheckout(yearlyPlan)}>
+                            <span className="custom-price-label">Yearly</span>
+                            {getPriceListButtonContent(yearlyPlan)} per year
+                          </button>
+                        </div>
+                      )}
 
                       <div className="note">
-                        That will be around{" "}
-                        <span className="border-price">0.25 per day</span>, not much isn’t it?
+                        That will be around <span className="border-price">0.25 per day</span>, not much isn’t it?
                       </div>
 
-
-                      <div className="special-offer"> {/* <strong className="mb-1"> <span className="color-green fw-600"> {user?.name || "Guest"} </span> , lets try for only a month & read all at once </strong> */} <div className="price-item highlight mb-2"> <button className="price-tab one-step" onClick={() => handleCheckout(monthlyPlan)} > <span class="custom-price-label"> Half Yearly </span> ${monthlyPlan?.price || 2.5} for 6 months </button> </div> <div className="price-item"> <button className="price-tab one-step" onClick={() => handleCheckout(sixMonthPlan)} > <span class="custom-price-label "> Yearly </span> ${sixMonthPlan?.price || 7.5} per year </button> </div> <p class="text-center"> Deal of the day, around <span class="border-price"> 0.18 cents per day,</span> it sounds good. </p> </div>
+                      <p className="text-center">
+                        Deal of the day, around <span className="border-price">0.18 cents per day,</span> it sounds good.
+                      </p>
                     </div>
                   </div>
 
-                  {/* right-section */}
+                  {/* Right Section */}
                   <div className="subscribe-box">
                     <h2 className="text-start">
                       <span className="color-red g-color">{user?.name || "Guest"},</span>
                     </h2>
                     <p className="text-start">
                       <strong>
-                        lets try for a <span className="border-price">day</span> or{" "}
-                        <span className="border-price">a month</span> & read all stories in one go.
+                        Let's try for a <span className="border-price">day</span> or <span className="border-price">a month</span> & read all stories in one go.
                       </strong>
                     </p>
                     <p className="text-start">
@@ -146,34 +161,28 @@ export default function Subscription() {
                     </p>
 
                     <div className="price-list">
-                      <div className="price-item mb-2">
-                        <button
-                          className="price-tab one-step"
-                          onClick={() => handleCheckout(yearlyPlan)}
-                        >
-                          <span className="custom-price-label">Day pass</span>
-                          {getPriceListButtonContent(yearlyPlan)} only for a day
-                        </button>
-                      </div>
+                      {dayPlan && (
+                        <div className="price-item mb-2">
+                          <button className="price-tab one-step" onClick={() => handleCheckout(dayPlan)}>
+                            <span className="custom-price-label">Day pass</span>
+                            {getPriceListButtonContent(dayPlan)} only for a day
+                          </button>
+                        </div>
+                      )}
 
-                      <p>
-                        That will be{" "}
-                        <span className="border-price">0.10 per hour.</span>
-                      </p>
+                      <p>That will be <span className="border-price">0.10 per hour.</span></p>
 
-                      <div className="price-item mb-2">
-                        <button
-                          className="price-tab one-step"
-                          onClick={() => handleCheckout(dayPlan)}
-                        >
-                          <span className="custom-price-label">Monthly</span>
-                          {getPriceListButtonContent(dayPlan)} per month
-                        </button>
-                      </div>
+                      {monthlyPlan && (
+                        <div className="price-item mb-2">
+                          <button className="price-tab one-step" onClick={() => handleCheckout(monthlyPlan)}>
+                            <span className="custom-price-label">Monthly</span>
+                            {getPriceListButtonContent(monthlyPlan)} per month
+                          </button>
+                        </div>
+                      )}
 
                       <div className="note">
-                        That will be around{" "}
-                        <span className="border-price">0.25 per day</span>, not that much isn’t it?
+                        That will be around <span className="border-price">0.25 per day</span>, not that much isn’t it?
                       </div>
 
                       <div>
@@ -208,10 +217,7 @@ export default function Subscription() {
                           })}
                         </div>
                         <div className="price-item">
-                          <button
-                            className="price-tab"
-                            onClick={() => handleCheckout(dayPlan)}
-                          >
+                          <button className="price-tab" onClick={() => handleCheckout(dayPlan)}>
                             Extend 1 more month
                           </button>
                         </div>

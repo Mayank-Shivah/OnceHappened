@@ -1,5 +1,6 @@
 // src/App.js
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import ThemeProvider from "./components/ThemeProvider"; // Persisted theme!
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
@@ -25,21 +26,55 @@ import Cancel from "./pages/Subscription/Cancel";
 // Custom hook to restrict copy, paste, cut, right-click, and shortcuts
 function useRestrictInteractions() {
   useEffect(() => {
-    const preventDefault = e => e.preventDefault();
+    const preventDefault = (e) => e.preventDefault();
+    // Disable copy, cut, paste, right-click
     document.addEventListener("copy", preventDefault);
     document.addEventListener("cut", preventDefault);
     document.addEventListener("paste", preventDefault);
     document.addEventListener("contextmenu", preventDefault);
 
-    const blockKeys = e => {
+    const blockKeys = (e) => {
+      // Block inspect shortcuts Ctrl+Shift+I or Ctrl+Shift+J or F12
       if (
         (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
         e.key === "F12"
       ) {
         e.preventDefault();
-        alert("Inspect is disabled");
+        Swal.fire({
+          icon: "warning",
+          title: "Inspect is disabled",
+          timer: 30000,
+          showConfirmButton: true,
+          backdrop: `rgba(0,0,0,0.4)`,
+          customClass: { popup: "swal-custom-popup" },
+          didOpen: (popup) => {
+            popup.parentNode.style.zIndex = "9999999999999999999";
+            const overlay = document.querySelector(".swal2-container");
+            if (overlay) overlay.style.zIndex = "9999999998";
+          },
+        });
+      }
+
+      // Block Ctrl+V, Ctrl+C, Ctrl+A
+      if (
+        e.ctrlKey &&
+        ["v", "c", "a"].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
+        Swal.fire({
+          icon: "warning",
+          title: "Copy, Paste, and Select All are disabled",
+          showConfirmButton: true,
+          backdrop: `rgba(0,0,0,0.4)`,
+          didOpen: (popup) => {
+            popup.parentNode.style.zIndex = "9999999999999999999";
+            const overlay = document.querySelector(".swal2-container");
+            if (overlay) overlay.style.zIndex = "9999999998";
+          },
+        });
       }
     };
+
     document.addEventListener("keydown", blockKeys);
 
     return () => {
@@ -51,9 +86,8 @@ function useRestrictInteractions() {
     };
   }, []);
 }
-
 function App() {
-   useRestrictInteractions(); // globally restrict interactions
+  useRestrictInteractions(); // globally restrict interactions
 
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);
@@ -65,7 +99,7 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn()) {
-      startIdleTimer(30 * 60 * 1000); // e.g., 30 minutes
+      startIdleTimer(30 * 60 * 1000); // 30 minutes
     }
     // Apply saved language preference to Google translate widget
     const timer = setTimeout(() => {
