@@ -169,9 +169,16 @@ export default function RegisterModal({ onClose, openLogin }) {
                 }}
                 onClick={openLogin}
               >
-                Login here
+                <strong>
+                  Login here
+                </strong>
               </button>
             </p>
+            <h6 className="text-center mb-3">
+              <strong>
+                Sign Up
+              </strong>
+            </h6>
           </div>
 
           <form onSubmit={formik.handleSubmit} className="w-100">
@@ -226,7 +233,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                 {!otpSent && (
                   <button
                     type="button"
-                    className="btn btn-sm custom-otp mt-2"
+                    className="btn btn-sm custom-otp mt-2 d-flex align-items-center m-auto"
                     disabled={!formik.values.email || otpLoading}
                     onClick={async () => {
                       if (!formik.values.email) return Swal.fire("Error", "Please enter email", "error");
@@ -253,7 +260,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                       type="text"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      className="form-controls ps-2"
+                      className="form-controls ps-2 d-flex m-auto align-items-center"
                       placeholder="Enter OTP"
                     />
                     <button

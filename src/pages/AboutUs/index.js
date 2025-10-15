@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
+import BackButton from "../../components/BackButton";
 function About() {
     const { theme } = useContext(ThemeContext);
 
@@ -31,8 +32,15 @@ function About() {
                     <main className="main-section-parent prive-main-sec px-0">
                         {/* <div className="privacy-card">
                             <h1 >Privacy Policy <span> (Update Date:- 10/08/2025)</span></h1>
-                        </div> */}
-                        <div className="policy-page about-text" >
+                        </div> */} <div className="privacy-card d-flex align-items-center justify-content-between ">
+                                      <div class="d-flex align-items-center">
+                                        <BackButton />
+                                        <h1 >About Us </h1>
+                                      </div>
+                        
+                                
+                                    </div>
+                        <div className="policy-page about-text" > 
                             <p>
                                 We are a personal experiences sharing platform where people post what they have read somewhere, remember about, have personally experienced, or somebody they know experienced, so that all readers learn a thing or two from it and enrich their wisdom which can help them in future interactions with the world.
                             </p>
