@@ -209,7 +209,7 @@ export default function Header() {
                           <div className="lang-option border-bottom-set">
                             <FontSizeChanger />
                           </div>
-                          <div className="lang-option border-bottom-set">
+                          <div className="lang-option border-bottom-set d-none">
                             <button type="button" className="link-button" onClick={changeLanguage}>
                               Translate To
                             </button>

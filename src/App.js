@@ -63,7 +63,7 @@ function useRestrictInteractions() {
         e.preventDefault();
         Swal.fire({
           icon: "warning",
-          title: "Copy, Paste, and Select All are disabled",
+          title: "copy-pasting is disabled",
           showConfirmButton: true,
           backdrop: `rgba(0,0,0,0.4)`,
           didOpen: (popup) => {
@@ -87,7 +87,7 @@ function useRestrictInteractions() {
   }, []);
 }
 function App() {
-  useRestrictInteractions(); // globally restrict interactions
+  // useRestrictInteractions(); // globally restrict interactions
 
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);

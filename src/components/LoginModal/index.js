@@ -203,10 +203,12 @@
             Want to create an account?
           <button
             type="button"
-            className="custom-link bg-transparent border-0 p-0"
+            className=" ms-1 custom-link bg-transparent border-0 p-0 fw-700"
             onClick={openSignup}
           >
-            Sign Up
+          <strong>
+              Sign Up
+          </strong>
           </button>
         </p>
       </div>

@@ -38,8 +38,10 @@ function About() {
                             </p>
                                <p>
                                
-                                As the wise say, <em>
+                                As the wise say, <strong>
+                                    <em>
                                     "sharing is caring." </em>  
+                                </strong>
                                     If you share your wisdom with others, you receive twice, even thrice, of what you have shared. Our platform works on this principle, as it is evident: you share one story, and you get to learn from thousands of stories written once or twice by thousands of readers. Thus, increasing your knowledge and day-to-day "deep" awareness about society twice or thrice of what you currently have via real-life stories.
 
                              
