@@ -2,8 +2,13 @@ import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "../components/ThemeProvider";
 import SidebarRight from "../components/SidebarRight";
 import BackButton from "../components/BackButton";
+import { useAuth } from "../context/AuthContext";  // adjust path as needed
+
+
 function PrivacyPolicy() {
   const { theme } = useContext(ThemeContext);
+     const { user: loggedInUser, isAuth, fullUserData, hasActiveSubscription } = useAuth();
+  
 
 
   useEffect(() => {
@@ -24,6 +29,42 @@ function PrivacyPolicy() {
       metaTag.setAttribute("content", "noindex, nofollow");
     };
   }, []);
+
+  const handleDeleteAccount = async () => {
+  const confirmation = window.confirm(
+    "⚠️ Once you delete your account, all your data and posts will be permanently removed. You won’t be able to access this account in the future.\n\nDo you really want to delete your account?"
+  );
+
+  if (!confirmation) return; // User cancelled
+
+  try {
+    // Send delete request to your backend API
+    const response = await fetch(`/api/delete-account`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${fullUserData?.token}`, // if using JWT
+      },
+      body: JSON.stringify({ userId: fullUserData?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("Your account has been permanently deleted.");
+      // Log out user after deletion
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "/"; // redirect to homepage
+    } else {
+      alert(result.message || "Failed to delete your account. Try again later.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred. Please try again.");
+  }
+};
+
 
 
 
@@ -179,13 +220,35 @@ function PrivacyPolicy() {
                 We also may use your Personal Information to enforce this Policy or our Terms of Service, to defend our legal rights and to comply with our legal obligations and internal policies.
 
               </p>
+                    {isAuth && (
+        <div className="text-center mt-4">
+          <button
+            onClick={handleDeleteAccount}
+            className="btn btn-danger"
+            style={{
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Delete My Account
+          </button>
+        </div>
+      )}
             </div>
+            
           </main>
           <div className="d-block d-md-none">
             <SidebarRight />
           </div>
         </div>
+        
       </div>
+
+
 
     </div>
 
