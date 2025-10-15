@@ -1312,6 +1312,6 @@ background-color: rgba(255, 255, 255, 0);
     background-color: var(--bs-btn-disabled-bg);
     border-color: var(--bs-btn-disabled-border-color);
     opacity: var(--bs-btn-disabled-opacity);
-    color: #000 !important;
+    color: var(--dark-text) !important;
     opacity: 9;
 }
