@@ -305,6 +305,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                     placeholder="Nickname"
                     value={formik.values.nickname}
                     onChange={formik.handleChange}
+                    maxLength={10} // ✅ restricts input to 10 characters
                   />
                   {formik.errors.nickname && (
                     <p className="field__message error-msg">
