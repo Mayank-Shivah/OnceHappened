@@ -39,7 +39,7 @@ function PrivacyPolicy() {
 
   try {
     // Send delete request to your backend API
-    const response = await fetch(`/api/delete-account`, {
+    const response = await fetch(`https://dashboard.oncehappened.com/api/delete-account`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
