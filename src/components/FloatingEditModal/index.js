@@ -200,7 +200,7 @@ export default function FloatingEditModal({
         Swal.fire({
           icon: "success",
           title: "Post Published",
-          text: "Your draft has been updated and sent for admin approval.",
+          text: "Your draft has been updated and sent for review",
           confirmButtonText: "OK",
         });
       } else {
@@ -211,8 +211,8 @@ export default function FloatingEditModal({
         );
         Swal.fire({
           icon: "success",
-          title: "Published",
-          text: "Your post has been published successfully.",
+          title: "Send for reviewing",
+          text: "Will be published shortly.",
           confirmButtonText: "OK",
         }).then(() => {
           window.location.reload();
@@ -298,7 +298,7 @@ export default function FloatingEditModal({
               options: ["Normal", "H1", "H2", "H3", "Blockquote"],
             },
           }}
-          placeholder="Start writing your story it will appear here..."
+          placeholder=""
         />
 
         <div className="wordCountSection">

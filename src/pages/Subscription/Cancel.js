@@ -9,7 +9,7 @@ export default function Cancel() {
    <>
    <div className="main-container-success">
      <div className="success-cancel-container cancel-main-section">
-      <h2 className="cancel">Payment Canceled</h2>
+      <h2 className="cancel">  Cancelled</h2>
       <p>No worries — you can try again anytime.</p>
       <a href="/" className="btn-back">Go Back</a>
     </div>

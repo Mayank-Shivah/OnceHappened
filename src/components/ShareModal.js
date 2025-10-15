@@ -63,7 +63,7 @@ export default function ShareModal({ url, onClose }) {
     <div className="share-modal-overlay">
       <div className="share-modal">
         <button className="close-btn" onClick={onClose}>×</button>
-        <h3>Share this link via</h3>
+        <h3>Share this story via </h3>
         
         <div className="social-icons">
           <a href={`https://www.facebook.com/sharer/sharer.php?u=${url}`} target="_blank" rel="noreferrer">
