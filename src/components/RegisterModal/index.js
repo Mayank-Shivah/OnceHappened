@@ -203,9 +203,7 @@ export default function RegisterModal({ onClose, openLogin }) {
                 </div>
               </div>
 
-
-
-
+              
               <div className="form-group mt-2">
                 <label htmlFor="email" className="d-block pb-2">
                   Email id
