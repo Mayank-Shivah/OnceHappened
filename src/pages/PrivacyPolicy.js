@@ -175,8 +175,16 @@ function PrivacyPolicy() {
                 Device identifiers (e.g., device ID, OS, app version, browser).<br/>
                 Basic usage logs (date/time, pages/screens viewed, features used).<br/>
 
-                Payments & subscriptions (via our payment processor):<br/>
+            
 
+            </p>
+
+
+              <h2>
+                    Payments & subscriptions (via our payment processor):<br/>
+              </h2>
+              <p>
+                
                 We use a third‑party payment processor to handle subscription payments. We receive limited billing metadata (e.g., transaction ID, status, plan, renewal dates) and do not receive full card numbers or bank details.
 <br/>
                 💡 Readers are advised to use their “Secondary email” (which is not your official/personal/primary email with which your financial or social media information is associated) as a “sign up/ login” email inorder to add an extra precautionary measure to your privacy as we care deeply for privacy and data protection of our users.
@@ -192,21 +200,22 @@ function PrivacyPolicy() {
 <br/>
                 Do Not Track (DNT): We respond to GPC signals; industry standards for DNT are not uniform, but we strive to honor widely adopted controls.
 
-                .
+              
               </p>
+             
               <h2>How We Use Your Information:</h2>
-              <p>
+              <ul>
                 Your information is used to:
 
-                Create and manage your account.<br/>
-                Identify you across the Services and enable posting, sharing, and reading.<br/>
-                Personalize your experience on the platform, communicate with you and provide you with technical and customer support services.<br/>
-                Process payments, manage subscriptions, display advertisements.<br/>
-                Detect and prevent fraud or unauthorized use.<br/>
-                Comply with legal requirements.<br/>
-                Analyse statistics to better understand our users, improve our Services, and develop new features in future.<br/>
+              <li>  Create and manage your account.</li>
+              <li>  Identify you across the Services and enable posting, sharing, and reading.</li>
+              <li>  Personalize your experience on the platform, communicate with you and provide you with technical and customer support services.</li>
+              <li>  Process payments, manage subscriptions, display advertisements.</li>
+              <li>  Detect and prevent fraud or unauthorized use.</li>
+              <li>  Comply with legal requirements.</li>
+              <li>  Analyse statistics to better understand our users, improve our Services, and develop new features in future.</li>
 
-              </p>
+              </ul>
               <h2>Why we use your data:</h2>
               <p>
                 We use your personal information to provide, maintain, and improve the Once Happened Services safely and effectively. Specifically, your data helps us to:<br/>

@@ -61,7 +61,7 @@ function TermsConditions() {
 
                 </li>
                 <li>
-                  <b>Anonymous Posting: </b>  The platform is designed for anonymous reading and writing. For added anonymity, you cannot view your own posts in your profile, and your posts may not appear in your feed exactly as originally written. Posts may be edited by our editorial team according to our content policy to improve readability and adhere to platform standards.
+                  <b>Anonymous Posting: </b>  The platform is designed for anonymous reading and writing. For adding anonymity, you cannot view your own posts in your profile, and your posts may not appear in your feed exactly as originally written. Posts may be edited by our editorial team according to our content policy to improve readability and adhere to platform standards.
                 </li>
                 {/* <li>
                   <b>Account Deletion & Deactivation</b>  You can not delete your Once Happened account it will stay dormant till you re-login and the posts will not be deleted.
@@ -176,7 +176,9 @@ function TermsConditions() {
               <h2>4) Payments & Subscriptions:</h2>
               <ul>
                 <li>Subscription services (if applicable) are billed through a secure third-party payment processor.</li>
-                <li>Refunds are handled according to the processor’s policy. (Embed link to providers website )</li>
+                <li>Refunds are handled according to the  <a href="https://stripe.com/in/privacy" className="ps-1" target="blank"> processor’s policy.</a>
+
+                </li>
                 <li>The Once Happened platform is intended for your personal, non-commercial use only. You may not sell, resell, or provide access to the platform or its services in any form. You also may not use the platform or services for advertising, promoting, or marketing any goods, services, or other commercial ventures.</li>
               </ul>
               <h2>5) Moderation & Platform Standards:</h2>
