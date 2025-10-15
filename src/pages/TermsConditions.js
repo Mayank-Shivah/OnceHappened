@@ -63,9 +63,9 @@ function TermsConditions() {
                 <li>
                   <b>Anonymous Posting: </b>  The platform is designed for anonymous reading and writing. For added anonymity, you cannot view your own posts in your profile, and your posts may not appear in your feed exactly as originally written. Posts may be edited by our editorial team according to our content policy to improve readability and adhere to platform standards.
                 </li>
-                <li>
+                {/* <li>
                   <b>Account Deletion & Deactivation</b>  You can not delete your Once Happened account it will stay dormant till you re-login and the posts will not be deleted.
-                </li>
+                </li> */}
                 <li>
                   Your account name/email will not be visible on the platform and posts, but any posts you made may remain on the platform in an anonymized form to maintain high anonymity.
                 </li>
@@ -81,7 +81,7 @@ function TermsConditions() {
                 <li><b>License to Use:</b>  You grant us a perpetual, worldwide, royalty-free license to use, reproduce, distribute, display, and modify your content for the purpose of operating, promoting, and improving the Service.</li>
 
 
-                <li><b>Copyright Infringement:</b>
+                <li ><b className="pb-2 d-block">Copyright Infringement:</b>
                   <ul>
                     <li>Respect for Intellectual Property: You may only post content that you own or have permission to use. By submitting content to Once Happened, you confirm that it does not infringe on the copyright or other intellectual property rights of any third party.
                     </li>

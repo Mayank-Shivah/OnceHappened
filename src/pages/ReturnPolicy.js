@@ -44,7 +44,7 @@ function ReturnPolicy() {
             </div>
             <div className="policy-page">
               <h4 className="mb-3">
-                Contact Email: <a href="matlto:info@oncehappened.com" className="p-0">
+                Contact Email: <a href="mailto:info@oncehappened.com" className="p-0">
                   info@oncehappened.com
                 </a>
               </h4>
@@ -155,7 +155,7 @@ function ReturnPolicy() {
               <p>
                 To request a refund:
 
-                Contact us at<a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com
+                Contact us at <a href="mailto:info@oncehappened.com" className="ps-1">info@oncehappened.com
                 </a>  within 7 days of your transaction.
 
                 Provide your registered email, transaction ID, payment date, and reason for the request.
@@ -164,7 +164,7 @@ function ReturnPolicy() {
               </p>
               <h2>4.3 Refund Processing</h2>
               <p>
-                pproved refunds are processed via Stripe to the same payment method used for the original transaction.
+                Approved refunds are processed via Stripe to the same payment method used for the original transaction.
 
                 Refunds typically take 5–10 business days to appear, depending on your bank or card issuer.
 
@@ -173,16 +173,47 @@ function ReturnPolicy() {
               </p>
               <h2>4.4 Non-Refundable Situations</h2>
               <p>
-
                 Refunds are not issued for:
+              </p>
+              <ul>
 
-                Change of mind or personal dissatisfaction.
 
-                Content-related preferences.
 
-                Accounts terminated for violating our Terms of Service.
+                <li>Change of mind or personal dissatisfaction.</li>
+
+                <li>Content-related preferences.</li>
+                <li>Accounts terminated for violating our Terms of Service.</li>
 
                 Misuse or fraudulent activities.
+              </ul>
+              <h2>5. Chargebacks and Disputes</h2>
+              <p>
+                If you notice a charge you believe is incorrect or unauthorized, please contact us first at <a href="mailto:info@oncehappened.com"className="ps-1"> info@oncehappened.com
+
+                </a> before initiating a chargeback.
+                We will investigate and resolve your concern as quickly as possible.
+              </p>
+              <p>
+                Unjustified chargebacks may lead to account suspension or additional dispute-related fees from Stripe.
+
+              </p>
+              <h5>
+                6. Policy Updates
+              </h5>
+              <p>
+                We may update this Refund, Payments, and Billing Policy occasionally to reflect changes in our operations, payment processor terms, or legal requirements.
+
+Any updates will be posted here with an updated Effective Date.
+
+              </p>
+              <h5>
+                7. Contact Us
+              </h5>
+              <p>
+                If you have questions about this policy or need help with billing, please reach out to us at:
+<a href="mailto:info@oncehappened.com" className="ps-1">
+   info@oncehappened.com
+</a>
 
               </p>
             </div>
