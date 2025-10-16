@@ -139,14 +139,10 @@ export default function Success() {
             <li><span>Start Date:</span> {new Date(subscription?.start_date).toLocaleString()}</li>
             <li><span>End Date:</span> {new Date(subscription?.end_date).toLocaleString()}</li>
             <li><span>Status:</span> {subscription?.is_active ? "Active" : "Inactive"}</li>
+            <li><span>User Name:</span> {subscription?.user_name}</li>
           </ul>
 
-          <h4>User Info</h4>
-          <ul>
-            <li><strong>User Name:</strong> {subscription?.user_name}</li>
-          </ul>
-
-          <div className="mt-3">
+          <div className="mt-3 d-flex justify-content-center align-items-center">
             <a href="/" className="btn-back">Back to Home</a>
           </div>
         </div>
