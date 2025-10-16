@@ -212,6 +212,7 @@ function SupportSuggestion() {
                       }`}
                       placeholder="Describe"
                       rows={1}
+                      maxLength={250} // ✅ limits to 100 characters
                       onChange={supportForm.handleChange}
                       onBlur={supportForm.handleBlur}
                       value={supportForm.values.supMessage}
@@ -295,6 +296,7 @@ function SupportSuggestion() {
                       }`}
                       placeholder="Your suggestion..."
                       rows={2}
+                       maxLength={250} // ✅ limits to 100 characters
                       onChange={suggestionForm.handleChange}
                       onBlur={suggestionForm.handleBlur}
                       value={suggestionForm.values.sugMessage}
