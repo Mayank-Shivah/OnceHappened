@@ -42,6 +42,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { isLoggedIn, loggedUser, logout, getFullUserData } from "../services/authService";
+import api from "../api";
 
 const AuthContext = createContext();
 
@@ -63,12 +64,22 @@ export const AuthProvider = ({ children }) => {
   })();
 
   useEffect(() => {
-    if (isLoggedIn()) {
-      const u = loggedUser();
-      const full = getFullUserData();
-      setUser(u);
-      setFullUserData(full);
-      setIsAuth(true);
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    const userData = localStorage.getItem("userData");
+
+    // ✅ if token exists, restore immediately
+    if (token && user) {
+      try {
+        setUser(JSON.parse(user));
+        setFullUserData(userData ? JSON.parse(userData) : null);
+        setIsAuth(true);
+      } catch (err) {
+        console.error("Error restoring auth:", err);
+        setUser(null);
+        setFullUserData(null);
+        setIsAuth(false);
+      }
     }
   }, []);
 
@@ -105,6 +116,18 @@ export const AuthProvider = ({ children }) => {
     setFullUserData(null);
     setIsAuth(false);
   };
+
+  // ✅ New: refresh user data after subscription update
+  const updateUserData = async () => {
+    try {
+      const res = await api.get("/user"); // get latest data from backend
+      setFullUserData(res.data);
+      localStorage.setItem("userData", JSON.stringify(res.data));
+    } catch (err) {
+      console.error("Error refreshing user data:", err);
+    }
+  };
+
   
 
   return (
@@ -113,6 +136,7 @@ export const AuthProvider = ({ children }) => {
       isAuth,
       fullUserData,
       hasActiveSubscription,
+      updateUserData,
       loginUser,
       logoutUser
     }}>

@@ -12,7 +12,7 @@ export default function Subscription() {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const user = loggedUser();
-  const { user: loggedInUser, isAuth, fullUserData } = useAuth();
+  const { user: loggedInUser, isAuth, updateUserData, fullUserData } = useAuth();
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,8 @@ export default function Subscription() {
   const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (!user) {
+    const token = localStorage.getItem("token");
+    if (!user && !token) {
       navigate("/");
     }
   }, [user, navigate]);
@@ -68,6 +69,18 @@ export default function Subscription() {
     if (!plan) return null;
     return <>{`$${plan.price}`}</>;
   };
+
+  // ✅ Refresh user data when entering the page or after Stripe success
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const session_id = urlParams.get("session_id");
+
+  // Always refresh on mount to ensure latest subscription
+    if (updateUserData) {
+      updateUserData();
+    }
+
+  }, []);
 
   // Assign plans safely by array index if they exist
   const dayPlan = plans.find(p => p.name.toLowerCase().includes("day")) || null;

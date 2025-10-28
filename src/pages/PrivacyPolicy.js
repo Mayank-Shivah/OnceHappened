@@ -233,15 +233,8 @@ function PrivacyPolicy() {
         <div className="text-center mt-4">
           <button
             onClick={handleDeleteAccount}
-            className="btn btn-danger"
-            style={{
-              backgroundColor: "#dc3545",
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
+            className="btn btn-dangers"
+          
           >
             Delete My Account
           </button>
