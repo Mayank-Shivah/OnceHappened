@@ -58,8 +58,8 @@ useScrollLock(true);
     });
 
       setStep(2);
-      setOtpExpireTime(Date.now() + 20 * 1000); // 20 seconds from now
-      setTimeLeft(20);
+      setOtpExpireTime(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+      setTimeLeft(5 * 60);
     } catch (err) {
 
       MySwal.fire({
