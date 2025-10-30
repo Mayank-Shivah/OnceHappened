@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { ThemeContext } from "../../components/ThemeProvider";
 import SidebarRight from "../../components/SidebarRight";
 import { useNavigate } from "react-router-dom";
+import { loggedUser } from "../../services/authService";
 import api from "../../api";
 import Loader from "../../components/Loader";
 import "./style.scss";
@@ -10,54 +11,27 @@ import { useAuth } from "../../context/AuthContext";
 export default function Subscription() {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
-  const { isAuth } = useAuth();
+  const user = loggedUser();
+  const { user: loggedInUser, isAuth, fullUserData } = useAuth();
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState(null); // ✅ store user & subscription
+
+  // Prevent duplicate API calls in Strict Mode (runs useEffect twice)
   const fetchedRef = useRef(false);
-  const token = localStorage.getItem("token");
 
-  // ✅ Redirect if no token (same as home)
   useEffect(() => {
-    if (!token) navigate("/");
-  }, [token, navigate]);
+    if (!user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
-  // ✅ Fetch both user data & active subscription
-  useEffect(() => {
-    const fetchUserAndSubscription = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.warn("⚠️ No token found in localStorage");
-          return;
-        }
-
-        // ✅ Use your new backend route that returns { user, subscription }
-        const res = await api.get("/user-data", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setUserData(res.data); // contains user + active subscription
-        localStorage.setItem("userData", JSON.stringify(res.data));
-      } catch (err) {
-        console.warn("⚠️ Could not fetch user data:", err);
-        // fallback to cached user
-        const local = localStorage.getItem("userData");
-        if (local) setUserData(JSON.parse(local));
-      }
-    };
-
-    fetchUserAndSubscription();
-  }, []);
-
-
-  // ✅ Fetch available plans only once
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         if (fetchedRef.current) return;
         fetchedRef.current = true;
+
         setLoading(true);
         const res = await api.get("/subscription");
         setPlans(res.data.subscription || []);
@@ -71,9 +45,7 @@ export default function Subscription() {
     fetchPlans();
   }, []);
 
-  // ✅ Stripe checkout
   const handleCheckout = async (plan) => {
-    if (!userData) return;
     try {
       const payload = {
         planId: plan.id,
@@ -81,8 +53,8 @@ export default function Subscription() {
         interval: plan.duration_type,
         interval_count: plan.duration,
         planName: plan.name,
-        userId: userData?.user?.id || userData?.id,
-        userName: userData?.user?.name || userData?.name,
+        userId: user.id,
+        userName: user.name,
       };
 
       const { data } = await api.post("/create-checkout-session", payload);
@@ -92,17 +64,16 @@ export default function Subscription() {
     }
   };
 
-  // ✅ Safe helpers
-  const getPriceListButtonContent = (plan) => (plan ? <>{`$${plan.price}`}</> : null);
-  const dayPlan = plans.find((p) => p.name?.toLowerCase().includes("day")) || null;
-  const monthlyPlan = plans.find((p) => p.name?.toLowerCase().includes("month")) || null;
-  const sixMonthPlan =
-    plans.find(
-      (p) => p.name?.toLowerCase().includes("6 month") || p.name?.toLowerCase().includes("half year")
-    ) || null;
-  const yearlyPlan = plans.find((p) => p.name?.toLowerCase().includes("year")) || null;
+  const getPriceListButtonContent = (plan) => {
+    if (!plan) return null;
+    return <>{`$${plan.price}`}</>;
+  };
 
-  const activeSubscription = userData?.subscription || null; // ✅ your new API
+  // Assign plans safely by array index if they exist
+  const dayPlan = plans.find(p => p.name.toLowerCase().includes("day")) || null;
+  const monthlyPlan = plans.find(p => p.name.toLowerCase().includes("month")) || null;
+  const sixMonthPlan = plans.find(p => p.name.toLowerCase().includes("6 month") || p.name.toLowerCase().includes("half year")) || null;
+  const yearlyPlan = plans.find(p => p.name.toLowerCase().includes("year")) || null;
 
   return (
     <div className={`main-layout ${theme}-theme`}>
@@ -113,7 +84,7 @@ export default function Subscription() {
               <Loader />
             ) : (
               <>
-                {/* ===== Subscription Packages ===== */}
+                {/* Subscription Packages */}
                 <div className="policy-page mb-1 sub-parent-section">
                   <div className="subscribe-box">
                     <h2 className="text-start">
@@ -126,6 +97,7 @@ export default function Subscription() {
                     </p>
 
                     <div className="price-list">
+                      {/* Day Pass */}
                       {dayPlan && (
                         <div className="price-item mb-2">
                           <button className="price-tab one-step" onClick={() => handleCheckout(dayPlan)}>
@@ -135,6 +107,7 @@ export default function Subscription() {
                         </div>
                       )}
 
+                      {/* Monthly Plan */}
                       {monthlyPlan && (
                         <div className="price-item mb-2">
                           <button className="price-tab one-step" onClick={() => handleCheckout(monthlyPlan)}>
@@ -143,20 +116,19 @@ export default function Subscription() {
                           </button>
                         </div>
                       )}
-
                       <div className="note">
                         That will be around <span className="border-price">0.25 per day</span>, not much isn’t it?
                       </div>
-
+                      {/* Six Month Plan */}
                       {sixMonthPlan && (
                         <div className="price-item highlight mb-2">
                           <button className="price-tab one-step" onClick={() => handleCheckout(sixMonthPlan)}>
-                            <span className="custom-price-label">Half Yearly</span>{" "}
-                            {getPriceListButtonContent(sixMonthPlan)} for 6 months
+                            <span className="custom-price-label">Half Yearly</span> {getPriceListButtonContent(sixMonthPlan)} for 6 months
                           </button>
                         </div>
                       )}
 
+                      {/* Yearly Plan */}
                       {yearlyPlan && (
                         <div className="price-item">
                           <button className="price-tab one-step" onClick={() => handleCheckout(yearlyPlan)}>
@@ -166,21 +138,22 @@ export default function Subscription() {
                         </div>
                       )}
 
+                      
+
                       <p className="text-center">
                         Deal of the day, around <span className="border-price">0.18 cents per day,</span> it sounds good.
                       </p>
                     </div>
                   </div>
 
-                  {/* ===== Right Section ===== */}
+                  {/* Right Section */}
                   <div className="subscribe-box">
                     <h2 className="text-start">
-                      <span className="color-red g-color">{userData?.user?.name || userData?.name || "Guest"},</span>
+                      <span className="color-red g-color">{user?.name || "Guest"},</span>
                     </h2>
                     <p className="text-start">
                       <strong>
-                        Let's try for a <span className="border-price">day</span> or{" "}
-                        <span className="border-price">a month</span> & read all stories in one go.
+                        Let's try for a <span className="border-price">day</span> or <span className="border-price">a month</span> & read all stories in one go.
                       </strong>
                     </p>
                     <p className="text-start">
@@ -197,9 +170,7 @@ export default function Subscription() {
                         </div>
                       )}
 
-                      <p>
-                        That will be <span className="border-price">0.10 per hour.</span>
-                      </p>
+                      <p>That will be <span className="border-price">0.10 per hour.</span></p>
 
                       {monthlyPlan && (
                         <div className="price-item mb-2">
@@ -223,21 +194,20 @@ export default function Subscription() {
                   </div>
                 </div>
 
-                {/* ===== Active Subscription ===== */}
+                {/* Active Subscription */}
                 <div className="policy-page">
                   <div className="subscribe-box onging-sub border-0 w-100">
                     <h2>Your ongoing subscription:</h2>
-                    {!activeSubscription ? (
+                    {!fullUserData?.subscription ? (
                       <p>You currently don’t have any, let’s get and see how it’s like</p>
                     ) : (
                       <div className="price-list">
                         <div className="price-item">
-                          Your current subscription: ${fullUserData.subscription?.amount || "0.00"} "
-                          {fullUserData.subscription?.plan_name || "N/A"}"
+                          Your current subscription: ${fullUserData.subscription.amount} "{fullUserData.subscription.plan_name}"
                         </div>
                         <div className="price-item">
                           Your subscription expires on:{" "}
-                          {new Date(activeSubscription.end_date).toLocaleString("en-GB", {
+                          {new Date(fullUserData.subscription.end_date).toLocaleString("en-GB", {
                             day: "2-digit",
                             month: "2-digit",
                             year: "numeric",
@@ -247,7 +217,7 @@ export default function Subscription() {
                           })}
                         </div>
                         <div className="price-item">
-                          <button className="price-tab" onClick={() => handleCheckout(monthlyPlan)}>
+                          <button className="price-tab" onClick={() => handleCheckout(dayPlan)}>
                             Extend 1 more month
                           </button>
                         </div>

@@ -110,6 +110,24 @@ export default function Header() {
     // resetTheme();
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      const container = document.getElementById("google_translate_container");
+      if (
+        container &&
+        container.style.display === "block" &&
+        !container.contains(e.target) &&
+        !e.target.closest(".globe-icons")
+      ) {
+        container.style.display = "none";
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+
   return (
     <header>
       <div className="container">

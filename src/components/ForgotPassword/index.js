@@ -1,5 +1,5 @@
 // src/components/ForgotPassword/index.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useScrollLock from "../useScrollLock";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -26,6 +26,9 @@ useScrollLock(true);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loadingState, setLoadingState] = useState(false);
+  const [otpExpireTime, setOtpExpireTime] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(0);
+
 
   // Step 1: Send email for OTP
   const handleEmailSend = async () => {
@@ -55,6 +58,8 @@ useScrollLock(true);
     });
 
       setStep(2);
+      setOtpExpireTime(Date.now() + 20 * 1000); // 20 seconds from now
+      setTimeLeft(20);
     } catch (err) {
 
       MySwal.fire({
@@ -71,6 +76,52 @@ useScrollLock(true);
       setLoadingState(false);
     }
   };
+
+  const handleResendOtp = async () => {
+    try {
+      setLoadingState(true);
+      await forgotPassword(email); // same API used for resend
+      MySwal.fire({
+        icon: "success",
+        title: "Success",
+        text: "A new OTP has been sent to your email",
+        didOpen: (popup) => {
+          popup.parentNode.style.zIndex = 9999;
+        },
+      });
+
+      // reset OTP and timer
+      setOtp(Array(6).fill(""));
+      setOtpExpireTime(Date.now() + 5 * 60 * 1000);
+      setTimeLeft(5 * 60);
+    } catch (err) {
+      MySwal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to resend OTP",
+        didOpen: (popup) => {
+          popup.parentNode.style.zIndex = 9999;
+        },
+      });
+    } finally {
+      setLoadingState(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!otpExpireTime) return;
+
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, Math.floor((otpExpireTime - Date.now()) / 1000));
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [otpExpireTime]);
 
   // Step 2: OTP input
   const handleOtpChange = (idx, val) => {
@@ -239,9 +290,10 @@ useScrollLock(true);
 
         {step === 2 && (
           <div>
-            <label htmlFor="otp" className="text-center d-block">
+            <label htmlFor="otp" className="text-center d-block mb-2">
               Enter OTP sent to your email
             </label>
+
             <div className="otp-input-group theme-otp">
               {otp.map((digit, idx) => (
                 <input
@@ -250,11 +302,38 @@ useScrollLock(true);
                   type="text"
                   maxLength={1}
                   value={digit}
-                  onChange={e => handleOtpChange(idx, e.target.value)}
+                  onChange={(e) => handleOtpChange(idx, e.target.value)}
                   className="otp-box"
                 />
               ))}
             </div>
+
+            {/* 🔹 Countdown and Resend Logic */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "12px",
+                marginTop: "10px",
+              }}
+            >
+              {timeLeft > 0 ? (
+                <p style={{ color: "red", fontSize: "13px", margin: 0 }}>
+                  OTP will expire in {Math.floor(timeLeft / 60)}:
+                  {String(timeLeft % 60).padStart(2, "0")} minutes
+                </p>
+              ) : (
+                <button
+                  className="reset"
+                  onClick={handleResendOtp}
+                >
+                  Send OTP Again
+                </button>
+              )}
+            </div>
+
+
             <button
               className="submit-btn w-100 mt-4"
               onClick={handleOtpSubmit}
@@ -264,6 +343,7 @@ useScrollLock(true);
             </button>
           </div>
         )}
+
 
         {step === 3 && (
           <div>
