@@ -232,8 +232,8 @@ export default function Subscription() {
                     ) : (
                       <div className="price-list">
                         <div className="price-item">
-                          Your current subscription: ${activeSubscription.amount || 0} "
-                          {activeSubscription.subscription?.name || "N/A"}"
+                          Your current subscription: ${fullUserData.subscription?.amount || "0.00"} "
+                          {fullUserData.subscription?.plan_name || "N/A"}"
                         </div>
                         <div className="price-item">
                           Your subscription expires on:{" "}
