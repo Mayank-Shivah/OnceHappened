@@ -176,14 +176,20 @@ function Home() {
                             window.scrollTo({ top: 0, behavior: "smooth" }); // optional smooth scroll
                           }}
                           style={{
-                            backgroundColor: "#fc5524",
-                            color: "#fff",
-                            padding: "10px 20px",
+                            background: "transparent",
                             border: "none",
-                            borderRadius: "6px",
+                            color: "rgb(229, 57, 53)",
+                            fontSize: "1rem",
+                            color: "var(--category-text, #34495e)",
                             cursor: "pointer",
-                            fontWeight: "500",
-                          }}
+                            textDecoration: "none",
+                            padding: "0px",
+                            backgroundColor: "rgba(255, 255, 255, 0)",
+                            borderRadius: "0px",
+                            fontWeight: 600,
+                            marginTop: "10px",
+                            borderBottom: "2px solid yellow"
+                          }}  
                         >
                           View More Posts
                         </button>
