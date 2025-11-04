@@ -161,7 +161,41 @@ function Home() {
               (() => {
                 const post = allPosts.find((p) => p.id === singlePostId);
                 if (post) {
-                  return <QuestionCard key={post.id} question={post} />;
+                   return (
+                    <div className="single-post-view">
+                      <QuestionCard key={post.id} question={post} />
+
+                      {/* 🔹 View More Button */}
+                      <div className="text-center mt-4">
+                        <button
+                          className="view-more-btn"
+                          onClick={() => {
+                            // remove ?id= from URL and reload posts
+                            window.history.replaceState({}, "", "/");
+                            setSinglePostId(null);
+                            window.scrollTo({ top: 0, behavior: "smooth" }); // optional smooth scroll
+                          }}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "rgb(229, 57, 53)",
+                            fontSize: "1rem",
+                            color: "var(--category-text, #34495e)",
+                            cursor: "pointer",
+                            textDecoration: "none",
+                            padding: "0px",
+                            backgroundColor: "rgba(255, 255, 255, 0)",
+                            borderRadius: "0px",
+                            fontWeight: 600,
+                            marginTop: "10px",
+                            borderBottom: "2px solid yellow"
+                          }}  
+                        >
+                          View More Posts
+                        </button>
+                      </div>
+                    </div>
+                  );
                 } else {
                   return (
                     <div className="no-post-box">

@@ -47,9 +47,16 @@ export default function RegisterModal({ onClose, openLogin }) {
 
       if (!values.email) errors.email = "Email is required";
       if (!values.nickname) errors.nickname = "Nickname is required";
-      if (!values.password) errors.password = "Password is required";
-      if (values.password !== values.confirmPassword)
+      if (!values.password) {
+        errors.password = "Password is required";
+      } else if (values.password.length < 8) {
+        errors.password = "Password must be at least 8 characters";
+      }
+      if (!values.confirmPassword) {
+        errors.confirmPassword = "Please confirm your password";
+      } else if (values.password !== values.confirmPassword) {
         errors.confirmPassword = "Passwords must match";
+      }
 
       // ✅ DOB Validation + 18+ Check
       if (!values.dobDay || !values.dobMonth || !values.dobYear) {

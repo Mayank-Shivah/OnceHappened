@@ -1,17 +1,15 @@
 import axios from "axios";
-import Swal from "sweetalert2"; // Optional: For global error alerts (if using SweetAlert elsewhere)
+import Swal from "sweetalert2";
 
 const api = axios.create({
   baseURL: "https://dashboard.oncehappened.com/api",
   headers: {
     "Content-Type": "application/json",
-    "Accept": "application/json",
+    Accept: "application/json",
   },
 });
 
-//ssl files code update
-
-// Add token automatically if available
+// ✅ Automatically attach token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -20,27 +18,35 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// ✅ Optional: Response interceptor for global error handling
+// ✅ Global response handler (safe for /subscription)
 api.interceptors.response.use(
-  (response) => response, // Pass successful responses through
+  (response) => response,
   (error) => {
-    // Handle common errors globally
+    const currentPath = window.location.pathname;
+    const isSubscriptionPage = currentPath.includes("/subscription");
+
     if (error.response?.status === 401) {
-      // Token expired/invalid – logout and redirect
+      // ✅ If on subscription page, skip logout
+      if (isSubscriptionPage) {
+        console.warn("⚠️ 401 on subscription page — skipping global logout.");
+        return Promise.reject(error);
+      }
+
+      // 🔐 Normal behavior for all other pages
       localStorage.removeItem("token");
-      Swal.fire('Session Expired!', 'Please log in again.', 'warning');
-      window.location.href = '/'; // Or use React Router navigate if in a component
-    } else if (error.response?.status >= 500) {
-      // Server error
-      console.error("Server error:", error.response?.data || error.message);
-      Swal.fire('Error!', 'Something went wrong on the server. Please try again.', 'error');
-    } else if (!error.response) {
-      // Network error (e.g., offline)
-      console.error("Network error:", error.message);
-      Swal.fire('Error!', 'No internet connection. Please check your network.', 'error');
+      Swal.fire("Session Expired!", "Please log in again.", "warning");
+      window.location.href = "/";
+      return Promise.reject(error);
     }
-    
-    // Re-throw the error for component-level handling
+
+    if (error.response?.status >= 500) {
+      console.error("Server error:", error.response?.data || error.message);
+      Swal.fire("Error!", "Something went wrong on the server. Please try again.", "error");
+    } else if (!error.response) {
+      console.error("Network error:", error.message);
+      Swal.fire("Error!", "No internet connection. Please check your network.", "error");
+    }
+
     return Promise.reject(error);
   }
 );

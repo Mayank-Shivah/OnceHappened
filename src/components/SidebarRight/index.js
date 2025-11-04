@@ -43,7 +43,7 @@ export default function SidebarRight() {
   }, []);
 
   return (
-    <aside className="sidebar-right">
+    <aside className={`sidebar-right ${hasActiveSubscription ? "hide-sidebar" : ""}`}>
       {!trialEnded ? (
         <div className="ad-section">
           {ads.length > 0 ? (

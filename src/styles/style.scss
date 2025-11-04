@@ -1315,3 +1315,16 @@ background-color: rgba(255, 255, 255, 0);
     color: var(--dark-text) !important;
     opacity: 9;
 }
+.btn-dangers{
+      background: #0000;
+    border: none;
+    color: var(--category-text);
+    cursor: pointer;
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: .5rem auto 0;
+    position: relative;
+    text-align: center;
+  border-bottom: 2px solid var(--theme-color);
+}

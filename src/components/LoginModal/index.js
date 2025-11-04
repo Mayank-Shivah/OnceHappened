@@ -66,7 +66,7 @@
       MySwal.fire({
         icon: "error",
         title: "Account Disabled",
-        text: "Please contact support, your account has been disabled.",
+        text: "Please contact info@oncehappened.com, your account has been disabled.",
         confirmButtonColor: "#d33",
         didOpen: (popup) => {
           popup.parentNode.style.zIndex = 9999;
