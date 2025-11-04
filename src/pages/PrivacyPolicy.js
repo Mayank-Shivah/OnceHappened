@@ -100,7 +100,7 @@ function PrivacyPolicy() {
                 If you do not agree with this policy and with the ways we use your Personal Information, you should discontinue use of the Services.
               </p>
 
-              <p>You can contact us at <a href="mailto:info@oncehappened.com">info@oncehappened.com</a>.</p>
+              <p>You can contact us at <a href="mailto:info@oncehappened.com" className="p-0">info@oncehappened.com</a>.</p>
 
               <h2>Personal information:</h2>
               <p>
