@@ -249,7 +249,7 @@ function Home() {
                         adIndex++;
                       }
                       elements.push(
-                        <AdSpace key={`adslot-${i}`} label="Sponsored" height={260} />
+                        // <AdSpace key={`adslot-${i}`} label="Sponsored" height={260} />
                         // <AdSpace adId={111} label="Mid Content Ad" />
 
                         
