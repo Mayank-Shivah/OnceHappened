@@ -5,10 +5,9 @@ import QuestionCard from "../../components/QuestionCard";
 import { ThemeContext } from "../../components/ThemeProvider";
 import FloatingEditModal from "../../components/FloatingEditModal";
 import { getFullUserData, getUser  , isLoggedIn } from "../../services/authService";
-import AdSpace from "../../components/AdSpace";
 import api from "../../api"; // axios instance
 import Swal from "sweetalert2";
- import LockCard from "../../components/LockCard"; // ✅ Removed unused import
+import LockCard from "../../components/LockCard"; // ✅ Removed unused import
 import Loader from "../../components/Loader"; // ✅ Added Loader import
 import { useAuth } from "../../context/AuthContext";  // adjust path as needed
 
@@ -155,6 +154,13 @@ function Home() {
           />
 
           <main className="main-section-parent">
+           <div className="top-bar-wrapper">
+              <SidebarLeft
+            onCategorySelect={setSelectedCategory}
+            selectedCategory={selectedCategory}
+            onSearch={setSearchTerm}
+          />
+           </div>
             {loading && <Loader />} {/* ✅ Replaced <p>Loading questions...</p> with Loader */}
 
             {(!loading && singlePostId) ? (
@@ -240,7 +246,7 @@ function Home() {
                               <img
                                 src={ad.image_video}
                                 alt="Advertisement"
-                                className="ad-image img-fluid"
+                                className="ad-image"
                                 style={{ width: "100%", height: "auto" }}
                               />
                             </a>
