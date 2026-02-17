@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { FaBars, FaCheckCircle, FaFacebookF, FaInstagram, FaGlobe    } from "react-icons/fa";
+import { FaBars, FaCheckCircle, FaFacebookF, FaInstagram, FaGlobe, FaSearch    } from "react-icons/fa";
 import "./style.scss";
 import ThemeToggleBtn from "../ThemeToggleBtn";
+import SearchComponent from "../SearchComponent";
+
 import FontSizeChanger from "../FontSizeChanger";
 import { isLoggedIn, getUser, logout } from "../../services/authService";
 import { ThemeContext } from "../ThemeProvider";
@@ -144,12 +146,30 @@ export default function Header() {
             {/* <a href="/" className="once-text notranslate" translate="no">Once happened..</a> */}
           </div>
           <div className="happened-sec d-flex">
+            <ul className="nav-links custom-read-mode d-flex gap-1 align-items-center m-0 p-0 ">
+              <li className="d-none">
+                <button to="/" className="nav-link" onClick={() => setShowLang(false)}>
+                 Read Mode
+                </button>
+              </li>
+              <li className="d-none">
+                /
+              </li >
+                  <li className="d-none">
+                <button to="/" className="nav-link" onClick={() => setShowLang(false)}>
+                Watch 
+                </button>
+              </li>
+              <li>
+                <SearchComponent />
+              </li>
+            </ul>
             <div className="lang-option">
               <button type="button" className="link-button globe-icons me-2" onClick={changeLanguage}>
                 <FaGlobe />
               </button>
             </div>
-            <div className="lang-dropdown-wrapper" ref={langRef}>
+            <div className="lang-dropdown-wrapper ms-2" ref={langRef}>
               <div
                 className="profile-circle"
                 onClick={() => setShowLang((s) => !s)}

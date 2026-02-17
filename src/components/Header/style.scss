@@ -89,6 +89,12 @@ header {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      ul{
+        @media screen and (max-width: 768px) {
+          display: none !important;
+          
+        }
+      }
     }
 
     .try-plus {

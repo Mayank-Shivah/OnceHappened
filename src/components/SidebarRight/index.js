@@ -54,7 +54,7 @@ export default function SidebarRight() {
                   <img
                     src={ad.image_video}
                     alt={ad.title || "Advertisement"}
-                    className="ad-image"
+                    className="ad-image img-fluid"
                   />
                 </a>
               </div>

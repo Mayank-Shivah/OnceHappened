@@ -201,3 +201,16 @@ input:-ms-input-placeholder {
 input::-ms-input-placeholder {
   color: var(--icon-color);
 }
+.input-wrapper select {
+    font-size: 14px;
+    box-shadow: none;
+    outline: none;
+    transition: color 0.2s;
+    border-bottom: 3px solid #ffff00 !important;
+    border-radius: 0px;
+    padding: 9px 34px 9px 10px;
+    width: 100%;
+    border: unset;
+    background: transparent;
+    color: var(--dark-text);
+}

@@ -240,7 +240,7 @@ function Home() {
                               <img
                                 src={ad.image_video}
                                 alt="Advertisement"
-                                className="ad-image"
+                                className="ad-image img-fluid"
                                 style={{ width: "100%", height: "auto" }}
                               />
                             </a>

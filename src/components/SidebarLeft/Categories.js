@@ -9,7 +9,11 @@ export default function Categories({
   onSearch
 }) {
   const [categories, setCategories] = useState([]);
-  const [searchTerms, setSearchTerms] = useState({}); // keep search per category
+  const [searchTerms, setSearchTerms] = useState({});
+
+  // 🔹 Filter states (NEW)
+  const [activeFilter, setActiveFilter] = useState("recent");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -23,7 +27,10 @@ export default function Categories({
           onCategorySelect(topics[0].id);
         }
       } catch (err) {
-        console.error("Failed to load categories:", err.response?.data || err.message);
+        console.error(
+          "Failed to load categories:",
+          err.response?.data || err.message
+        );
       }
     };
     fetchCategories();
@@ -41,7 +48,7 @@ export default function Categories({
   // 🔹 when press Enter
   const handleSearchSubmit = (value) => {
     if (onSearch) {
-      onSearch(value, selectedCategory);
+      onSearch(value, selectedCategory, activeFilter);
     }
   };
 
@@ -53,21 +60,90 @@ export default function Categories({
       [selectedCategory]: ""
     }));
     if (onSearch) {
-      onSearch("", selectedCategory);
+      onSearch("", selectedCategory, activeFilter);
     }
   };
 
   return (
     <aside className="sidebar-left-main">
-      {/* <div className="sidebar-title">Topics</div> */}
+      {/* 🔹 FILTER TOGGLE SECTION */}
+      <div className="filter-section">
 
+{/* Filter button and dropdown Mobile-view*/}
+<div className="filter-mode">
+  <button className="filter-items actives" >
+    Read Mode
+  </button>
+   <button className="filter-items">
+    Watch
+  </button>
+</div>
+
+{/* end */}
+
+        <button
+          className="filter-btn"
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          <img src="/images/filter.png" alt="Filter Icon" className="filter-icon" />
+          {/* <span className="filter-text">
+            {activeFilter === "recent" ? "Most Recent" : activeFilter === "popular" ? "Most Popular" : "Trending"}
+          </span> */}
+        </button>
+
+        {showFilters && (
+          <ul className="filter-list">
+            <li
+              className={`filter-item ${activeFilter === "recent" ? "active" : ""
+                }`}
+              onClick={() => {
+                setActiveFilter("recent");
+                setShowFilters(false);
+              }}
+            >
+              Most Recent
+            </li>
+
+            <li
+              className={`filter-item ${activeFilter === "popular" ? "active" : ""
+                }`}
+              onClick={() => {
+                setActiveFilter("popular");
+                setShowFilters(false);
+              }}
+            >
+              Most Popular
+            </li>
+
+            <li
+              className={`filter-item ${activeFilter === "trending" ? "active" : ""
+                }`}
+              onClick={() => {
+                setActiveFilter("trending");
+                setShowFilters(false);
+              }}
+            >
+              Trending
+            </li>
+          </ul>
+        )}
+      </div>
+
+      {/* 🔹 CATEGORY LIST */}
       <ul className="category-list">
+        <li className="category-item active-item">
+          <span className="cat-label">Discover</span>
+        </li>
         {categories.length > 0 ? (
+          
           categories.map((cat) => (
             <li
               key={cat.id}
-              className={`category-item ${selectedCategory === cat.id ? "active-item" : ""}`}
-              onClick={() => onCategorySelect && onCategorySelect(cat.id)}
+              className={`category-item ${selectedCategory === cat.id ? "active-item" : ""
+                }`}
+              onClick={() =>
+                onCategorySelect && onCategorySelect(cat.id)
+              }
               style={{ cursor: "pointer" }}
             >
               <span className="cat-label">{cat.name}</span>
@@ -80,16 +156,16 @@ export default function Categories({
         )}
       </ul>
 
-      {/* 🔹 Search box per category */}
+      {/* 🔹 SEARCH PER CATEGORY */}
       {selectedCategory && (
         <SidebarSearch
           searchTerm={searchTerms[selectedCategory] || ""}
           onSearchChange={handleSearchChange}
           onSearchSubmit={handleSearchSubmit}
           onClear={handleClear}
-          placeholder={`Search in ${
-            categories.find((c) => c.id === selectedCategory)?.name || "topic"
-          }...`}
+          placeholder={`Search in ${categories.find((c) => c.id === selectedCategory)?.name ||
+            "topic"
+            }...`}
         />
       )}
     </aside>

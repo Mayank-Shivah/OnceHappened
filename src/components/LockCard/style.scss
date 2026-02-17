@@ -102,3 +102,9 @@
   background-color: #fff9d4; /* Light yellowish background */
   transition: all 0.25s ease;
 }
+.lpb-bg-texts.question-description .desc-body.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
