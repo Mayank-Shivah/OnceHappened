@@ -52,9 +52,11 @@ export default function SingleAd() {
         <img
           src={banner.image_video}
           alt="Advertisement"
-          className="ad-image"
+          className="ad-image img-fluid"
         />
+        <img  alt="Advertisement" className="ad-image" src="https://dashboard.oncehappened.com/storage/advisements/1762231061_1280w-64pPx_AmmQw.webp" />
       </a>
     </div>
+
   );
 }

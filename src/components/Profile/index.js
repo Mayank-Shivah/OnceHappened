@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaFacebook, FaInstagram, } from "react-icons/fa";
 import "./style.scss";
 import QuestionCard from "../../components/QuestionCard";
 import SidebarSearch from "../../components/SidebarSearch";
 import FloatingEditModal from "../../components/FloatingEditModal";
 import api from "../../api"; // axios instance
-import { loggedUser           } from "../../services/authService";
+import { loggedUser } from "../../services/authService";
 import NoPost from "../NoPost";
 import Swal from "sweetalert2"; // ✅ Added SweetAlert import
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState("Liked");
-  const [page, setPage] = useState(1);
+  const TABS = {
+    OVERVIEW: "overview",
+    EDIT: "edit",
+    PASSWORD: "password",
+    LIKED: "liked",
+    DRAFTS: "drafts",
+    MY_POSTS: "myPosts",
+    BOOKMARK: "bookmark",
+  };
+  const [activeTab, setActiveTab] = useState(TABS.OVERVIEW);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+
+
+
+
+
   const [likedPosts, setLikedPosts] = useState([]);
   const [draftPosts, setDraftPosts] = useState([]);
   const [myPosts, setMyPosts] = useState([]); // ✅ new state
@@ -23,7 +37,7 @@ const Profile = () => {
 
   const postsPerPage = 5;
   const user = loggedUser();
-  
+
   // ✅ Extracted fetchPosts as standalone function (fixes ESLint "not defined" error)
   const fetchPosts = async () => {
     if (!user?.id) return;
@@ -57,16 +71,16 @@ const Profile = () => {
 
       // ✅ my posts: Show only "draft" (published/submitted), "approved", "unapproved" – exclude "published" (drafts) to avoid overlap
       // ✅ my posts: Show only "draft" and "approved"
-    // ✅ My Posts: include both "draft" and "published" as "Pending", plus "approved" and "unapproved"
-    const mine = posts
-      .filter(
-        (p) =>
-          String(p.user_id) === String(user.id) &&
-          (p.status === "draft" || p.status === "approved" || p.status === "un-approved")
-      )
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      // ✅ My Posts: include both "draft" and "published" as "Pending", plus "approved" and "unapproved"
+      const mine = posts
+        .filter(
+          (p) =>
+            String(p.user_id) === String(user.id) &&
+            (p.status === "draft" || p.status === "approved" || p.status === "un-approved")
+        )
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    setMyPosts(mine);
+      setMyPosts(mine);
 
     } catch (err) {
       // ✅ Replaced console.error with SweetAlert for consistency
@@ -110,11 +124,13 @@ const Profile = () => {
   });
 
   const currentList =
-    activeTab === "Liked"
+    activeTab === TABS.LIKED
       ? filteredLikedPosts
-      : activeTab === "Drafts"
-      ? filteredDraftPosts
-      : filteredMyPosts; // ✅ handle My Posts
+      : activeTab === TABS.DRAFTS
+        ? filteredDraftPosts
+        : activeTab === TABS.MY_POSTS
+          ? filteredMyPosts
+          : [];// ✅ handle My Posts
 
   // pagination
   const totalPages = Math.ceil(currentList.length / postsPerPage) || 1;
@@ -179,7 +195,7 @@ const Profile = () => {
 
       // Optimistically update UI: remove post from likedPosts immediately
       setLikedPosts((prev) => prev.filter((p) => p.id !== postId));
-      
+
       // Optional: if you want to also update MyPosts/Drafts counts, you can sync there too
     } catch (err) {
       Swal.fire("Error!", "Failed to update like", "error");
@@ -189,115 +205,395 @@ const Profile = () => {
 
 
   return (
-    <div>
-      {/* Tabs */}
-      <div className="support-header">
-        <button
-          className={`outline-btn ${activeTab === "Liked" ? "active" : ""}`}
-          onClick={() => setActiveTab("Liked")}
-        >
-          Liked
-        </button>
-        <button
-          className={`outline-btn ${activeTab === "Drafts" ? "active" : ""}`}
-          onClick={() => setActiveTab("Drafts")}
-        >
-          Drafts
-        </button>
-        <button
-          className={`outline-btn ${activeTab === "MyPosts" ? "active" : ""}`}
-          onClick={() => setActiveTab("MyPosts")}
-        >
-          My Posts
-        </button>
+    <>
+      {/*  */}
+      <div className="container-fluids">
+        {/*  */}
+        <div className="row">
+          {/*  */}
+          <div className="col-lg-3 col-md-4 col-sm-8 mx-auto">
+            {/* LEFT PROFILE CARD */}
+            <div className="profile-card">
+              <div className="avatar-wrap">
+                <span className="lang-avatar">H</span>
+
+              </div>
+
+              <h3>Shivah Web Tech</h3>
+              
+
+              <div className="social-icons">
+                <a href="https://www.facebook.com/people/oncehappened/61582009471567/?rdid=XspTKOOIXTqkEbzQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BLWoK8zGE%2F" target="_blank" rel="noreferrer" className="fac"><FaFacebook /></a>
+
+                <a href="https://www.instagram.com/once.happened" target="_blank" rel="noreferrer" className="ins"><FaInstagram /></a>
+
+              </div>
+
+              <hr />
+
+              <h4>Information</h4>
+              <ul className="info-list">
+                <li><span>Phone No</span><span>+1 (127) 801-27855</span></li>
+                <li><span>Birth of Date</span><span>23-08-1995</span></li>
+                <li><span>Email</span><span>tilak@shivahwebtech.com</span></li>
+                <li><span>Location</span><span>Mohali</span></li>
+                <li><span>Zip Code</span><span>160059</span></li>
+                <li><span>Joining Date</span><span>05-08-2024</span></li>
+                <li>
+                  <button className="btn btn-dangers" style={{ margin: 0, marginLeft: "auto" }}>Delete My Account</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          {/*  */}
+
+          <div className="col-lg-9 col-md-8 col-sm-8 mx-auto">
+
+            {/*  */}
+            <div class="tab-custom-profile">
+              {/* Tabs */}
+              <div className="support-header">
+                <button
+                  className={`outline-btn ${activeTab === TABS.OVERVIEW ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.OVERVIEW)}
+                >
+                  Overview
+                </button>
+
+                <button
+                  className={`outline-btn ${activeTab === TABS.EDIT ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.EDIT)}
+                >
+                  Edit Profile
+                </button>
+
+                <button
+                  className={`outline-btn ${activeTab === TABS.PASSWORD ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.PASSWORD)}
+                >
+                  Change Password
+                </button>
+
+                <button
+                  className={`outline-btn ${activeTab === TABS.LIKED ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.LIKED)}
+                >
+                  Liked
+                </button>
+
+                <button
+                  className={`outline-btn ${activeTab === TABS.DRAFTS ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.DRAFTS)}
+                >
+                  Drafts
+                </button>
+
+                <button
+                  className={`outline-btn ${activeTab === TABS.MY_POSTS ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.MY_POSTS)}
+                >
+                  My Posts
+                </button>
+
+                <button
+                  className={`outline-btn ${activeTab === TABS.BOOKMARK ? "active" : ""}`}
+                  onClick={() => setActiveTab(TABS.BOOKMARK)}
+                >
+                  Bookmark
+                </button>
+              </div>
+              <div className="profile-tab-content">
+
+                {/* OVERVIEW */}
+                {activeTab === TABS.OVERVIEW && (
+                  <div className="tab-content">
+                    <h2>About Us</h2>
+                    <p>Shivah Web Tech is a digital solutions company...</p>
+                  </div>
+                )}
+
+                {/* EDIT PROFILE */}
+                {activeTab === TABS.EDIT && (
+                  <div className="tab-content grid">
+                    <div>
+                      <label>First Name *</label>
+                      <input defaultValue="Shivah" />
+                    </div>
+                    <div>
+                      <label>Last Name *</label>
+                      <input defaultValue="Web Tech" />
+                    </div>
+                    <div>
+                      <label>Phone Number *</label>
+                      <input defaultValue="+1 (127) 801-27855" />
+                    </div>
+                    <div>
+                      <label>Email *</label>
+                      <input defaultValue="tilak@shivahwebtech.com" />
+                    </div>
+                    <div>
+                      <label>Birth of Date *</label>
+                      <input type="date" />
+                    </div>
+                    <div>
+                      <label>Gender *</label>
+                      <select>
+                        <option>Select option</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Location *</label>
+                      <input defaultValue="Mohali" />
+                    </div>
+                    <div>
+                      <label>Zip Code *</label>
+                      <input defaultValue="160059" />
+                    </div>
+
+
+                    <div className="actions">
+                      <button className="btn-save">Update</button>
+                      <button className="btn-cancel">Cancel</button>
+                    </div>
+                  </div>
+                )}
+
+
+                {/* CHANGE PASSWORD */}
+                {activeTab === TABS.PASSWORD && (
+                  <div className="tab-content grid">
+                    <div>
+                      <label>Old Password *</label>
+                      <input type="password" placeholder="Enter your old password" />
+                    </div>
+                    <div>
+                      <label>New Password *</label>
+                      <input type="password" placeholder="Enter your new password" />
+                    </div>
+                    <div className="full">
+                      <label>Confirm Password *</label>
+                      <input type="password" placeholder="Confirm your new password" />
+                    </div>
+
+                    <div className="actions">
+                      <button className="btn-save">Change Password</button>
+                      <button className="btn-cancel">Cancel</button>
+                    </div>
+                  </div>
+                )}
+                {/* Search */}
+                <SidebarSearch
+                  searchTerm={searchTerm}
+                  onSearchChange={(e) => setSearchTerm(e.target.value)}
+                />
+
+                {/* Posts */}
+                <div className="main-section-profiles">
+                  {loading && <p>Loading posts...</p>}
+
+                  {!loading &&
+                    currentPosts.map((q) => (
+                      <QuestionCard
+                        key={q.id}
+                        question={q}
+                        showActions={activeTab === TABS.LIKED}
+                        isLiked={activeTab === TABS.LIKED}
+                        onUnlike={(id) =>
+                          setLikedPosts((prev) => prev.filter((p) => p.id !== id))
+                        }
+                        showDelete={activeTab === TABS.DRAFTS}
+                        showEdit={activeTab === TABS.DRAFTS}
+                        showCounts={activeTab === TABS.MY_POSTS}
+                        status={activeTab === TABS.MY_POSTS ? q.status : null}
+                        onEdit={() => handleEditDraft(q)}
+                        onDelete={() => handleDeleteDraft(q.id)}
+                      />
+                    ))}
+
+                  {/* No Posts */}
+                  {!loading && currentList.length === 0 && (
+                    <NoPost
+                      message={
+                        activeTab === TABS.LIKED
+                          ? "No post available"
+                          : activeTab === TABS.DRAFTS
+                            ? "No posts yet"
+                            : "You haven't created any posts yet"
+                      }
+                      subMessage={
+                        activeTab === TABS.LIKED
+                          ? "Try liking/saving a post, thanks!"
+                          : activeTab === TABS.DRAFTS
+                            ? "Try writing a new post, thanks!"
+                            : "Start creating content and it will show here!"
+                      }
+                      onAddNew={
+                        activeTab === TABS.DRAFTS
+                          ? () => {
+                            setEditingDraft({});
+                          }
+                          : null
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="pagination-div">
+                  <button
+                    onClick={() => setPage(page - 1)}
+                    disabled={page === 1}
+                    className="page-btn"
+                  >
+                    <FaArrowLeft /> Prev
+                  </button>
+                  <span>
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setPage(page + 1)}
+                    disabled={page === totalPages}
+                    className="page-btn"
+                  >
+                    Next <FaArrowRight />
+                  </button>
+                </div>
+              )}
+
+              {/* Edit Draft Modal */}
+              {editingDraft && (
+                <FloatingEditModal
+                  editPost={editingDraft}
+                  onClose={handleCloseModal} // ✅ Updated: Custom close handler with refetch logic
+                />
+              )}
+            </div>
+          </div>
+          {/*  */}
+        </div>
+        {/*  */}
       </div>
+      {/*  */}
+      <div class="tab-custom-profile d-none">
+        {/* Tabs */}
+        <div className="support-header">
+          <button
+            className={`outline-btn ${activeTab === "Liked" ? "active" : ""}`}
+            onClick={() => setActiveTab("Liked")}
+          >
+            Liked
+          </button>
+          <button
+            className={`outline-btn ${activeTab === "Drafts" ? "active" : ""}`}
+            onClick={() => setActiveTab("Drafts")}
+          >
+            Drafts
+          </button>
+          <button
+            className={`outline-btn ${activeTab === "MyPosts" ? "active" : ""}`}
+            onClick={() => setActiveTab("MyPosts")}
+          >
+            My Posts
+          </button>
+          <button
+            className={`outline-btn ${activeTab === "BookMark" ? "active" : ""}`}
+            onClick={() => setActiveTab("BookMark")}
+          >
+            Bookmark
+          </button>
+        </div>
 
-      {/* Search */}
-      <SidebarSearch
-        searchTerm={searchTerm}
-        onSearchChange={(e) => setSearchTerm(e.target.value)}
-      />
+        {/* Search */}
+        <SidebarSearch
+          searchTerm={searchTerm}
+          onSearchChange={(e) => setSearchTerm(e.target.value)}
+        />
 
-      {/* Posts */}
-      <div className="pt-1">
-        {loading && <p>Loading posts...</p>}
+        {/* Posts */}
+        <div className="main-section-profiles">
+          {loading && <p>Loading posts...</p>}
 
-        {!loading &&
-          currentPosts.map((q) => (
-            <QuestionCard
-              key={q.id}
-              question={q}
-              showActions={activeTab === "Liked"}
-              isLiked={activeTab === "Liked"}
-              onUnlike={(id) =>
-                setLikedPosts((prev) => prev.filter((p) => p.id !== id))
+          {!loading &&
+            currentPosts.map((q) => (
+              <QuestionCard
+                key={q.id}
+                question={q}
+                showActions={activeTab === "Liked"}
+                isLiked={activeTab === "Liked"}
+                onUnlike={(id) =>
+                  setLikedPosts((prev) => prev.filter((p) => p.id !== id))
+                }
+                showDelete={activeTab === TABS.DRAFTS}
+
+                showEdit={activeTab === TABS.DRAFTS}
+                showCounts={activeTab === TABS.MY_POSTS}
+                status={activeTab === "MyPosts" ? q.status : null}
+                onEdit={() => handleEditDraft(q)}
+                onDelete={() => handleDeleteDraft(q.id)}
+              />
+            ))}
+
+          {/* No Posts */}
+          {!loading && currentList.length === 0 && (
+            <NoPost
+              message={
+                activeTab === "Liked"
+                  ? "No post available"
+                  : activeTab === "Drafts"
+                    ? "No posts yet"
+                    : "You haven't created any posts yet"
               }
-              showDelete={activeTab === "Drafts"}
-              showEdit={activeTab === "Drafts"}
-              showCounts={activeTab === "MyPosts"}
-              status={activeTab === "MyPosts" ? q.status : null}
-              onEdit={() => handleEditDraft(q)}
-              onDelete={() => handleDeleteDraft(q.id)}
+              subMessage={
+                activeTab === "Liked"
+                  ? "Try liking/saving a post, thanks!"
+                  : activeTab === "Drafts"
+                    ? "Try writing a new post, thanks!"
+                    : "Start creating content and it will show here!"
+              }
+              onAddNew={
+                activeTab === "Drafts" ? () => {
+                  setEditingDraft({}); // New draft – no wasEditing flag
+                } : null
+              }
             />
-          ))}
+          )}
+        </div>
 
-        {/* No Posts */}
-        {!loading && currentList.length === 0 && (
-          <NoPost
-            message={
-              activeTab === "Liked"
-                ? "No post available"
-                : activeTab === "Drafts"
-                ? "No posts yet"
-                : "You haven't created any posts yet"
-            }
-            subMessage={
-              activeTab === "Liked"
-                ? "Try liking/saving a post, thanks!"
-                : activeTab === "Drafts"
-                ? "Try writing a new post, thanks!"
-                : "Start creating content and it will show here!"
-            }
-            onAddNew={
-              activeTab === "Drafts" ? () => {
-                setEditingDraft({}); // New draft – no wasEditing flag
-              } : null
-            }
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="pagination-div">
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              className="page-btn"
+            >
+              <FaArrowLeft /> Prev
+            </button>
+            <span>
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+              className="page-btn"
+            >
+              Next <FaArrowRight />
+            </button>
+          </div>
+        )}
+
+        {/* Edit Draft Modal */}
+        {editingDraft && (
+          <FloatingEditModal
+            editPost={editingDraft}
+            onClose={handleCloseModal} // ✅ Updated: Custom close handler with refetch logic
           />
         )}
       </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="pagination-div">
-          <button
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-            className="page-btn"
-          >
-            <FaArrowLeft /> Prev
-          </button>
-          <span>
-            Page {page} of {totalPages}
-          </span>
-          <button
-            onClick={() => setPage(page + 1)}
-            disabled={page === totalPages}
-            className="page-btn"
-          >
-            Next <FaArrowRight />
-          </button>
-        </div>
-      )}
-
-      {/* Edit Draft Modal */}
-      {editingDraft && (
-        <FloatingEditModal
-          editPost={editingDraft}
-          onClose={handleCloseModal} // ✅ Updated: Custom close handler with refetch logic
-        />
-      )}
-    </div>
+    </>
   );
 };
 

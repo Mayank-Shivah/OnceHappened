@@ -31,6 +31,9 @@
       rgba(255, 255, 255, 0.97) 100%
       /* == #fffffff7 approx */
     );
+    --bg-dark: #ffffff;
+    --dark-text:#000000;
+    --input-text:#fafafa;
   // --after-gradient: linear-gradient(177deg, #ffffff91 11%, #fffffff7 45%);
 
 }
@@ -41,7 +44,7 @@
   --search-bg: #393e46;
   --profile-bg: #353c45;
   --filter-set: invert(1);
-  --filter:invert(999999999999999);
+  --filter: invert(999999999999999);
   --profile-color: #eee;
   --dark-text: #fff;
   --light-yellow: #464646;
@@ -51,7 +54,9 @@
   --shadow: 0 2px 16px #1e1f1f;
   --active-bg: #3e3e3f;
   --after-gradient: linear-gradient(180deg, #4646467d 11%, #464646e3 45%);
-
+  --bg-dark: #121212;
+    --dark-text:#ffffff;
+    --input-text:#000;
 }
 
 /* Use variables */
@@ -109,7 +114,8 @@ body.dark-theme {
 
   @media (max-width: 1024px) {
     flex-wrap: wrap;
-    margin-top: 4px;
+    display: block !important;
+    margin-top: 0px;
   }
 
 }
@@ -142,6 +148,8 @@ ul {
 .main-section-parent {
   flex: 1 1;
   padding: 0rem 1rem 0rem 1rem;
+    min-width: 0;
+
 }
 
 @media only screen and (min-width: 600px) and (max-width: 1024px) {
@@ -158,17 +166,19 @@ ul {
   }
 
 }
+
 @media (max-width:1024px) {
-    .main-section-parent.sub-main-padding{
+  .main-section-parent.sub-main-padding {
     padding: 0px !important;
   }
 }
+
 /* If you want `.sub-main-padding` to override these, add its styles below: */
 .main-section-parent.sub-main-padding {
-    padding: 2px 0px;
-    flex: 1 1;
-    padding: 0px 10px 0px 10px;
-  
+  padding: 2px 0px;
+  flex: 1 1;
+  padding: 0px 10px 0px 10px;
+
 }
 
 /* Add your layout styles for header, sidebar, footer etc. */
@@ -487,7 +497,7 @@ ul {
   h1 {
     color: var(--dark-text);
     font-size: 28px;
-    
+
     font-weight: 600;
     margin-right: 1rem;
     text-decoration: none;
@@ -611,36 +621,39 @@ input[type=email],
   }
 
   /* Modal overlay styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  backdrop-filter: blur(5px); /* This creates the blur effect */
-  -webkit-backdrop-filter: blur(5px); /* Safari support */
-}
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+    /* This creates the blur effect */
+    -webkit-backdrop-filter: blur(5px);
+    /* Safari support */
+  }
 
-/* When modal is hidden */
-.modal-overlay.hidden {
-  display: none;
-}
+  /* When modal is hidden */
+  .modal-overlay.hidden {
+    display: none;
+  }
 
-/* Body when modal is active - prevent scrolling */
-body.modal-active {
-  overflow: hidden;
-}
+  /* Body when modal is active - prevent scrolling */
+  body.modal-active {
+    overflow: hidden;
+  }
 
-/* Remove blur from body when modal is closed */
-body:not(.modal-active) {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
+  /* Remove blur from body when modal is closed */
+  body:not(.modal-active) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 
   .close-btn {
     background: none;
@@ -857,7 +870,8 @@ body:not(.modal-active) {
     color: var(--category-text);
   }
 
-  ul,ol {
+  ul,
+  ol {
     margin-left: 10px;
     margin-bottom: 10px;
 
@@ -951,14 +965,14 @@ body:not(.modal-active) {
 
 }
 
-.outline-btn.active {
-  color: var(--dark-text) !important;
-  background: var(--header-bg) !important;
-  border-width: 2px !important;
-  border-style: solid !important;
-  border-color: rgb(255, 255, 0) !important;
-  border-image: initial !important;
-}
+// .outline-btn.active {
+//   color: var(--dark-text) !important;
+//   background: var(--header-bg) !important;
+//   border-width: 2px !important;
+//   border-style: solid !important;
+//   border-color: rgb(255, 255, 0) !important;
+//   border-image: initial !important;
+// }
 
 .support-header {
   display: flex;
@@ -1266,65 +1280,278 @@ option {
   border-radius: 42px;
   max-width: 500px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-h5{
-  color: var(--dark-text);
-}
-p{
+
+  h5 {
+    color: var(--dark-text);
+  }
+
+  p {
     color: var(--dark-text);
     margin-top: 10px;
-}
+  }
 }
 
 a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
-    display: none;
+  display: none;
 }
 
 
 .accepted-sec {
-    padding-top: 10px;
-    padding-left: 8px;
+  padding-top: 10px;
+  padding-left: 8px;
 }
+
 .accepted-sec h3 {
-    font-size: 1.1rem;
+  font-size: 1.1rem;
 }
-.about-text p{
+
+.about-text p {
   padding: 0px;
 }
 
 .prive-main-sec {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
-.count-number{
+
+.count-number {
   color: var(--dark-text);
 }
-.custom-otp{
-background-color: rgba(255, 255, 255, 0);
-    border: none;
-    border-radius: 0px;
-    color: var(--dark-text);
-    font-weight: 600;
-        padding: 10px;
-    border-bottom: 2px solid yellow !important;
+
+.custom-otp {
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  border-radius: 0px;
+  color: var(--dark-text);
+  font-weight: 600;
+  padding: 10px;
+  border-bottom: 2px solid yellow !important;
 }
-.custom-otp:disabled{
-    color: var(--bs-btn-disabled-color);
-    pointer-events: none;
-    background-color: var(--bs-btn-disabled-bg);
-    border-color: var(--bs-btn-disabled-border-color);
-    opacity: var(--bs-btn-disabled-opacity);
-    color: var(--dark-text) !important;
-    opacity: 9;
+
+.custom-otp:disabled {
+  color: var(--bs-btn-disabled-color);
+  pointer-events: none;
+  background-color: var(--bs-btn-disabled-bg);
+  border-color: var(--bs-btn-disabled-border-color);
+  opacity: var(--bs-btn-disabled-opacity);
+  color: var(--dark-text) !important;
+  opacity: 9;
 }
-.btn-dangers{
-      background: #0000;
-    border: none;
-    color: var(--category-text);
-    cursor: pointer;
-    display: block;
-    font-size: 1rem;
-    font-weight: 600;
-    margin: .5rem auto 0;
-    position: relative;
-    text-align: center;
+
+.btn-dangers {
+  background: #0000;
+  border: none;
+  color: var(--category-text);
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: .5rem auto 0;
+  position: relative;
+  text-align: center;
   border-bottom: 2px solid var(--theme-color);
 }
+
+
+
+.top-bar-wrapper {
+  position: relative;
+  z-index: 10;
+  border-radius: 10px;
+  background-color: var(--header-bg);
+    width: 100%;
+  .sidebar-left-main {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .ad-card {
+    display: none  !important;
+  }
+
+  .sidebar-left {
+    width: 100%;
+max-width: 100%;
+.category-list {
+  display: flex;
+  overflow-x: auto;
+  column-gap: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(204, 204, 204, 0) transparent;
+  cursor: grab;
+  padding-top: 10px !important;
+    padding-bottom: 10px;
+&:active {
+  cursor: grabbing;
+}
+}
+
+
+    @media screen and (max-width:768px) {
+      display: none;
+    }
+  }
+
+}
+
+.filter-mode {
+  display: none;
+
+  @media screen and (max-width:768px) {
+    display: flex;
+    justify-content: space-evenly;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 34px;
+      background-color: #b5b0b0;
+    }
+  }
+}
+
+button.filter-items {
+  width: 34%;
+  border: unset;
+  background: transparent;
+  font-size: 1rem;
+  position: relative;
+  // space for ::before
+  cursor: pointer;
+  color: var(--category-text);
+
+}
+
+.actives {
+  border-bottom: 2px solid yellow !important;
+}
+
+.filter-section {
+  position: relative;
+  margin-left: 12px;
+
+  @media screen and (max-width:768px) {
+    display: block;
+    margin-left: 0px;
+    background: var(--light-yellow);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #b0b0b0;
+    padding: 7px;
+    margin-top: 2px;
+    display: none;
+  }
+}
+
+.filter-btn {
+
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+
+  @media screen and (max-width:768px) {
+    display: none;
+  }
+}
+
+.filter-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 6px;
+  display: block;
+  gap: 8px;
+  margin-bottom: 10px;
+  position: absolute;
+  z-index: 999999;
+  background-color: var(--header-bg);
+  border-radius: 13px;
+  padding: 1rem 0.6rem 0.5rem 0.6rem;
+  font-family: "Roboto", sans-serif;
+}
+
+.filter-item {
+  font-size: 1.09rem;
+  color: var(--category-text);
+  padding: 3px 12px;
+  line-height: 1.8;
+  gap: 0.7rem;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background 0.16s, color 0.16s;
+  background-color: var(--list-bg);
+  margin-bottom: 10px;
+
+  @media screen and (max-width:768px) {
+    margin-bottom: 0px;
+  }
+}
+
+.filter-item.active {
+  background: var(--header-bg) !important;
+  color: var(--dark-text) !important;
+  border: 2px solid yellow !important;
+}
+
+span.time-text {
+  color: var(--icon-color);
+  border: 1px solid var(--icon-color);
+  border-radius: 19px;
+  padding: 1px 11px;
+  font-size: 14px;
+}
+
+.main-time-sec {
+  padding: 2px 0px;
+}
+
+/* ================================
+   REMOVE BLUE TEXT SELECTION
+================================ */
+::selection {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+::-moz-selection {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* ================================
+   REMOVE BLUE FOCUS / ACTIVE STYLES
+================================ */
+*:focus,
+*:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.custom-read-mode  {
+ 
+    li{
+      button{
+        font-size: 0.9rem;
+      }
+    }
+  
+}
+.ad-card {
+    display: none;
+}
+
+.bottom-add {
+  .ad-image {
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+}
+}
+
+// new account

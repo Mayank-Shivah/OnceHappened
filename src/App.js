@@ -1,5 +1,6 @@
 // src/App.js
 import React, { useState, useEffect } from "react";
+import useHorizontalDragScroll from "./hooks/useHorizontalDragScroll";
 import Swal from "sweetalert2";
 import ThemeProvider from "./components/ThemeProvider"; // Persisted theme!
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -22,7 +23,6 @@ import PopupManager from "./components/PopupManager";
 import { isLoggedIn } from "./services/authService";
 import Success from "./pages/Subscription/Success";
 import Cancel from "./pages/Subscription/Cancel";
-
 // Custom hook to restrict copy, paste, cut, right-click, and shortcuts
 function useRestrictInteractions() {
   useEffect(() => {
@@ -87,8 +87,8 @@ function useRestrictInteractions() {
   }, []);
 }
 function App() {
-   useRestrictInteractions(); // globally restrict interactions
-
+  //  useRestrictInteractions(); // globally restrict interactions
+ useHorizontalDragScroll(".category-list");
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);
 
@@ -134,6 +134,8 @@ function App() {
                 <Route path="/return-policy" element={<ReturnPolicy />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 {/* Protected routes */}
+          
+
                 <Route
                   path="/support-suggestion"
                   element={

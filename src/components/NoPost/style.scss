@@ -1,9 +1,9 @@
 .no-post-container {
   text-align: center;
-  padding: 40px 0;
+  padding: 40px 10px;
   color: var(--dark-text);
   background: var(--header-bg);
-  border-radius: 12px;
+  // border-radius: 12px;
 }
 
 .no-post-image {
@@ -12,4 +12,9 @@
   opacity: 0.8;
 }
 
-
+.no-post-img {
+  width: 300px;        /* change as needed */
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}

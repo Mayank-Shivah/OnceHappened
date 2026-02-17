@@ -178,6 +178,48 @@
               )}
             </div>
 
+{/* City */}
+<div className={`form-group ${formik.errors.city ? "error" : ""}`}>
+  <label htmlFor="city">City</label>
+  <div className="input-wrapper">
+    <select
+      name="city"
+      id="city"
+      value={formik.values.city}
+      onChange={formik.handleChange}
+    >
+      <option value="">Select City</option>
+      <option value="Toronto">Toronto</option>
+      <option value="Mississauga">Mississauga</option>
+      <option value="Brampton">Brampton</option>
+    </select>
+  </div>
+  {formik.errors.city && (
+    <p className="field__message error-msg">{formik.errors.city}</p>
+  )}
+</div>
+
+{/* County */}
+<div className={`form-group ${formik.errors.county ? "error" : ""}`}>
+  <label htmlFor="county">County</label>
+  <div className="input-wrapper">
+    <select
+      name="county"
+      id="county"
+      value={formik.values.county}
+      onChange={formik.handleChange}
+    >
+      <option value="">Select County</option>
+      <option value="Peel">Peel</option>
+      <option value="York">York</option>
+      <option value="Halton">Halton</option>
+    </select>
+  </div>
+  {formik.errors.county && (
+    <p className="field__message error-msg">{formik.errors.county}</p>
+  )}
+</div>
+
             {/* Footer */}
             <div className="form-footer d-flex justify-content-end">
               <button

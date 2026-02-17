@@ -17,12 +17,12 @@
     cursor: pointer;
     transition: box-shadow 0.22s, transform 0.22s;
     opacity: 9;
-   transform: translate(-321px, 60px);
+    transform: translate(-321px, 60px);
     // animation: fadeInUp 0.4s 0.3s forwards, pulse 6s infinite;
     z-index: 8;
 
     @media (max-width: 1024px) {
-          transform: translate(-10px, 0px);
+        transform: translate(-10px, 0px);
 
 
     }
@@ -69,7 +69,7 @@
 
 .modal-close-btn {
     position: absolute;
-    top: 12px;
+    top: 1px;
     right: 12px;
     font-size: 1.85rem;
     color: var(--dark-text);
@@ -171,16 +171,18 @@
 .editor-wrapper {
     border: 1px solid #ddd;
     border-radius: 6px;
-    height: 83%;
+    height: 73%;
     margin-bottom: 12px;
-        overflow-y: auto;
-        @media screen and  (max-width:600px){
-            height: 66%;
-        }
-        @media  screen and (min-width:600px) and (max-width: 992px) {
-            height: 75%;
-            
-        }
+    overflow-y: auto;
+
+    @media screen and (max-width:600px) {
+        height: 57%;
+    }
+
+    @media screen and (min-width:600px) and (max-width: 992px) {
+        height: 75%;
+
+    }
 }
 
 .editor-textarea {
@@ -188,6 +190,12 @@
     padding: 8px 6px;
     font-size: 1.06rem;
     overflow-y: auto;
+    @media screen and (max-width:600px) {
+
+  
+    height: 401px;
+
+    }
 }
 
 .modal-label {
@@ -200,7 +208,7 @@
     bottom: auto;
     margin-right: -50%;
     border: 2px solid yellow;
-    min-width:80%;
+    min-width: 80%;
     max-width: 80%;
     border-radius: 30px;
     box-shadow: 0 6px 42px rgba(40, 40, 80, 0.14);
@@ -211,15 +219,18 @@
     top: 1%;
     bottom: auto;
     height: 97%;
+
     @media (max-width: 600px) {
-          min-width: 99%;
-    max-width: 99%;
-        height: 67%;
+        min-width: 99%;
+        max-width: 99%;
+        height:auto;
     }
+
     @media screen and (min-width:600px) and (max-width: 902px) {
-            height: 65%;
-        
+        height: 75%;
+
     }
+
     h2 {
         font-size: 1.2rem;
         font-weight: 600;
@@ -286,66 +297,200 @@ a.rdw-dropdown-selectedtext {
     outline: none;
     font-size: 14px;
 }
+
 .fab-wrapper {
-  display: inline-block;
-  position: relative;
+    display: inline-block;
+    position: relative;
 }
 
 .fab-pen-animate.disabled {
-//   cursor: not-allowed;
-  opacity: 9;
+    //   cursor: not-allowed;
+    opacity: 9;
 }
 
 .fab-tooltip {
-  position: fixed; // instead of absolute (prevents clipping inside parent)
-  bottom: 90px; // always above your fab button
-  right: 45px; // aligned with fab button
-  background: #000;
-  color: #fff;
-  padding: 6px 10px;
-  font-size: 12px;
-  border-radius: 5px;
-  white-space: nowrap;
-  z-index: 5000; // very high so it's always visible
-  animation: fadeIn 0.2s ease-in-out;
-  @media screen and (max-width: 1024px) {
-    bottom: 197px;
-  }
+    position: fixed; // instead of absolute (prevents clipping inside parent)
+    bottom: 90px; // always above your fab button
+    right: 45px; // aligned with fab button
+    background: #000;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 5000; // very high so it's always visible
+    animation: fadeIn 0.2s ease-in-out;
+
+    @media screen and (max-width: 1024px) {
+        bottom: 197px;
+    }
 }
 
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
 .rdw-editor-toolbar.editor-toolbar {
     display: none;
 }
-.wordCountSection{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-         gap:10px;
-                @media(max-width:600px){
-justify-content: start;
-flex-wrap: wrap;
-        }}
-          
-        
-        
-        
- .swal2-container {
-  z-index: 9999999999 !important;
+
+.wordCountSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    @media(max-width:600px) {
+        justify-content: start;
+        flex-wrap: wrap;
+    }
+}
+
+.wordCountSection {
+    padding-bottom: 15px;
+}
+
+
+.swal2-container {
+    z-index: 9999999999 !important;
 }
 
 .swal2-popup {
-  z-index: 10000000000 !important;
+    z-index: 10000000000 !important;
+}
+
+.rdw-editor-toolbar {
+    display: none !important;
+}
+
+/* ===== FORM INPUT STYLE ===== */
+.custom-form {
+    display: flex;
+
+    gap: 12px;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+    }
+}
+
+.custom-input {
+    background: transparent;
+    min-height: 30px;
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #757575;
+    font-size: 14px;
+}
+
+.custom-input::placeholder {
+    color: var(--category-text);
+    /* IMPORTANT for Chrome & Safari */
+}
+
+/* ===== TAG INPUT ===== */
+.custom-tag-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-tag-input {
+    background: transparent;
+    min-height: 30px;
+    border: 1px solid #ddd;
+
+    padding: 8px;
+
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.tag-placeholder {
+    color: var(--category-text);
+    font-size: 14px;
+}
+
+/* ===== TAG PILL ===== */
+.tag-pill {
+    background: #6c757d;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.tag-remove {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ===== DROPDOWN ===== */
+.custom-tag-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 30;
+    border: 1px solid var(--dark-text);
+}
+
+.tag-option input[type="checkbox"] {
+    accent-color: #ffd400;
+    /* yellow */
+}
+
+.tag-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.tag-option input {
+    cursor: pointer;
+}
+
+.custom-select {
+    background: transparent;
+    min-height: 30px;
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 8px;
+    color: var(--icon-color);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.custom-select option {
+    background: var(--bg-dark);
+    color: var(--dark-text);
 }

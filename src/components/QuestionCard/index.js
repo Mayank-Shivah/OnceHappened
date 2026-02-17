@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaHeart, FaThumbsDown, FaTrash, FaEdit } from "react-icons/fa";
+import {
+  FaHeart,
+  FaThumbsDown,
+  FaTrash,
+  FaEdit,
+  FaBookmark,
+  FaRegBookmark,
+  FaFlag,
+  FaRegFlag,
+} from "react-icons/fa";
 import "./style.scss";
 import api from "../../api";
 import { loggedUser, isLoggedIn } from "../../services/authService";
@@ -11,349 +20,321 @@ export default function QuestionCard({
   showActions = true,
   showDelete = false,
   showEdit = false,
-  showCounts = false,   // ✅ new prop
-  isLiked = false,     // ✅ New prop: Force liked state (e.g., for Profile "Liked" tab)
-  status = null,       // ✅ New prop: For My Posts/Drafts tabs (e.g., "approved", "unapproved", "published", "draft")
+  showCounts = false,
+  isLiked = false,
+  status = null,
   onDelete,
   onEdit,
   onUnlike,
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [vote, setVote] = useState(null); // true=like, false=dislike, null=none
+  const [vote, setVote] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
+  const [bookmarked, setBookmarked] = useState(false);
+  const [showFlagMenu, setShowFlagMenu] = useState(false);
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [selectedReason, setSelectedReason] = useState("");
+  const [otherReason, setOtherReason] = useState("");
+  const [isFlagged, setIsFlagged] = useState(false);
+
   const descRef = useRef();
-  const user = loggedUser     ();
+  const user = loggedUser();
   const { openRegister } = usePopup();
 
   const voteKey = user ? `post_${question.id}_user_${user.id}_vote` : null;
+  const bookmarkKey = user ? `post_${question.id}_user_${user.id}_bookmark` : null;
+  const flagKey = user ? `post_${question.id}_user_${user.id}_flag` : null;
 
-  // ✅ Initialize vote from API or localStorage
+  /* ---------------- BOOKMARK ---------------- */
+  useEffect(() => {
+    if (!bookmarkKey) return;
+    setBookmarked(localStorage.getItem(bookmarkKey) === "true");
+  }, [bookmarkKey]);
+
+  const toggleBookmark = () => {
+    if (!isLoggedIn()) {
+      openRegister();
+      return;
+    }
+    const value = !bookmarked;
+    setBookmarked(value);
+    localStorage.setItem(bookmarkKey, value);
+  };
+
+  /* ---------------- FLAG ---------------- */
+  const flagReasons = [
+    "Spam or misleading",
+    "Hate speech",
+    "Harassment",
+    "False information",
+    "Inappropriate content",
+    "Other",
+  ];
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (flagRef.current && !flagRef.current.contains(e.target)) {
+        setShowFlagMenu(false);
+        setShowOtherInput(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+const flagRef = useRef(null);
+  /* ---------------- TIME ---------------- */
+  const timeAgo = (date) => {
+    if (!date) return "";
+    const sec = Math.floor((new Date() - new Date(date)) / 1000);
+    if (sec < 60) return `${sec} sec ago`;
+    if (sec < 3600) return `${Math.floor(sec / 60)} min ago`;
+    if (sec < 86400) return `${Math.floor(sec / 3600)} hr ago`;
+    return `${Math.floor(sec / 86400)} days ago`;
+  };
+
+  const postTime = timeAgo(question.updated_at || question.created_at);
+
+  /* ---------------- INIT VOTE ---------------- */
   useEffect(() => {
     if (!user?.id) return;
 
-    // check localStorage first
-    const storedVote = voteKey ? localStorage.getItem(voteKey) : null;
+    const storedVote = voteKey && localStorage.getItem(voteKey);
     if (storedVote) {
-      if (storedVote === "like") setVote(true);
-      else if (storedVote === "dislike") setVote(false);
-      else setVote(null);
+      setVote(storedVote === "like" ? true : storedVote === "dislike" ? false : null);
       return;
     }
 
-    // fallback: check API data in question.likes (✅ Fixed: Use String comparison for type safety)
-    const userLike = question?.likes?.find((like) => String(like.user_id) === String(user.id));
+    const userLike = question?.likes?.find(
+      (l) => String(l.user_id) === String(user.id)
+    );
+
     if (userLike) {
-      if (userLike.is_like === 1) setVote(true);
-      else if (userLike.is_like === 0) setVote(false);
-      else setVote(null);
+      setVote(userLike.is_like === 1 ? true : userLike.is_like === 0 ? false : null);
     } else {
       setVote(null);
     }
 
-    // ✅ Fallback override: Force liked state if prop is true (e.g., Profile "Liked" tab)
-    if (isLiked) {
-      setVote(true);
-    }
-  }, [question, user?.id, isLiked]); // ✅ Added isLiked to deps for reactivity
+    if (isLiked) setVote(true);
+  }, [question, user?.id, isLiked]);
 
-  // ✅ Detect overflow text for read more/less
+  /* ---------------- READ MORE ---------------- */
   useEffect(() => {
     const el = descRef.current;
     if (!el) return;
-
-    const checkOverflow = () => {
-      const style = window.getComputedStyle(el);
-      let lh =
-        parseFloat(style.lineHeight) ||
-        parseFloat(style.fontSize) * 1.5 ||
-        20;
-      const lines = Math.ceil(el.scrollHeight / lh);
-      setShowReadMore(lines > 9);
-    };
-
-    checkOverflow();
-    const ro = new ResizeObserver(checkOverflow);
-    ro.observe(el);
-    return () => ro.disconnect();
+    const lh = parseFloat(getComputedStyle(el).lineHeight) || 20;
+    setShowReadMore(Math.ceil(el.scrollHeight / lh) > 9);
   }, [question]);
 
-  // ✅ Handle Like / Dislike
+  /* ---------------- LIKE / DISLIKE ---------------- */
   const handleVote = async (isLike) => {
     if (!isLoggedIn()) {
       openRegister();
       return;
     }
 
-    if (!user?.id || !question?.id) {
-      return;
-    }
-
     const prevVote = vote;
     let newVote = null;
-    let payloadIsLike = null;
+    let payload = null;
 
     if (vote === isLike) {
-      // case: clicked same button → reset to none
       newVote = null;
-      payloadIsLike = 2; // special code for remove
-
-      // ✅ If user unliked and this card was forced liked (Liked tab)
-      if (isLike === true && isLiked) {
-        onUnlike?.(question.id);  // 👈 notify parent to remove immediately
-      }
+      payload = 2;
+      if (isLike && isLiked) onUnlike?.(question.id);
     } else {
-      // case: switch like ↔ dislike
       newVote = isLike;
-      payloadIsLike = isLike ? 1 : 0;
+      payload = isLike ? 1 : 0;
     }
 
-    // Optimistic update (UI + localStorage)
     setVote(newVote);
-    if (voteKey) {
-      if (newVote === true) localStorage.setItem(voteKey, "like");
-      else if (newVote === false) localStorage.setItem(voteKey, "dislike");
-      else localStorage.setItem(voteKey, "none");
-    }
+    voteKey &&
+      localStorage.setItem(
+        voteKey,
+        newVote === true ? "like" : newVote === false ? "dislike" : "none"
+      );
 
     try {
       setLoading(true);
-      const payload = {
+      await api.post("/posts/like", {
         post_id: question.id,
         user_id: user.id,
-        is_like: payloadIsLike,
-      };
-      await api.post("/posts/like", payload);
-    } catch (err) {
-      console.error("Vote failed:", err.response?.data || err.message);
-
-      // rollback
+        is_like: payload,
+      });
+    } catch {
       setVote(prevVote);
-      if (voteKey) {
-        if (prevVote === true) localStorage.setItem(voteKey, "like");
-        else if (prevVote === false) localStorage.setItem(voteKey, "dislike");
-        else localStorage.setItem(voteKey, "none");
-      }
     } finally {
       setLoading(false);
     }
   };
+  const truncateByWords = (text, wordLimit = 10) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    return words.length > wordLimit
+      ? words.slice(0, wordLimit).join(" ") + "..."
+      : text;
+  };
 
   const shareUrl = `${window.location.origin}/?id=${question.id}`;
 
-  // ✅ Deduplicate likes/dislikes for counts
-  let likeCount = 0;
-  let dislikeCount = 0;
-  if (showCounts && Array.isArray(question.likes)) {
-    const reactions = {};
-    question.likes.forEach((like) => {
-      reactions[like.user_id] = like.is_like; // overwrite with latest
-    });
-    likeCount = Object.values(reactions).filter((v) => String(v) === "1").length;
-    dislikeCount = Object.values(reactions).filter((v) => String(v) === "0").length;
-  }
-
-  // ✅ Status display logic (for My Posts/Drafts tabs)
-  // ✅ Status display logic
-    const getStatusDisplay = (status) => {
-      if (!status) return null;
-      switch (status) {
-        case "draft":
-          return "Pending for Approval";
-        case "approved":
-          return "Approved";
-        case "un-approved":
-          return "Unapproved";
-        case "published":
-          return "Draft";
-        default:
-          return null;
-      }
-    };
-
-    const getStatusColor = (status) => {
-      switch (status) {
-        case "approved":
-          return "#28a745"; // Green
-        case "draft":
-          return "#ffc107"; // Orange
-        case "unapproved":
-          return "#dc3545"; // Red
-        default:
-          return "#dc3545"; // Gray
-      }
-    };
-
-  const statusDisplay = getStatusDisplay(status);
-  const statusColor = getStatusColor(status);
-
   return (
     <div className="question-card">
-      {/* ✅ Description – Renders full question.description (updated from Profile state) */}
-      <div
-        className={`question-description ${
-          showReadMore ? "has-readmore" : ""
-        }`}
-      >
-        <div
-          ref={descRef}
-          className={`desc-body ${expanded ? "expanded" : "collapsed"}`}
-        >
+      <div className={`question-description ${showReadMore ? "has-readmore" : ""}`}>
+        {/* HEADING + BOOKMARK */}
+        <div className="d-flex align-items-start justify-content-between mb-1">
+          <h2 className="mb-0">
+            {truncateByWords(
+              "Approaching Valentine’s Day this year, Approaching Valentine’s Day this year",
+              8 // 👈 number of words to show
+            )}
+          </h2>
+          <span onClick={toggleBookmark} style={{ cursor: "pointer" }}>
+            {bookmarked ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
+          </span>
+        </div>
+
+        {/* TITLE + TIME */}
+        <div className="d-flex align-items-start justify-content-between mb-1">
+          <h5 className="mb-0"><a href="#">#title</a> <a href="#">#demo</a> <a href="#">#title</a></h5>
+          <span className="time-text">{postTime}</span>
+        </div>
+
+        <div ref={descRef} className={`desc-body ${expanded ? "expanded" : "collapsed"}`}>
           <span dangerouslySetInnerHTML={{ __html: question.description }} />
         </div>
 
         {showReadMore && (
-          <button
-            className="read-more"
-            onClick={() => setExpanded(!expanded)}
-            type="button"
-          >
+          <button className="read-more" onClick={() => setExpanded(!expanded)}>
             {expanded ? "Show Less" : "Read More"}
           </button>
         )}
       </div>
 
-      {/* ✅ Actions (Bottom row: Left=Counts/Votes, Right=Status/Actions) */}
-      <div className="question-actions" style={{ position: "relative" }}>
-        <div className="d-flex g-1 w-100 justify-content-between align-items-center">
-          {/* Left: Votes (if showActions) + Counts (if showCounts) */}
-          <div className="left-actions d-flex align-items-center gap-2">
-            {showActions && (
-              <div className="d-flex">
-                {/* LIKE */}
-                <button
-                  className={`upvote ${vote === true ? "active" : ""}`}
-                  disabled={loading}
-                  onClick={() => handleVote(true)}
-                >
-                  {vote === true ? (
-                    <FaHeart color="red" size={20} />
-                  ) : (
-                    <img
-                      src="images/heart.svg"
-                      alt="like"
-                      width="20"
-                      height="20"
-                    />
-                  )}
-                </button>
+      {/* ACTIONS */}
+      <div className="question-actions d-flex justify-content-between align-items-center ms-auto">
+        {/* LEFT: LIKE / DISLIKE */}
+        {showActions && (
+          <div className="d-flex">
+            <button className="upvote" onClick={() => handleVote(true)} disabled={loading}>
+              {vote === true ? (
+                <FaHeart color="red" size={20} />
+              ) : (
+                <img src="images/heart.svg" alt="like" width="20" height="20" />
+              )}
+            </button>
 
-                {/* DISLIKE */}
-                <button
-                  className={`downvote ${vote === false ? "active" : ""}`}
-                  disabled={loading}
-                  onClick={() => handleVote(false)}
-                >
-                  {vote === false ? (
-                    <FaThumbsDown size={20} />
-                  ) : (
-                    <img
-                      src="images/dislike-icon.png"
-                      alt="dislike"
-                      width="20"
-                      height="20"
+            <button className="downvote" onClick={() => handleVote(false)} disabled={loading}>
+              {vote === false ? (
+                <FaThumbsDown size={20} />
+              ) : (
+                <img
+                  src="images/dislike-icon.png"
+                  alt="dislike"
+                  width="20"
+                  height="20"
+                />
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* RIGHT: FLAG + SEND TO */}
+        <div className="d-flex align-items-center w-100 justify-content-end ">
+          {/* <button onClick={toggleFlag} style={{ background: "none", border: "none" }}>
+            {flagged ? <FaFlag color="#dc3545" /> : <FaRegFlag className="color-set" />}
+          </button> */}
+
+          <div className="flag-ui-wrapper" ref={flagRef}>
+            {/* FLAG BUTTON */}
+            <button
+  className="flag-btn"
+  onClick={() => {
+    setShowFlagMenu(!showFlagMenu);
+    setShowOtherInput(false);
+  }}
+>
+  {isFlagged ? (
+    <FaFlag color="#dc3545" />   // 🔴 solid when active
+  ) : (
+    <FaRegFlag className="color-set" /> // ⚪ outline by default
+  )}
+</button>
+
+
+            {showFlagMenu && (
+              <div className="flag-ui-dropdown">
+                <p className="flag-title">Report this post</p>
+
+                {/* LIST ALWAYS VISIBLE */}
+                <ul className="flag-list">
+                  {[
+                    "Spam or misleading",
+                    "Hate speech",
+                    "Harassment or abuse",
+                    "False information",
+                    "Inappropriate content",
+                  ].map((reason) => (
+                    <li
+                      key={reason}
+                      onClick={() => {
+                        setSelectedReason(reason);
+                        setIsFlagged(true);
+                        setShowFlagMenu(false);
+                      }}
+                    >
+                      {reason}
+                    </li>
+                  ))}
+
+                  {/* OTHER */}
+                  <li
+                    className="other"
+                    onClick={() => setShowOtherInput(true)}
+                  >
+                    Other
+                  </li>
+                </ul>
+
+                {/* INPUT APPEARS BELOW LIST */}
+                {showOtherInput && (
+                  <div className="flag-other-box">
+                    <input
+                      type="text"
+                      placeholder="Enter your reason"
+                      value={otherReason}
+                      onChange={(e) => setOtherReason(e.target.value)}
                     />
-                  )}
-                </button>
+                    <button
+                      onClick={() => {
+                        if (!otherReason.trim()) return;
+                        setSelectedReason(otherReason);
+                        setIsFlagged(true);
+                        setShowFlagMenu(false);
+                        setShowOtherInput(false);
+                        setOtherReason("");
+                      }}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                )}
               </div>
             )}
-{/* 
-            {showCounts && (
-              <div className="d-flex" style={{ gap: "15px" }}>
-                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <FaHeart color="red" size={16} />
-                  {likeCount}
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <FaThumbsDown size={16} />
-                  {dislikeCount}
-                </span>
-              </div>
-            )} */}
-
-            {/* ✅ Static Like/Dislike counts (for My Posts tab) – Left bottom */}
-{showCounts && (
-  <div className="d-flex" style={{ gap: "15px" }}>
-    {likeCount > 0 && (
-      <button
-        type="button"
-        className="count-btn border-0 bg-transparent"
-        onClick={() => {/* optional: open list of likers */}}
-        aria-label={`${likeCount} likes`}
-      >
-        <FaHeart color="red" size={16} />
-        <span className="count-number ms-1">{likeCount}</span>
-      </button>
-    )}
-
-    {dislikeCount > 0 && (
-      <button
-        type="button"
-        className="count-btn border-0 bg-transparent"
-        onClick={() => {/* optional: open list of dislikers */}}
-        aria-label={`${dislikeCount} dislikes`}
-      >
-        <FaThumbsDown size={16} />
-        <span className="count-number ms-1">{dislikeCount}</span>
-      </button>
-    )}
-  </div>
-)}
-
           </div>
 
+          {showActions && (
+            <button className="share-btn" onClick={() => setShowShare(true)}>
+              Send To
+            </button>
+          )}
 
-
-          {/* Right: Status Badge (if status) + Share/Edit/Delete */}
-          <div className="right-actions d-flex align-items-center gap-2">
-            {/* ✅ Status Badge (Right bottom, parallel to counts) */}
-            {statusDisplay && (
-              <span
-                className="share-btn"
-                style={{ color: statusColor }} // ✅ keep consistent styling
-              >
-                {statusDisplay}
-              </span>
-            )}
-
-            {/* SHARE BUTTON */}
-            {showActions && (
-              <div className="share-dropdown-container">
-                <button
-                  className="share-btn"
-                  onClick={() => setShowShare(true)}
-                >
-                  Send To
-                </button>
-              </div>
-            )}
-
-            {showEdit && (
-              <button
-                className="upvote"
-                onClick={() => onEdit?.(question)}
-              >
-                <FaEdit />
-              </button>
-            )}
-            {showDelete && (
-              <button
-                className="downvote"
-                onClick={() => onDelete?.(question.id)}
-              >
-                <FaTrash />
-              </button>
-            )}
-          </div>
+          {showEdit && <button className="upvote" onClick={() => onEdit?.(question)}><FaEdit /></button>}
+          {showDelete && <button className="downvote" onClick={() => onDelete?.(question.id)}><FaTrash /></button>}
         </div>
       </div>
 
-      {/* ✅ Share Modal */}
-      {showShare && (
-        <ShareModal url={shareUrl} onClose={() => setShowShare(false)} />
-      )}
+      {showShare && <ShareModal url={shareUrl} onClose={() => setShowShare(false)} />}
     </div>
   );
 }

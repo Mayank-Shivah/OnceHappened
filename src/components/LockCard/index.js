@@ -1,12 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./style.scss";
 import { usePopup } from "../PopupManager";
 import { isLoggedIn } from "../../services/authService";
-import { FaHeart, FaThumbsDown, FaEdit, FaTrash } from "react-icons/fa";
+import {
+    FaHeart,
+    FaThumbsDown,
+    FaEdit,
+    FaTrash,
+    FaBookmark,
+    FaRegBookmark,
+} from "react-icons/fa";
 
 export default function LockCard({
-    post,           // 🔹 now accepts post object
+    post,
     showActions,
     showCounts,
     showEdit,
@@ -19,14 +26,23 @@ export default function LockCard({
     onDelete,
     statusDisplay,
 }) {
+
     const descRef = useRef();
     const navigate = useNavigate();
     const { openRegister } = usePopup();
+
+    const [bookmarked, setBookmarked] = useState(false);
+    const [flagged, setFlagged] = useState(false);
     const [showShare, setShowShare] = useState(false);
 
-    const handleVote = (isUpvote) => {
-        // your vote logic if needed
-    };
+    /* ================= FIX (ONLY ADDITION) ================= */
+    const user = JSON.parse(localStorage.getItem("user"));
+    const question = post;
+    /* ====================================================== */
+
+    const voteKey = user ? `post_${question?.id}_user_${user.id}_vote` : null;
+    const bookmarkKey = user ? `post_${question?.id}_user_${user.id}_bookmark` : null;
+    const flagKey = user ? `post_${question?.id}_user_${user.id}_flag` : null;
 
     const handleButtonClick = (e) => {
         e.stopPropagation();
@@ -37,24 +53,85 @@ export default function LockCard({
         }
     };
 
-    // 🔹 Utility: strip HTML from API description
+    /* ---------- STRIP HTML ---------- */
     const stripHtml = (html = "") => {
         const div = document.createElement("div");
         div.innerHTML = html;
         return div.textContent || div.innerText || "";
     };
 
+    /* ---------- TIME ---------- */
+    const timeAgo = (date) => {
+        if (!date) return "";
+        const sec = Math.floor((new Date() - new Date(date)) / 1000);
+        if (sec < 60) return `${sec} sec ago`;
+        if (sec < 3600) return `${Math.floor(sec / 60)} min ago`;
+        if (sec < 86400) return `${Math.floor(sec / 3600)} hr ago`;
+        return `${Math.floor(sec / 86400)} days ago`;
+    };
+
+    /* ---------- BOOKMARK ---------- */
+    useEffect(() => {
+        if (!bookmarkKey) return;
+        setBookmarked(localStorage.getItem(bookmarkKey) === "true");
+    }, [bookmarkKey]);
+
+    const toggleBookmark = () => {
+        if (!isLoggedIn()) {
+            openRegister();
+            return;
+        }
+        const value = !bookmarked;
+        setBookmarked(value);
+        localStorage.setItem(bookmarkKey, value);
+    };
+
+    const postTime = timeAgo(question?.updated_at || question?.created_at);
+
+    const truncateByWords = (text, wordLimit = 10) => {
+        if (!text) return "";
+        const words = text.split(" ");
+        return words.length > wordLimit
+            ? words.slice(0, wordLimit).join(" ") + "..."
+            : text;
+    };
+
     return (
-        <div className="question-card position-relative  overflow-hidden" ref={descRef} id={`lock-${post?.id || "noid"}`}>
+        <div
+            className="question-card position-relative overflow-hidden"
+            ref={descRef}
+            id={`lock-${post?.id || "noid"}`}
+        >
             <div className="lpb-bg-texts question-description has-readmore">
                 <div className="desc-body collapsed">
+
+                    {/* TITLE + BOOKMARK */}
+                    <div className="d-flex align-items-start justify-content-between mb-1">
+                        <h2 className="mb-0">
+                            {truncateByWords(
+                                "Approaching Valentine’s Day this year, Approaching Valentine’s Day this year",
+                                8
+                            )}
+                        </h2>
+                        <span onClick={toggleBookmark} style={{ cursor: "pointer" }}>
+                            {bookmarked ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
+                        </span>
+                    </div>
+
+                    {/* TAGS + TIME */}
+                    <div className="d-flex align-items-start justify-content-between mb-1">
+                        <h5 className="mb-0">
+                            <a href="#">#title</a> <a href="#">#demo</a> <a href="#">#title</a>
+                        </h5>
+                        <span className="time-text">{postTime}</span>
+                    </div>
+
                     <span>
-           
-                    
                         {stripHtml(post?.description || "")}...
                     </span>
+
                     <button className="read-more" type="button" onClick={handleButtonClick}>
-                      Read More
+                        Read More
                     </button>
                 </div>
             </div>
@@ -86,6 +163,7 @@ export default function LockCard({
                                 <FaEdit />
                             </button>
                         )}
+
                         {showDelete && (
                             <button className="downvote" onClick={() => onDelete?.(post)}>
                                 <FaTrash />
@@ -99,16 +177,12 @@ export default function LockCard({
                 <div className="lpb-yellow-box">
                     <div className="lpb-main-title">
                         <button className="once-btn" onClick={handleButtonClick}>
-                            <span className="button-text">  Once Happened +</span>
+                            <span className="button-text">Once Happened +</span>
                         </button>
                     </div>
                     <ul className="lpb-features">
-                        <li onClick={handleButtonClick} style={{ cursor: "pointer" }}>
-                            Unlock all stories
-                        </li>
-                        <li onClick={handleButtonClick} style={{ cursor: "pointer" }}>
-                            Remove all ads.
-                        </li>
+                        <li onClick={handleButtonClick}>Unlock all stories</li>
+                        <li onClick={handleButtonClick}>Remove all ads.</li>
                     </ul>
                     <button className="once-btn" onClick={handleButtonClick}>
                         <span className="button-text">Find Out More</span>

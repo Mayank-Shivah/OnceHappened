@@ -1,355 +1,297 @@
 import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import { Editor } from "react-draft-wysiwyg";
-import DOMPurify from "dompurify";
-import { EditorState, ContentState, convertToRaw } from "draft-js";
-import draftToHtml from "draftjs-to-html";
+import { EditorState, ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
 import { isLoggedIn, loggedUser } from "../../services/authService";
 import Swal from "sweetalert2";
 import api from "../../api";
-import { usePopup } from "../PopupManager"; // Popup context
+import { usePopup } from "../PopupManager";
 import "./style.scss";
 
 Modal.setAppElement("#root");
 
-const MIN_WORDS = 45;
 const MAX_WORDS = 500;
 
 export default function FloatingEditModal({
   editPost = null,
-  onClose,
   defaultCategory = null,
 }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [selectedTopics, setSelectedTopics] = useState([]);
   const [topics, setTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState("");
   const [wordCount, setWordCount] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const dropdownRef = useRef();
+  const [title, setTitle] = useState("");
+
+  /* TAGS */
+  const [tags, setTags] = useState([]);
+  const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [otherTag, setOtherTag] = useState("");
+
+  const tagRef = useRef(null);
   const user = loggedUser();
-
   const { openRegister } = usePopup();
 
-  // Open modal if editing existing post and populate editor & selected topic
-  useEffect(() => {
-    if (editPost) {
-      setModalOpen(true);
+  const availableTags = [
+    { id: 1, label: "#Item 1" },
+    { id: 2, label: "#Item 2" },
+    { id: 3, label: "#Item 3" },
+    { id: 4, label: "#Item 4" },
+  ];
 
-      if (editPost.description) {
-        const blocksFromHtml = htmlToDraft(editPost.description);
-        if (blocksFromHtml) {
-          const { contentBlocks, entityMap } = blocksFromHtml;
-          const contentState = ContentState.createFromBlockArray(
-            contentBlocks,
-            entityMap
-          );
-          const initialEditorState = EditorState.createWithContent(contentState);
-          setEditorState(initialEditorState);
-          setWordCount(getWordsFromEditorState(initialEditorState));
-        }
-      }
-
-      if (editPost.topics?.length > 0) {
-        setSelectedTopics([editPost.topics[0].id]);
-      }
-    }
-  }, [editPost]);
-
-  // Fetch topics from API and set default topic selection
+  /* 🔹 FETCH TOPICS */
   useEffect(() => {
     const fetchTopics = async () => {
       try {
         const res = await api.get("/topics");
-        if (res.data?.status && Array.isArray(res.data.topics)) {
-          setTopics(res.data.topics);
+        if (res.data?.status) {
+          setTopics(res.data.topics || []);
 
-          if (!editPost) {
-            if (defaultCategory) {
-              setSelectedTopics([defaultCategory]);
-            } else if (res.data.topics.length > 0 && selectedTopics.length === 0) {
-              setSelectedTopics([res.data.topics[0].id]);
-            }
+          if (!editPost && res.data.topics?.length) {
+            setSelectedTopic(defaultCategory || res.data.topics[0].id);
           }
         }
-      } catch (err) {
-        Swal.fire("Error!", "Failed to load topics", "error");
+      } catch {
+        Swal.fire("Error", "Failed to load topics", "error");
       }
     };
     fetchTopics();
   }, [defaultCategory, editPost]);
 
-  // Close dropdown on outside click
+  /* 🔹 EDIT MODE */
   useEffect(() => {
-    if (!dropdownOpen) return;
-    const handleClick = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
+    if (!editPost) return;
+
+    setModalOpen(true);
+    setTitle(editPost.title || "");
+
+    if (editPost.description) {
+      const blocks = htmlToDraft(editPost.description);
+      if (blocks) {
+        const contentState = ContentState.createFromBlockArray(
+          blocks.contentBlocks,
+          blocks.entityMap
+        );
+        setEditorState(EditorState.createWithContent(contentState));
+      }
+    }
+
+    if (editPost.topics?.length) {
+      setSelectedTopic(editPost.topics[0].id);
+    }
+  }, [editPost]);
+
+  /* 🔹 OUTSIDE CLICK FOR TAGS */
+  useEffect(() => {
+    const handler = (e) => {
+      if (tagRef.current && !tagRef.current.contains(e.target)) {
+        setTagDropdownOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [dropdownOpen]);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
-  // Change selected topic (single select)
-  const toggleTopic = (topicId) => {
-    setSelectedTopics([topicId]);
-  };
+  const getWordCount = (state) =>
+    state
+      .getCurrentContent()
+      .getPlainText(" ")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
 
-  // Calculate word count from EditorState content
-  const getWordsFromEditorState = (state) => {
-    try {
-      const plainText = state.getCurrentContent().getPlainText("\u0001");
-      const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0);
-      return words.length;
-    } catch {
-      return 0;
-    }
-  };
-
-  // Open modal on floating edit button click or show register popup
-  const handleClick = () => {
-    if (isLoggedIn()) {
-      setEditorState(EditorState.createEmpty());
-      setWordCount(0);
-      setModalOpen(true);
-    } else {
-      openRegister();
-    }
-  };
-
-  // Track editor text changes and update word count
   const handleEditorChange = (state) => {
     setEditorState(state);
-    setWordCount(getWordsFromEditorState(state));
+    setWordCount(getWordCount(state));
   };
 
-  // Sanitize and clean editor HTML content
-  const cleanContent = () => {
-    const raw = convertToRaw(editorState.getCurrentContent());
-    const dirtyHtml = draftToHtml(raw);
-    return DOMPurify.sanitize(dirtyHtml, {
-      ALLOWED_TAGS: ["p", "br", "ul", "ol", "li", "b", "i", "u"],
-      ALLOWED_ATTR: [],
-    });
+  /* TAG HANDLERS */
+  const toggleTag = (tag) => {
+    setTags((prev) =>
+      prev.find((t) => t.label === tag.label)
+        ? prev.filter((t) => t.label !== tag.label)
+        : [...prev, tag]
+    );
   };
 
-  // Save draft to backend
-  const handleSaveDraft = async () => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    try {
-      const content = cleanContent();
-      const token = localStorage.getItem("token");
-
-      if (editPost) {
-        await api.put(
-          `/posts/${editPost.id}`,
-          { content, topic_id: selectedTopics },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Draft Updated",
-          text: "Your draft was updated successfully!",
-          confirmButtonText: "OK",
-        });
-      } else {
-        await api.post(
-          "/posts/submit",
-          { content, topic_id: selectedTopics, status: "published" },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Draft Saved",
-          text: "Your draft was saved successfully!",
-          confirmButtonText: "OK",
-        });
-      }
-
-      setModalOpen(false);
-      setEditorState(EditorState.createEmpty());
-      setWordCount(0);
-      setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
-      onClose?.();
-    } catch (err) {
-      Swal.fire("Error!", "Failed to save draft", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const removeTag = (label) => {
+    setTags((prev) => prev.filter((t) => t.label !== label));
   };
 
-  // Publish post to backend
-  const handlePublish = async () => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    try {
-      const content = cleanContent();
-      const token = localStorage.getItem("token");
-
-      if (editPost) {
-        await api.put(
-          `/posts/${editPost.id}`,
-          { content, topic_id: selectedTopics },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Post Published",
-          text: "Your draft has been updated and sent for review",
-          confirmButtonText: "OK",
-        });
-      } else {
-        await api.post(
-          "/posts/submit",
-          { content, topic_id: selectedTopics, status: "draft" },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Send for reviewing",
-          text: "Will be published shortly.",
-          confirmButtonText: "OK",
-        }).then(() => {
-          window.location.reload();
-        });
-      }
-
-      localStorage.removeItem("postDraft");
-      setSelectedTopics(topics.length > 0 ? [topics[0].id] : []);
-      setEditorState(EditorState.createEmpty());
-      setWordCount(0);
-      setModalOpen(false);
-      onClose?.();
-    } catch (err) {
-      Swal.fire("Error!", "Failed to publish post", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleOtherAdd = () => {
+    if (!otherTag.trim()) return;
+    setTags((prev) => [...prev, { id: Date.now(), label: otherTag }]);
+    setOtherTag("");
+    setShowOtherInput(false);
   };
-
-  // Validation flags
-  const isTopicValid = selectedTopics.length > 0;
-  const isSaveDraftValid = wordCount > 0 && wordCount <= MAX_WORDS && isTopicValid;
-  const isPublishValid =
-    wordCount >= MIN_WORDS && wordCount <= MAX_WORDS && isTopicValid;
 
   return (
     <>
       {!editPost && (
         <div className="fe-edit">
-          <div className="fab-wrapper">
-            <button
-              className={`fab-pen-animate ${!isLoggedIn() ? "disabled" : ""}`}
-              onClick={handleClick}
-              aria-label="Edit Section"
-            >
-              <img src="/images/writing.png" alt="Edit Icon" />
-            </button>
-          </div>
+          <button
+            className="fab-pen-animate"
+            onClick={() =>
+              isLoggedIn() ? setModalOpen(true) : openRegister()
+            }
+          >
+            <img src="/images/writing.png" alt="Write" />
+          </button>
         </div>
       )}
 
-      <Modal
-        isOpen={modalOpen}
-        onRequestClose={() => {
-          setModalOpen(false);
-          onClose?.();
-        }}
-        shouldCloseOnOverlayClick={true}
-        className="modal-animate modal-set-up"
-        style={{
-          overlay: { backgroundColor: "rgba(42,48,58,0.11)", zIndex: 1201 },
-        }}
-      >
-        <div className="d-flex align-items-center justify-content-between mb-">
-          <div className="modal-label mb-0">
-            {selectedTopics.length > 0
-              ? topics.find((t) => t.id === selectedTopics[0])?.name || "Topics Name"
-              : "Topics Name"}
+      <Modal isOpen={modalOpen} className="modal-animate modal-set-up">
+        {/* HEADER */}
+        <div className="d-flex justify-content-between mb-3">
+          <div className="modal-label">
+            {topics.find((t) => t.id === selectedTopic)?.name || "Topic"}
           </div>
-          <button
-            className="modal-close-btn position-relative top-0 end-0"
-            aria-label="Close"
-            onClick={() => {
-              setModalOpen(false);
-              onClose?.();
-            }}
-          >
+          <button className="modal-close-btn" onClick={() => setModalOpen(false)}>
             ×
           </button>
         </div>
 
+        {/*  */}
+        <div className="containers">
+          <div className="row align-items-start justify-content-between">
+            {/*  */}
+            <div className="col-lg-4 col-md-4 col-6">
+              {/* 🔹 TOPIC DROPDOWN */}
+              <div className="mb-3">
+                <select
+                  className="custom-select"
+                  value={selectedTopic}
+                  onChange={(e) => setSelectedTopic(Number(e.target.value))}
+                >
+                  <option value="" disabled>
+                    Select Topic
+                  </option>
+                  {topics.map((topic) => (
+                    <option key={topic.id} value={topic.id}>
+                      {topic.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/*  */}
+            <div className="col-lg-4 col-md-4 col-6">
+              {/* 🔹 TITLE */}
+              <input
+                className="custom-input mb-3"
+                placeholder="Enter topic title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            {/*  */}
+
+            <div className="col-lg-4 col-md-4 col-12">
+              {/* 🔹 TAGS */}
+              <div className="custom-tag-wrapper mb-3" ref={tagRef}>
+                <div
+                  className="custom-tag-input"
+                  onClick={() => setTagDropdownOpen(!tagDropdownOpen)}
+                >
+                  {tags.length === 0 && (
+                    <span className="tag-placeholder">Select tags</span>
+                  )}
+                  {tags.map((tag) => (
+                    <span key={tag.id} className="tag-pill">
+                      {tag.label}
+                      <span
+                        className="tag-remove"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeTag(tag.label);
+                        }}
+                      >
+                        ×
+                      </span>
+                    </span>
+                  ))}
+                </div>
+
+                {tagDropdownOpen && (
+                  <div className="custom-tag-dropdown">
+                    {availableTags.map((tag) => (
+                      <label key={tag.id} className="tag-option">
+                        <input
+                          type="checkbox"
+                          checked={!!tags.find((t) => t.label === tag.label)}
+                          onChange={() => toggleTag(tag)}
+                        />
+                        {tag.label}
+                      </label>
+                    ))}
+
+                    <label className="tag-option">
+                      <input
+                        type="checkbox"
+                        checked={showOtherInput}
+                        onChange={() => setShowOtherInput(!showOtherInput)}
+                      />
+                      Other
+                    </label>
+
+                    {showOtherInput && (
+                      <input
+                        className="custom-input mt-2"
+                        placeholder="Enter custom tag"
+                        value={otherTag}
+                        onChange={(e) => setOtherTag(e.target.value)}
+                        onBlur={handleOtherAdd}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleOtherAdd();
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            {/*  */}
+
+
+
+          </div>
+
+        </div>
+
+
+        {/*  */}
+
+
+
+
+
+
+
+
+
+        {/* 🔹 EDITOR */}
         <Editor
           editorState={editorState}
           onEditorStateChange={handleEditorChange}
-          toolbarClassName="editor-toolbar"
+          toolbarHidden
           wrapperClassName="editor-wrapper"
           editorClassName="editor-textarea"
-          toolbar={{
-            options: ["blockType", "inline", "list"],
-            inline: { options: ["bold", "italic"] },
-            blockType: {
-              inDropdown: true,
-              options: ["Normal", "H1", "H2", "H3", "Blockquote"],
-            },
-          }}
-          placeholder=""
         />
 
+        {/* FOOTER */}
         <div className="wordCountSection">
-          <div style={{ textAlign: "left" }}>
-            <div
-              style={{
-                fontSize: "12px",
-                color: wordCount < MIN_WORDS || wordCount > MAX_WORDS ? "red" : "gray",
-              }}
-            >
-              Word count: {wordCount} / {MAX_WORDS}
-            </div>
-            {wordCount === 0 && (
-              <div style={{ color: "red", fontSize: "12px" }}>
-                Please add some content to save draft
-              </div>
-            )}
-            {wordCount > 0 && wordCount < MIN_WORDS && (
-              <div style={{ color: "red", fontSize: "12px" }}>
-                Minimum {MIN_WORDS} words required to publish (drafts can be shorter)
-              </div>
-            )}
-            {wordCount > MAX_WORDS && (
-              <div style={{ color: "red", fontSize: "12px" }}>
-                Word limit exceeded! Maximum {MAX_WORDS} words allowed
-              </div>
-            )}
-            {!isTopicValid && (
-              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                Please select a topic to continue
-              </div>
-            )}
-          </div>
-
-          <div style={{ display: "flex", gap: 10 }}>
-            {!editPost && (
-              <button
-                className="modal-btn modal-btn-light"
-                onClick={handleSaveDraft}
-                disabled={!isSaveDraftValid || isSubmitting}
-              >
-                Save Draft
-              </button>
-            )}
-            <button
-              className="modal-btn modal-btn-custom"
-              onClick={handlePublish}
-              disabled={!isPublishValid || isSubmitting}
-            >
-              {editPost ? "Publish" : "Publish"}
-            </button>
+          <span>
+            Word count: {wordCount}/{MAX_WORDS}
+          </span>
+          <div className="d-flex gap-2">
+            <button className="modal-btn modal-btn-light">Save Draft</button>
+            <button className="modal-btn modal-btn-custom">Publish</button>
           </div>
         </div>
       </Modal>
