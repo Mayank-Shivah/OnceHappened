@@ -54,7 +54,7 @@ export default function SingleAd() {
           alt="Advertisement"
           className="ad-image img-fluid"
         />
-        <img  alt="Advertisement" className="ad-image" src="https://dashboard.oncehappened.com/storage/advisements/1762231061_1280w-64pPx_AmmQw.webp" />
+        <img  alt="Advertisement" className="ad-image" src="/images/test22.webp" />
       </a>
     </div>
 
