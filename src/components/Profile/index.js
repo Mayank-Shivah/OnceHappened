@@ -29,6 +29,7 @@ const Profile = () => {
   const [likedPosts, setLikedPosts] = useState([]);
   const [draftPosts, setDraftPosts] = useState([]);
   const [myPosts, setMyPosts] = useState([]); // ✅ new state
+  const [bookmarkedPosts, setBookmarkedPosts] = useState([]); // ✅ Add bookmarked posts state
   const [loading, setLoading] = useState(false);
 
   const [editingDraft, setEditingDraft] = useState(null);
@@ -43,7 +44,12 @@ const Profile = () => {
   const fetchPosts = async () => {
   try {
     setLoading(true);
-    const res = await api.get("/topics");
+    // ✅ Pass user_id to get bookmark/flag status from backend
+    const res = await api.get("/topics", {
+      params: {
+        user_id: user.id
+      }
+    });
     const posts = res.data?.posts || [];
 
     const userLiked = posts
@@ -61,7 +67,7 @@ const Profile = () => {
     setLikedPosts(userLiked);
 
     const userDrafts = posts
-      .filter((p) => p.user_id === user.id && p.status === "published")
+      .filter((p) => String(p.user_id) === String(user.id) && p.status === "draft")
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     setDraftPosts(userDrafts);
@@ -77,6 +83,13 @@ const Profile = () => {
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     setMyPosts(mine);
+
+    // ✅ Filter bookmarked posts
+    const userBookmarked = posts
+      .filter((p) => p.is_bookmarked === true || p.is_bookmarked === "1" || p.is_bookmarked === 1)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    setBookmarkedPosts(userBookmarked);
 
   } catch (err) {
     Swal.fire("Error!", "Failed to load posts", "error");
@@ -125,6 +138,11 @@ useEffect(() => {
     return text.includes(searchTerm.toLowerCase());
   });
 
+  const filteredBookmarkedPosts = bookmarkedPosts.filter((q) => {
+    const text = (q.title || q.description || "").toLowerCase();
+    return text.includes(searchTerm.toLowerCase());
+  });
+
   const currentList =
     activeTab === TABS.LIKED
       ? filteredLikedPosts
@@ -132,7 +150,9 @@ useEffect(() => {
         ? filteredDraftPosts
         : activeTab === TABS.MY_POSTS
           ? filteredMyPosts
-          : [];// ✅ handle My Posts
+          : activeTab === TABS.BOOKMARK
+            ? filteredBookmarkedPosts
+            : [];// ✅ handle My Posts and Bookmarks
 
   // pagination
   const totalPages = Math.ceil(currentList.length / postsPerPage) || 1;
