@@ -61,12 +61,20 @@ function Home() {
     }
   }, []);
 
+const userId = loggedInUser?.id;
+console.log(userId);
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         // 🔹 fetch posts
-        const res = await api.get("/topics");
+        const res = await api.get("/topics", {
+          params: {
+            user_id: userId
+          }
+        });
         // ✅ Removed console.log for clean console
 
         const posts = (res.data?.posts || [])
@@ -112,7 +120,7 @@ function Home() {
       }
     };
     fetchData();
-  }, []);
+  }, [userId]);
 
   const stripHtml = (html = "") => {
     const div = document.createElement("div");
