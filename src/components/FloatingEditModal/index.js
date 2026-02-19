@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, ContentState } from "draft-js";
+import { EditorState, ContentState, convertToRaw } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
+import draftToHtml from "draftjs-to-html";
 import { isLoggedIn, loggedUser } from "../../services/authService";
 import Swal from "sweetalert2";
 import api from "../../api";
@@ -22,6 +23,8 @@ export default function FloatingEditModal({
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState("");
   const [wordCount, setWordCount] = useState(0);
+  const [step, setStep] = useState(1); // 1 = writing, 2 = finalizing
+
 
   const [title, setTitle] = useState("");
 
@@ -41,6 +44,23 @@ export default function FloatingEditModal({
     { id: 3, label: "#Item 3" },
     { id: 4, label: "#Item 4" },
   ];
+
+  const extractFirstLines = (state) => {
+  const text = state.getCurrentContent().getPlainText("\n").trim();
+  console.log(text.split("\n")[0]);
+  return text.split("\n")[0] || "";
+};
+
+const extractFirstLine = (state) => {
+  const text = state.getCurrentContent().getPlainText(" ").trim();
+  return text.split(".")[0] || "";
+};
+
+const handleNext = () => {
+  const firstLine = extractFirstLine(editorState);
+  setTitle(firstLine);
+  setStep(2);
+};
 
   /* 🔹 FETCH TOPICS */
   useEffect(() => {
@@ -85,7 +105,7 @@ export default function FloatingEditModal({
   }, [editPost]);
 
   /* 🔹 OUTSIDE CLICK FOR TAGS */
-  useEffect(() => {
+  useEffect(() => { 
     const handler = (e) => {
       if (tagRef.current && !tagRef.current.contains(e.target)) {
         setTagDropdownOpen(false);
@@ -128,6 +148,82 @@ export default function FloatingEditModal({
     setShowOtherInput(false);
   };
 
+  const getHtmlFromEditor = () =>
+    draftToHtml(convertToRaw(editorState.getCurrentContent()));
+
+  const submitPost = async (status) => {
+    // Validation: Check topic
+    if (!selectedTopic) {
+      return Swal.fire("Error", "Please select a topic", "warning");
+    }
+
+    // Validation: Min 50 words for publish
+    if (status === "published" && wordCount < 50) {
+      return Swal.fire(
+        "Error",
+        `Minimum 50 words required to publish (you have ${wordCount})`,
+        "warning"
+      );
+    }
+
+    // For drafts, only require 1 word minimum
+    if (wordCount < 1) {
+      return Swal.fire("Error", "Please write some content", "warning");
+    }
+
+    const contentHtml = getHtmlFromEditor();
+    const finalTitle = title || extractFirstLines(editorState);
+
+    const payload = {
+      content: contentHtml, // API expects 'content' field
+      topic_id: selectedTopic, // API expects 'topic_id' (singular)
+      title: finalTitle, // save title for frontend display
+      tags: tags.map((t) => t.label).join(","), // send as comma-separated string
+      status: status,
+    };
+
+    try {
+      let res;
+      if (editPost?.id) {
+        // For updates, use the update endpoint
+        res = await api.put(`/posts/${editPost.id}`, {
+          content: contentHtml,
+          topic_id: [selectedTopic], // update expects array
+          title: finalTitle,
+          tags: tags.map((t) => t.label).join(","),
+        });
+      } else {
+        // For new posts, use /posts/submit
+        res = await api.post(`/posts/submit`, payload);
+      }
+
+      if (res.data?.success || res.data?.status) {
+        const msg =
+          status === "draft"
+            ? "Draft saved successfully!"
+            : "Post published successfully!";
+        Swal.fire("Success", msg, "success");
+        setModalOpen(false);
+        // Reload to show new post in feed (for publish only)
+        if (status !== "draft") {
+          setTimeout(() => window.location.reload(), 500);
+        }
+      } else {
+        Swal.fire("Error", res.data?.message || "Something went wrong", "error");
+      }
+    } catch (err) {
+      console.error("Submit error:", err);
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Failed to submit post",
+        "error"
+      );
+    }
+  };
+
+  const handleSaveDraft = () => submitPost("draft");
+  const handlePublish = () => submitPost("published");
+
   return (
     <>
       {!editPost && (
@@ -149,7 +245,7 @@ export default function FloatingEditModal({
           <div className="modal-label">
             {topics.find((t) => t.id === selectedTopic)?.name || "Topic"}
           </div>
-          <button className="modal-close-btn" onClick={() => setModalOpen(false)}>
+          <button className="modal-close-btn" onClick={() => setModalOpen(false)} >
             ×
           </button>
         </div>
@@ -158,7 +254,7 @@ export default function FloatingEditModal({
         <div className="containers">
           <div className="row align-items-start justify-content-between">
             {/*  */}
-            <div className="col-lg-4 col-md-4 col-6">
+            <div className="col-lg-6 col-md-6 col-12">
               {/* 🔹 TOPIC DROPDOWN */}
               <div className="mb-3">
                 <select
@@ -177,19 +273,10 @@ export default function FloatingEditModal({
                 </select>
               </div>
             </div>
-            {/*  */}
-            <div className="col-lg-4 col-md-4 col-6">
-              {/* 🔹 TITLE */}
-              <input
-                className="custom-input mb-3"
-                placeholder="Enter topic title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            {/*  */}
+           {/*  */}
 
-            <div className="col-lg-4 col-md-4 col-12">
+            {step === 2 && (
+            <div className="col-lg-6 col-md-6 col-12">
               {/* 🔹 TAGS */}
               <div className="custom-tag-wrapper mb-3" ref={tagRef}>
                 <div
@@ -256,9 +343,22 @@ export default function FloatingEditModal({
                 )}
               </div>
             </div>
+            )}
             {/*  */}
 
-
+            {/*  */}
+            {step === 2 && (
+            <div className=" col-12">
+              {/* 🔹 TITLE */}
+              <input
+                className="custom-input mb-3"
+                placeholder="Enter topic title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            )}
+            {/*  */}
 
           </div>
 
@@ -289,11 +389,30 @@ export default function FloatingEditModal({
           <span>
             Word count: {wordCount}/{MAX_WORDS}
           </span>
+
           <div className="d-flex gap-2">
-            <button className="modal-btn modal-btn-light">Save Draft</button>
-            <button className="modal-btn modal-btn-custom">Publish</button>
+            {step === 1 && selectedTopic && wordCount > 0 && (
+              <button
+                className="modal-btn modal-btn-custom"
+                onClick={handleNext}
+              >
+                Next
+              </button>
+            )}
+
+            {step === 2 && (
+              <>
+                <button className="modal-btn modal-btn-light" onClick={handleSaveDraft}>
+                  Save Draft
+                </button>
+                <button className="modal-btn modal-btn-custom" onClick={handlePublish}>
+                  Publish
+                </button>
+              </>
+            )}
           </div>
         </div>
+
       </Modal>
     </>
   );

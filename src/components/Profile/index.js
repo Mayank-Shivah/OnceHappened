@@ -11,7 +11,6 @@ import Swal from "sweetalert2"; // ✅ Added SweetAlert import
 
 const Profile = () => {
   const TABS = {
-    OVERVIEW: "overview",
     EDIT: "edit",
     PASSWORD: "password",
     LIKED: "liked",
@@ -19,7 +18,7 @@ const Profile = () => {
     MY_POSTS: "myPosts",
     BOOKMARK: "bookmark",
   };
-  const [activeTab, setActiveTab] = useState(TABS.OVERVIEW);
+  const [activeTab, setActiveTab] = useState(TABS.EDIT);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
@@ -36,12 +35,17 @@ const Profile = () => {
   const [wasEditing, setWasEditing] = useState(false); // ✅ New: Track if modal was opened for edit (to trigger refetch on close)
 
   const postsPerPage = 5;
-  const user = loggedUser();
+  const [user, setUser] = useState(
+  JSON.parse(localStorage.getItem("user")) || {}
+);
 
   // ✅ Extracted fetchPosts as standalone function (fixes ESLint "not defined" error)
   const fetchPosts = async () => {
-    if (!user?.id) return;
-    try {
+useEffect(() => {
+  if (user?.id) {
+    fetchPosts();
+  }
+}, [user?.id]);    try {
       setLoading(true);
       const res = await api.get("/topics");
       const posts = res.data?.posts || [];
@@ -215,11 +219,13 @@ const Profile = () => {
             {/* LEFT PROFILE CARD */}
             <div className="profile-card">
               <div className="avatar-wrap">
-                <span className="lang-avatar">H</span>
+                <span className="lang-avatar">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                </span>
 
               </div>
 
-              <h3>Shivah Web Tech</h3>
+              <h3>{user?.name}</h3>
               
 
               <div className="social-icons">
@@ -233,16 +239,50 @@ const Profile = () => {
 
               <h4>Information</h4>
               <ul className="info-list">
-                <li><span>Phone No</span><span>+1 (127) 801-27855</span></li>
-                <li><span>Birth of Date</span><span>23-08-1995</span></li>
-                <li><span>Email</span><span>tilak@shivahwebtech.com</span></li>
-                <li><span>Location</span><span>Mohali</span></li>
-                <li><span>Zip Code</span><span>160059</span></li>
-                <li><span>Joining Date</span><span>05-08-2024</span></li>
                 <li>
-                  <button className="btn btn-dangers" style={{ margin: 0, marginLeft: "auto" }}>Delete My Account</button>
+                  <span>Phone No</span>
+                  <span>{user?.phone || "N/A"}</span>
+                </li>
+
+                <li>
+                  <span>Birth of Date</span>
+                  <span>{user?.dob || "N/A"}</span>
+                </li>
+
+                <li>
+                  <span>Email</span>
+                  <span>{user?.email}</span>
+                </li>
+
+                <li>
+                  <span>City</span>
+                  <span>{user?.city || "N/A"}</span>
+                </li>
+
+                <li>
+                  <span>Country</span>
+                  <span>{user?.country || "N/A"}</span>
+                </li>
+
+                <li>
+                  <span>Joining Date</span>
+                  <span>
+                    {user?.created_at
+                      ? new Date(user.created_at).toLocaleDateString()
+                      : "N/A"}
+                  </span>
+                </li>
+
+                <li>
+                  <button
+                    className="btn btn-dangers"
+                    style={{ margin: 0, marginLeft: "auto" }}
+                  >
+                    Delete My Account
+                  </button>
                 </li>
               </ul>
+
             </div>
           </div>
           {/*  */}
@@ -253,13 +293,7 @@ const Profile = () => {
             <div class="tab-custom-profile">
               {/* Tabs */}
               <div className="support-header">
-                <button
-                  className={`outline-btn ${activeTab === TABS.OVERVIEW ? "active" : ""}`}
-                  onClick={() => setActiveTab(TABS.OVERVIEW)}
-                >
-                  Overview
-                </button>
-
+                
                 <button
                   className={`outline-btn ${activeTab === TABS.EDIT ? "active" : ""}`}
                   onClick={() => setActiveTab(TABS.EDIT)}
@@ -304,52 +338,57 @@ const Profile = () => {
               </div>
               <div className="profile-tab-content">
 
-                {/* OVERVIEW */}
-                {activeTab === TABS.OVERVIEW && (
-                  <div className="tab-content">
-                    <h2>About Us</h2>
-                    <p>Shivah Web Tech is a digital solutions company...</p>
-                  </div>
-                )}
+                
 
                 {/* EDIT PROFILE */}
                 {activeTab === TABS.EDIT && (
                   <div className="tab-content grid">
                     <div>
                       <label>First Name *</label>
-                      <input defaultValue="Shivah" />
+                      <input defaultValue={user?.name?.split(" ")[0] || ""} />
                     </div>
                     <div>
                       <label>Last Name *</label>
-                      <input defaultValue="Web Tech" />
+                      <input defaultValue={user?.name?.split(" ")[1] || ""} />
                     </div>
                     <div>
                       <label>Phone Number *</label>
-                      <input defaultValue="+1 (127) 801-27855" />
+                      <input defaultValue={user?.phone || ""} />
+
                     </div>
                     <div>
                       <label>Email *</label>
-                      <input defaultValue="tilak@shivahwebtech.com" />
+                      <input defaultValue={user?.email || ""} />
+
                     </div>
                     <div>
                       <label>Birth of Date *</label>
-                      <input type="date" />
+                      <input
+                          type="date"
+                          defaultValue={
+                            user?.dob
+                              ? new Date(user.dob).toISOString().split("T")[0]
+                              : ""
+                          }
+                        />
+
                     </div>
                     <div>
                       <label>Gender *</label>
-                      <select>
-                        <option>Select option</option>
-                        <option>Male</option>
-                        <option>Female</option>
+                      <select defaultValue={user?.gender || ""}>
+                        <option value="">Select option</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+
                       </select>
                     </div>
                     <div>
                       <label>Location *</label>
-                      <input defaultValue="Mohali" />
+                      <input defaultValue={user?.city || ""} />
                     </div>
                     <div>
                       <label>Zip Code *</label>
-                      <input defaultValue="160059" />
+                      <input defaultValue={user?.zip || ""} />
                     </div>
 
 
