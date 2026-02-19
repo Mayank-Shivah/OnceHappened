@@ -184,10 +184,7 @@ const flagRef = useRef(null);
         {/* HEADING + BOOKMARK */}
         <div className="d-flex align-items-start justify-content-between mb-1">
           <h2 className="mb-0">
-            {truncateByWords(
-              "Approaching Valentine’s Day this year, Approaching Valentine’s Day this year",
-              8 // 👈 number of words to show
-            )}
+            {question.title}
           </h2>
           <span onClick={toggleBookmark} style={{ cursor: "pointer" }}>
             {bookmarked ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
@@ -196,14 +193,14 @@ const flagRef = useRef(null);
 
         {/* TITLE + TIME */}
         <div className="d-flex align-items-start justify-content-between mb-1">
-          <h5 className="mb-0"><a href="#">#title</a> <a href="#">#demo</a> <a href="#">#title</a></h5>
+          <h5 className="mb-0"><strong>{question.slug}</strong></h5>
           <span className="time-text">{postTime}</span>
         </div>
 
         <div ref={descRef} className={`desc-body ${expanded ? "expanded" : "collapsed"}`}>
           <span dangerouslySetInnerHTML={{ __html: question.description }} />
         </div>
-
+            
         {showReadMore && (
           <button className="read-more" onClick={() => setExpanded(!expanded)}>
             {expanded ? "Show Less" : "Read More"}
@@ -325,7 +322,7 @@ const flagRef = useRef(null);
 
           {showActions && (
             <button className="share-btn" onClick={() => setShowShare(true)}>
-              Send To
+              Send to My
             </button>
           )}
 

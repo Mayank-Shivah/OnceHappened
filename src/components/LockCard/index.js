@@ -108,10 +108,7 @@ export default function LockCard({
                     {/* TITLE + BOOKMARK */}
                     <div className="d-flex align-items-start justify-content-between mb-1">
                         <h2 className="mb-0">
-                            {truncateByWords(
-                                "Approaching Valentine’s Day this year, Approaching Valentine’s Day this year",
-                                8
-                            )}
+                            {question.title}
                         </h2>
                         <span onClick={toggleBookmark} style={{ cursor: "pointer" }}>
                             {bookmarked ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
@@ -121,7 +118,7 @@ export default function LockCard({
                     {/* TAGS + TIME */}
                     <div className="d-flex align-items-start justify-content-between mb-1">
                         <h5 className="mb-0">
-                            <a href="#">#title</a> <a href="#">#demo</a> <a href="#">#title</a>
+                           <strong>{question.slug}</strong>
                         </h5>
                         <span className="time-text">{postTime}</span>
                     </div>
