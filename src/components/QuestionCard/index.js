@@ -49,12 +49,27 @@ export default function QuestionCard({
   const flagKey = user ? `post_${question.id}_user_${user.id}_flag` : null;
 
   /* ---------------- BOOKMARK ---------------- */
-  useEffect(() => {
-    if (!bookmarkKey) return;
-    setBookmarked(localStorage.getItem(bookmarkKey) === "true");
-  }, [bookmarkKey]);
+  // useEffect(() => {
+  //   if (!bookmarkKey) return;
+  //   setBookmarked(localStorage.getItem(bookmarkKey) === "true");
+  // }, [bookmarkKey]);
 
-  const toggleBookmark = () => {
+  useEffect(() => {
+  if (question?.is_bookmarked !== undefined) {
+      setBookmarked(question.is_bookmarked);
+    }
+  }, [question]);
+
+  useEffect(() => {
+  if (question?.is_flagged !== undefined) {
+    setIsFlagged(question.is_flagged);
+    setSelectedReason(question.flag_reason || "");
+  }
+}, [question]);
+
+
+
+  const toggleBookmarkOLD = () => {
     if (!isLoggedIn()) {
       openRegister();
       return;
@@ -63,6 +78,25 @@ export default function QuestionCard({
     setBookmarked(value);
     localStorage.setItem(bookmarkKey, value);
   };
+
+  const toggleBookmark = async () => {
+  if (!isLoggedIn()) {
+    openRegister();
+    return;
+  }
+
+  try {
+    const res = await api.post("/posts/bookmark", {
+      post_id: question.id,
+      user_id: user.id,
+    });
+
+    setBookmarked(!bookmarked);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   /* ---------------- FLAG ---------------- */
   const flagReasons = [
@@ -94,6 +128,28 @@ const flagRef = useRef(null);
     if (sec < 86400) return `${Math.floor(sec / 3600)} hr ago`;
     return `${Math.floor(sec / 86400)} days ago`;
   };
+
+
+  const handleFlagSubmit = async (reason) => {
+    try {
+      await api.post("/posts/flag", {
+        post_id: question.id,
+        user_id: user.id,   // make sure you have user object
+        reason: reason,
+      });
+
+      setSelectedReason(reason);
+      setIsFlagged(true);
+      setShowFlagMenu(false);
+      setShowOtherInput(false);
+      setOtherReason("");
+
+    } catch (error) {
+      console.error("Flag error:", error.response?.data || error);
+    }
+  };
+
+
 
   const postTime = timeAgo(question.updated_at || question.created_at);
 
@@ -274,11 +330,7 @@ const flagRef = useRef(null);
                   ].map((reason) => (
                     <li
                       key={reason}
-                      onClick={() => {
-                        setSelectedReason(reason);
-                        setIsFlagged(true);
-                        setShowFlagMenu(false);
-                      }}
+                      onClick={() => handleFlagSubmit(reason)}
                     >
                       {reason}
                     </li>
@@ -304,13 +356,10 @@ const flagRef = useRef(null);
                     />
                     <button
                       onClick={() => {
-                        if (!otherReason.trim()) return;
-                        setSelectedReason(otherReason);
-                        setIsFlagged(true);
-                        setShowFlagMenu(false);
-                        setShowOtherInput(false);
-                        setOtherReason("");
-                      }}
+                          if (!otherReason.trim()) return;
+                          handleFlagSubmit(otherReason);
+                        }}
+
                     >
                       Submit
                     </button>

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./style.scss";
+import api from "../../api";
 import { usePopup } from "../PopupManager";
 import { isLoggedIn } from "../../services/authService";
 import {
@@ -76,7 +77,7 @@ export default function LockCard({
         setBookmarked(localStorage.getItem(bookmarkKey) === "true");
     }, [bookmarkKey]);
 
-    const toggleBookmark = () => {
+    const toggleBookmarkOLD = () => {
         if (!isLoggedIn()) {
             openRegister();
             return;
@@ -84,6 +85,24 @@ export default function LockCard({
         const value = !bookmarked;
         setBookmarked(value);
         localStorage.setItem(bookmarkKey, value);
+    };
+
+    const toggleBookmark = async () => {
+      if (!isLoggedIn()) {
+        openRegister();
+        return;
+      }
+    
+      try {
+        const res = await api.post("/posts/bookmark", {
+          post_id: question.id,
+          user_id: user.id,
+        });
+    
+        setBookmarked(!bookmarked);
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     const postTime = timeAgo(question?.updated_at || question?.created_at);
