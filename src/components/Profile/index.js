@@ -41,58 +41,56 @@ const Profile = () => {
 
   // ✅ Extracted fetchPosts as standalone function (fixes ESLint "not defined" error)
   const fetchPosts = async () => {
+  try {
+    setLoading(true);
+    const res = await api.get("/topics");
+    const posts = res.data?.posts || [];
+
+    const userLiked = posts
+      .filter(
+        (p) =>
+          Array.isArray(p.likes) &&
+          p.likes.some(
+            (like) =>
+              String(like.user_id) === String(user.id) &&
+              String(like.is_like) === "1"
+          )
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    setLikedPosts(userLiked);
+
+    const userDrafts = posts
+      .filter((p) => p.user_id === user.id && p.status === "published")
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    setDraftPosts(userDrafts);
+
+    const mine = posts
+      .filter(
+        (p) =>
+          String(p.user_id) === String(user.id) &&
+          (p.status === "draft" ||
+            p.status === "approved" ||
+            p.status === "un-approved")
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    setMyPosts(mine);
+
+  } catch (err) {
+    Swal.fire("Error!", "Failed to load posts", "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
 useEffect(() => {
   if (user?.id) {
     fetchPosts();
   }
-}, [user?.id]);    try {
-      setLoading(true);
-      const res = await api.get("/topics");
-      const posts = res.data?.posts || [];
-      // ✅ Removed console.log for clean console
+}, [user?.id]);
 
-      // liked posts
-      const userLiked = posts
-        .filter(
-          (p) =>
-            Array.isArray(p.likes) &&
-            p.likes.some(
-              (like) =>
-                String(like.user_id) === String(user.id) &&
-                String(like.is_like) === "1"
-            )
-        )
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-      setLikedPosts(userLiked);
-
-      // drafts: Filter by status === "published" (drafts/pending admin approval, as clarified)
-      const userDrafts = posts
-        .filter((p) => p.user_id === user.id && p.status === "published")
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-      setDraftPosts(userDrafts);
-
-      // ✅ my posts: Show only "draft" (published/submitted), "approved", "unapproved" – exclude "published" (drafts) to avoid overlap
-      // ✅ my posts: Show only "draft" and "approved"
-      // ✅ My Posts: include both "draft" and "published" as "Pending", plus "approved" and "unapproved"
-      const mine = posts
-        .filter(
-          (p) =>
-            String(p.user_id) === String(user.id) &&
-            (p.status === "draft" || p.status === "approved" || p.status === "un-approved")
-        )
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-      setMyPosts(mine);
-
-    } catch (err) {
-      // ✅ Replaced console.error with SweetAlert for consistency
-      Swal.fire('Error!', 'Failed to load posts', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Initial load on mount
   useEffect(() => {
