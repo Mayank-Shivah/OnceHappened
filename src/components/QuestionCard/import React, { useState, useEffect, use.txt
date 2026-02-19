@@ -49,21 +49,23 @@ export default function QuestionCard({
   const flagKey = user ? `post_${question.id}_user_${user.id}_flag` : null;
 
   /* ---------------- BOOKMARK ---------------- */
-  // Initialize bookmark state from question prop when it changes
-  useEffect(() => {
-    if (question?.is_bookmarked !== undefined && question?.is_bookmarked !== null) {
-      const isBookmarkedValue = question.is_bookmarked === true || question.is_bookmarked === "1" || question.is_bookmarked === 1;
-      setBookmarked(isBookmarkedValue);
-    }
-  }, [question?.id, question?.is_bookmarked]);
+  // useEffect(() => {
+  //   if (!bookmarkKey) return;
+  //   setBookmarked(localStorage.getItem(bookmarkKey) === "true");
+  // }, [bookmarkKey]);
 
   useEffect(() => {
-    if (question?.is_flagged !== undefined && question?.is_flagged !== null) {
-      const isFlaggedValue = question.is_flagged === true || question.is_flagged === "1" || question.is_flagged === 1;
-      setIsFlagged(isFlaggedValue);
-      setSelectedReason(question.flag_reason || "");
+  if (question?.is_bookmarked !== undefined) {
+      setBookmarked(question.is_bookmarked);
     }
-  }, [question?.id, question?.is_flagged]);
+  }, [question]);
+
+  useEffect(() => {
+  if (question?.is_flagged !== undefined) {
+    setIsFlagged(question.is_flagged);
+    setSelectedReason(question.flag_reason || "");
+  }
+}, [question]);
 
 
 
@@ -78,30 +80,22 @@ export default function QuestionCard({
   };
 
   const toggleBookmark = async () => {
-    if (!isLoggedIn()) {
-      openRegister();
-      return;
-    }
+  if (!isLoggedIn()) {
+    openRegister();
+    return;
+  }
 
-    try {
-      // Optimistically update UI
-      const newBookmarkedState = !bookmarked;
-      setBookmarked(newBookmarkedState);
+  try {
+    const res = await api.post("/posts/bookmark", {
+      post_id: question.id,
+      user_id: user.id,
+    });
 
-      const res = await api.post("/posts/bookmark", {
-        post_id: question.id,
-        user_id: user.id,
-      });
-
-      // Bookmark state is already updated optimistically
-      // If you want to sync with backend response, uncomment below:
-      // setBookmarked(res.data.is_bookmarked);
-    } catch (err) {
-      console.log(err);
-      // Revert state on error
-      setBookmarked(!bookmarked);
-    }
-  };
+    setBookmarked(!bookmarked);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 
   /* ---------------- FLAG ---------------- */
