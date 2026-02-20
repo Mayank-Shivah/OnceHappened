@@ -39,10 +39,10 @@ export default function FloatingEditModal({
   const { openRegister } = usePopup();
 
   const availableTags = [
-    { id: 1, label: "#Item 1" },
-    { id: 2, label: "#Item 2" },
-    { id: 3, label: "#Item 3" },
-    { id: 4, label: "#Item 4" },
+    { id: 1, label: "#love" },
+    { id: 2, label: "#nature" },
+    { id: 3, label: "#fashion" },
+    { id: 4, label: "#life" },
   ];
 
   const extractFirstLines = (state) => {
@@ -370,10 +370,9 @@ const handleNext = () => {
                 className="custom-input mb-3"
                 placeholder="Enter topic title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value.slice(0, 20))}
-                maxLength="40"
+                onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+                maxLength="100"
               />
-              <small className="text-muted">{title.length}/20</small>
             </div>
             )}
             {/*  */}

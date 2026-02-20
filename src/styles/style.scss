@@ -523,7 +523,7 @@ input[type="text"]:focus,
 input[type="password"]:focus {
   box-shadow: none;
   outline: none;
-  color: var(--dark-text);
+  color: var(--bg-dark);
   background-color: transparent;
   /* Change to any color you want */
 }
@@ -1433,7 +1433,7 @@ button.filter-items {
 .filter-section {
   position: relative;
   margin-left: 12px;
-
+  display: none;
   @media screen and (max-width:768px) {
     display: block;
     margin-left: 0px;
@@ -1555,3 +1555,9 @@ span.time-text {
 }
 
 // new account
+
+
+  // @media screen and (max-width:768px) {
+  //   html,body{
+  //     overflow-x: hidden !important;}
+  // }
