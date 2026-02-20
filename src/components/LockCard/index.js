@@ -45,6 +45,14 @@ export default function LockCard({
     const bookmarkKey = user ? `post_${question?.id}_user_${user.id}_bookmark` : null;
     const flagKey = user ? `post_${question?.id}_user_${user.id}_flag` : null;
 
+    // ✅ Initialize bookmark state from question prop
+    useEffect(() => {
+      if (question?.is_bookmarked !== undefined && question?.is_bookmarked !== null) {
+        const isBookmarkedValue = question.is_bookmarked === true || question.is_bookmarked === "1" || question.is_bookmarked === 1;
+        setBookmarked(isBookmarkedValue);
+      }
+    }, [question?.id, question?.is_bookmarked]);
+
     const handleButtonClick = (e) => {
         e.stopPropagation();
         if (isLoggedIn()) {
@@ -105,12 +113,6 @@ export default function LockCard({
     return years === 1 ? "1 year ago" : `${years} years ago`;
 };
 
-    /* ---------- BOOKMARK ---------- */
-    useEffect(() => {
-        if (!bookmarkKey) return;
-        setBookmarked(localStorage.getItem(bookmarkKey) === "true");
-    }, [bookmarkKey]);
-
     const toggleBookmarkOLD = () => {
         if (!isLoggedIn()) {
             openRegister();
@@ -169,7 +171,7 @@ export default function LockCard({
                     </div>
 
                     {/* TAGS + TIME */}
-                    <div className="d-flex align-items-start justify-content-between mb-1">
+                    <div className="d-flex align-items-start justify-content-between mb-1 flex-wrap">
                         <h5 className="mb-0">
                            <strong>{question.slug}</strong>
                         </h5>

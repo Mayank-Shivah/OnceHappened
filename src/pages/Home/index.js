@@ -85,6 +85,29 @@ console.log(userId);
         })
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
+        // ✅ Fetch bookmark/flag status for logged-in user
+        if (loggedInUser?.id) {
+          try {
+            const bookmarkRes = await api.get("/posts/bookmarks", {
+              params: { user_id: loggedInUser.id }
+            });
+            const flagRes = await api.get("/posts/flags", {
+              params: { user_id: loggedInUser.id }
+            });
+
+            const bookmarkedPostIds = new Set(bookmarkRes.data?.bookmarked_post_ids || []);
+            const flaggedPosts = flagRes.data?.flagged_posts || {};
+
+            posts.forEach((post) => {
+              post.is_bookmarked = bookmarkedPostIds.has(post.id);
+              post.is_flagged = !!flaggedPosts[post.id];
+              post.flag_reason = flaggedPosts[post.id]?.reason || null;
+            });
+          } catch (err) {
+            console.error("Error fetching bookmark/flag status:", err);
+          }
+        }
+
         setAllPosts(posts);
 
         // ✅ Default to Discover (null) instead of first category
