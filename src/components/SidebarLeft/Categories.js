@@ -22,9 +22,9 @@ export default function Categories({
         const topics = res.data?.topics || [];
         setCategories(topics);
 
-        // auto select first category
-        if (topics.length > 0 && !selectedCategory && onCategorySelect) {
-          onCategorySelect(topics[0].id);
+        // auto select Discover by default (use null to represent Discover)
+        if (!selectedCategory && onCategorySelect) {
+          onCategorySelect(null); // null = Discover
         }
       } catch (err) {
         console.error(
@@ -131,7 +131,11 @@ export default function Categories({
 
       {/* 🔹 CATEGORY LIST */}
       <ul className="category-list">
-        <li className="category-item active-item">
+        <li
+          className={`category-item ${selectedCategory === null ? "active-item" : ""}`}
+          onClick={() => onCategorySelect && onCategorySelect(null)}
+          style={{ cursor: "pointer" }}
+        >
           <span className="cat-label">Discover</span>
         </li>
         {categories.length > 0 ? (
@@ -156,8 +160,8 @@ export default function Categories({
         )}
       </ul>
 
-      {/* 🔹 SEARCH PER CATEGORY */}
-      {selectedCategory && (
+      {/* 🔹 SEARCH PER CATEGORY - only show for non-Discover categories */}
+      {selectedCategory !== null && selectedCategory && (
         <SidebarSearch
           searchTerm={searchTerms[selectedCategory] || ""}
           onSearchChange={handleSearchChange}

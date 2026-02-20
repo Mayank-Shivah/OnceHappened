@@ -87,15 +87,8 @@ console.log(userId);
 
         setAllPosts(posts);
 
-        if (res.data?.topics?.length > 0) {
-          const firstCatId = res.data.topics[0].id;
-          setSelectedCategory(firstCatId);
-
-          const filtered = posts.filter((p) =>
-            p.topics?.some((t) => t.id === firstCatId)
-          );
-          setQuestions(filtered);
-        }
+        // ✅ Default to Discover (null) instead of first category
+        setSelectedCategory(null);
 
         // 🔹 fetch ads for Center Left/Right
         const adsRes = await api.get("/add-banners");
@@ -128,12 +121,44 @@ console.log(userId);
     return div.textContent || div.innerText || "";
   };
 
+  // ✅ Helper function to shuffle array
+  const shuffleArray = (arr) => {
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
   useEffect(() => {
     if (singlePostId) return;
 
     let filtered = allPosts;
 
-    if (selectedCategory) {
+    // ✅ Handle Discover category (selectedCategory === null)
+    if (selectedCategory === null) {
+      // Get top 5 recently added
+      const topRecent = [...allPosts].slice(0, 5);
+      
+      // Get top 5 by likes count
+      const topLiked = [...allPosts]
+        .sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0))
+        .slice(0, 5);
+      
+      // Combine and deduplicate by ID
+      const combined = [...topRecent, ...topLiked];
+      const uniqueIds = new Set();
+      filtered = combined.filter((p) => {
+        if (uniqueIds.has(p.id)) return false;
+        uniqueIds.add(p.id);
+        return true;
+      });
+      
+      // ✅ Shuffle the filtered list
+      filtered = shuffleArray(filtered);
+    } else {
+      // Filter by selected category
       filtered = filtered.filter((p) =>
         p.topics?.some((t) => t.id === selectedCategory)
       );
