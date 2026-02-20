@@ -5,7 +5,7 @@ import QuestionCard from "../../components/QuestionCard";
 import SidebarSearch from "../../components/SidebarSearch";
 import FloatingEditModal from "../../components/FloatingEditModal";
 import api from "../../api"; // axios instance
-import { loggedUser } from "../../services/authService";
+import { loggedUser, getFullUserData } from "../../services/authService";
 import NoPost from "../NoPost";
 import Swal from "sweetalert2"; // ✅ Added SweetAlert import
 
@@ -40,6 +40,33 @@ const Profile = () => {
   JSON.parse(localStorage.getItem("user")) || {}
 );
 
+  // Controlled form state for profile update
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    dob: user?.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
+    gender: user?.gender || "",
+    city: user?.city || "",
+    country: user?.country || "",
+  });
+
+  // Password change form
+  const [passwordForm, setPasswordForm] = useState({
+    old_password: "",
+    password: "",
+    password_confirmation: "",
+  });
+
+  useEffect(() => {
+    setProfileForm({
+      name: user?.name || "",
+      email: user?.email || "",
+      dob: user?.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
+      gender: user?.gender || "",
+      city: user?.city || "",
+      country: user?.country || "",
+    });
+  }, [user]);
   // ✅ Extracted fetchPosts as standalone function (fixes ESLint "not defined" error)
   const fetchPosts = async () => {
   try {
@@ -225,6 +252,86 @@ useEffect(() => {
   };
 
 
+  const handleDeleteAccount = async () => {
+  const result = await Swal.fire({
+    title: "Delete account",
+    text: "⚠️ Once you delete your account, all your data and posts will be permanently removed. This action cannot be undone. Do you want to continue?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete my account",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#dc3545",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    Swal.fire({
+      title: "Deleting...",
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    const full = getFullUserData();
+    const token = (full && full.token) || localStorage.getItem("token");
+    const userId = (user && user.id) || (full && full.user && full.user.id) || null;
+
+    const response = await fetch("https://dashboard.oncehappened.com/api/delete-account", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    Swal.close();
+
+    if (response.ok) {
+      await Swal.fire("Deleted", "Your account has been permanently deleted.", "success");
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "/";
+    } else {
+      Swal.fire("Error", data.message || "Failed to delete your account. Try again later.", "error");
+    }
+  } catch (err) {
+    Swal.close();
+    console.error(err);
+    Swal.fire("Error", "An error occurred. Please try again.", "error");
+  }
+};
+
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+
+  const date = new Date(dateString);
+
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
+
+  const month = months[date.getMonth()];
+
+  // Function to get ordinal suffix
+  const getOrdinal = (n) => {
+    if (n > 3 && n < 21) return "th";
+    switch (n % 10) {
+      case 1: return "st";
+      case 2: return "nd";
+      case 3: return "rd";
+      default: return "th";
+    }
+  };
+
+  return `${day}${getOrdinal(day)} ${month} ${year}`;
+};
 
   return (
     <>
@@ -256,15 +363,10 @@ useEffect(() => {
               <hr />
 
               <h4>Information</h4>
-              <ul className="info-list">
-                <li>
-                  <span>Phone No</span>
-                  <span>{user?.phone || "N/A"}</span>
-                </li>
-
+              <ul className="info-list">                
                 <li>
                   <span>Birth of Date</span>
-                  <span>{user?.dob || "N/A"}</span>
+                  <span>{formatDate(user?.dob)}</span>
                 </li>
 
                 <li>
@@ -284,16 +386,13 @@ useEffect(() => {
 
                 <li>
                   <span>Joining Date</span>
-                  <span>
-                    {user?.created_at
-                      ? new Date(user.created_at).toLocaleDateString()
-                      : "N/A"}
-                  </span>
+                  <span>{formatDate(user?.created_at)}</span>
                 </li>
 
                 <li>
                   <button
                     className="btn btn-dangers"
+                    onClick={handleDeleteAccount}
                     style={{ margin: 0, marginLeft: "auto" }}
                   >
                     Delete My Account
@@ -363,37 +462,35 @@ useEffect(() => {
                   <div className="tab-content grid">
                     <div>
                       <label>First Name *</label>
-                      <input defaultValue={user?.name?.split(" ")[0] || ""} />
+                      <input
+                        value={profileForm.name}
+                        onChange={(e) => setProfileForm((s) => ({ ...s, name: e.target.value }))}
+                      />
                     </div>
-                    <div>
-                      <label>Last Name *</label>
-                      <input defaultValue={user?.name?.split(" ")[1] || ""} />
-                    </div>
-                    <div>
-                      <label>Phone Number *</label>
-                      <input defaultValue={user?.phone || ""} />
 
-                    </div>
                     <div>
                       <label>Email *</label>
-                      <input defaultValue={user?.email || ""} />
+                      <input
+                        value={profileForm.email}
+                        onChange={(e) => setProfileForm((s) => ({ ...s, email: e.target.value }))}
+                      />
 
                     </div>
                     <div>
                       <label>Birth of Date *</label>
                       <input
                           type="date"
-                          defaultValue={
-                            user?.dob
-                              ? new Date(user.dob).toISOString().split("T")[0]
-                              : ""
-                          }
+                          value={profileForm.dob}
+                          onChange={(e) => setProfileForm((s) => ({ ...s, dob: e.target.value }))}
                         />
 
                     </div>
                     <div>
                       <label>Gender *</label>
-                      <select defaultValue={user?.gender || ""}>
+                      <select
+                        value={profileForm.gender}
+                        onChange={(e) => setProfileForm((s) => ({ ...s, gender: e.target.value }))}
+                      >
                         <option value="">Select option</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -401,18 +498,57 @@ useEffect(() => {
                       </select>
                     </div>
                     <div>
-                      <label>Location *</label>
-                      <input defaultValue={user?.city || ""} />
+                      <label>City *</label>
+                      <input
+                        value={profileForm.city}
+                        onChange={(e) => setProfileForm((s) => ({ ...s, city: e.target.value }))}
+                      />
                     </div>
                     <div>
-                      <label>Zip Code *</label>
-                      <input defaultValue={user?.zip || ""} />
+                      <label>Country *</label>
+                      <input
+                        value={profileForm.country}
+                        onChange={(e) => setProfileForm((s) => ({ ...s, country: e.target.value }))}
+                      />
                     </div>
 
 
                     <div className="actions">
-                      <button className="btn-save">Update</button>
-                      <button className="btn-cancel">Cancel</button>
+                      <button type="button" className="btn-save" onClick={async () => {
+                        const confirm = await Swal.fire({
+                          title: 'Update profile',
+                          text: 'Do you want to save the changes to your profile?',
+                          icon: 'question',
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, save',
+                        });
+
+                        if (!confirm.isConfirmed) return;
+
+                        try {
+                          Swal.fire({ title: 'Saving...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                          const res = await api.put('/user/profile', profileForm);
+                          Swal.close();
+                          await Swal.fire('Saved', res.data.message || 'Profile updated', 'success');
+                          // update local user and reload
+                          if (res.data.user) {
+                            localStorage.setItem('user', JSON.stringify(res.data.user));
+                          }
+                          window.location.reload();
+                        } catch (err) {
+                          Swal.close();
+                          const msg = err?.response?.data?.message || 'Failed to update profile';
+                          Swal.fire('Error', msg, 'error');
+                        }
+                      }}>Update</button>
+                      <button type="button" className="btn-cancel" onClick={() => setProfileForm({
+                        name: user?.name || '',
+                        email: user?.email || '',
+                        dob: user?.dob ? new Date(user.dob).toISOString().split('T')[0] : '',
+                        gender: user?.gender || '',
+                        city: user?.city || '',
+                        country: user?.country || '',
+                      })}>Cancel</button>
                     </div>
                   </div>
                 )}
@@ -423,102 +559,138 @@ useEffect(() => {
                   <div className="tab-content grid">
                     <div>
                       <label>Old Password *</label>
-                      <input type="password" placeholder="Enter your old password" />
+                      <input type="password" placeholder="Enter your old password" value={passwordForm.old_password} onChange={(e) => setPasswordForm((s) => ({ ...s, old_password: e.target.value }))} />
                     </div>
                     <div>
                       <label>New Password *</label>
-                      <input type="password" placeholder="Enter your new password" />
+                      <input type="password" placeholder="Enter your new password" value={passwordForm.password} onChange={(e) => setPasswordForm((s) => ({ ...s, password: e.target.value }))} />
                     </div>
                     <div className="full">
                       <label>Confirm Password *</label>
-                      <input type="password" placeholder="Confirm your new password" />
+                      <input type="password" placeholder="Confirm your new password" value={passwordForm.password_confirmation} onChange={(e) => setPasswordForm((s) => ({ ...s, password_confirmation: e.target.value }))} />
                     </div>
 
                     <div className="actions">
-                      <button className="btn-save">Change Password</button>
-                      <button className="btn-cancel">Cancel</button>
+                      <button type="button" className="btn-save" onClick={async () => {
+                        if (!passwordForm.old_password || !passwordForm.password) {
+                          return Swal.fire('Error', 'Please fill all fields', 'error');
+                        }
+                        if (passwordForm.password !== passwordForm.password_confirmation) {
+                          return Swal.fire('Error', 'Passwords do not match', 'error');
+                        }
+
+                        const confirm = await Swal.fire({
+                          title: 'Change password',
+                          text: 'Do you want to change your password?',
+                          icon: 'question',
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, change',
+                        });
+
+                        if (!confirm.isConfirmed) return;
+
+                        try {
+                          Swal.fire({ title: 'Updating...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                          const res = await api.post('/user/change-password', passwordForm);
+                          Swal.close();
+                          await Swal.fire('Success', res.data.message || 'Password changed', 'success');
+                          setPasswordForm({ old_password: '', password: '', password_confirmation: '' });
+                        } catch (err) {
+                          Swal.close();
+                          const msg = err?.response?.data?.message || 'Failed to change password';
+                          Swal.fire('Error', msg, 'error');
+                        }
+                      }}>Change Password</button>
+                      <button type="button" className="btn-cancel" onClick={() => setPasswordForm({ old_password: '', password: '', password_confirmation: '' })}>Cancel</button>
                     </div>
                   </div>
                 )}
-                {/* Search */}
-                <SidebarSearch
-                  searchTerm={searchTerm}
-                  onSearchChange={(e) => setSearchTerm(e.target.value)}
-                />
 
-                {/* Posts */}
-                <div className="main-section-profiles">
-                  {loading && <p>Loading posts...</p>}
-
-                  {!loading &&
-                    currentPosts.map((q) => (
-                      <QuestionCard
-                        key={q.id}
-                        question={q}
-                        showActions={activeTab === TABS.LIKED}
-                        isLiked={activeTab === TABS.LIKED}
-                        onUnlike={(id) =>
-                          setLikedPosts((prev) => prev.filter((p) => p.id !== id))
-                        }
-                        showDelete={activeTab === TABS.DRAFTS}
-                        showEdit={activeTab === TABS.DRAFTS}
-                        showCounts={activeTab === TABS.MY_POSTS}
-                        status={activeTab === TABS.MY_POSTS ? q.status : null}
-                        onEdit={() => handleEditDraft(q)}
-                        onDelete={() => handleDeleteDraft(q.id)}
-                      />
-                    ))}
-
-                  {/* No Posts */}
-                  {!loading && currentList.length === 0 && (
-                    <NoPost
-                      message={
-                        activeTab === TABS.LIKED
-                          ? "No post available"
-                          : activeTab === TABS.DRAFTS
-                            ? "No posts yet"
-                            : "You haven't created any posts yet"
-                      }
-                      subMessage={
-                        activeTab === TABS.LIKED
-                          ? "Try liking/saving a post, thanks!"
-                          : activeTab === TABS.DRAFTS
-                            ? "Try writing a new post, thanks!"
-                            : "Start creating content and it will show here!"
-                      }
-                      onAddNew={
-                        activeTab === TABS.DRAFTS
-                          ? () => {
-                            setEditingDraft({});
-                          }
-                          : null
-                      }
+                {/* Show Search and Posts only for post-related tabs */}
+                {(activeTab === TABS.LIKED || activeTab === TABS.DRAFTS || activeTab === TABS.MY_POSTS || activeTab === TABS.BOOKMARK) && (
+                  <>
+                    {/* Search */}
+                    <SidebarSearch
+                      searchTerm={searchTerm}
+                      onSearchChange={(e) => setSearchTerm(e.target.value)}
                     />
-                  )}
-                </div>
+
+                    {/* Posts */}
+                    <div className="main-section-profiles">
+                      {loading && <p>Loading posts...</p>}
+
+                      {!loading &&
+                        currentPosts.map((q) => (
+                          <QuestionCard
+                            key={q.id}
+                            question={q}
+                            showActions={activeTab === TABS.LIKED}
+                            isLiked={activeTab === TABS.LIKED}
+                            onUnlike={(id) =>
+                              setLikedPosts((prev) => prev.filter((p) => p.id !== id))
+                            }
+                            showDelete={activeTab === TABS.DRAFTS}
+                            showEdit={activeTab === TABS.DRAFTS}
+                            showCounts={activeTab === TABS.MY_POSTS}
+                            status={activeTab === TABS.MY_POSTS ? q.status : null}
+                            onEdit={() => handleEditDraft(q)}
+                            onDelete={() => handleDeleteDraft(q.id)}
+                          />
+                        ))}
+
+                      {/* No Posts */}
+                      {!loading && currentList.length === 0 && (
+                        <NoPost
+                          message={
+                            activeTab === TABS.LIKED
+                              ? "No post available"
+                              : activeTab === TABS.DRAFTS
+                                ? "No posts yet"
+                                : "You haven't created any posts yet"
+                          }
+                          subMessage={
+                            activeTab === TABS.LIKED
+                              ? "Try liking/saving a post, thanks!"
+                              : activeTab === TABS.DRAFTS
+                                ? "Try writing a new post, thanks!"
+                                : "Start creating content and it will show here!"
+                          }
+                          onAddNew={
+                            activeTab === TABS.DRAFTS
+                              ? () => {
+                                setEditingDraft({});
+                              }
+                              : null
+                          }
+                        />
+                      )}
+                    </div>
+
+                    {/* Pagination - only for post tabs */}
+                    {totalPages > 1 && (
+                      <div className="pagination-div">
+                        <button
+                          onClick={() => setPage(page - 1)}
+                          disabled={page === 1}
+                          className="page-btn"
+                        >
+                          <FaArrowLeft /> Prev
+                        </button>
+                        <span>
+                          Page {page} of {totalPages}
+                        </span>
+                        <button
+                          onClick={() => setPage(page + 1)}
+                          disabled={page === totalPages}
+                          className="page-btn"
+                        >
+                          Next <FaArrowRight />
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="pagination-div">
-                  <button
-                    onClick={() => setPage(page - 1)}
-                    disabled={page === 1}
-                    className="page-btn"
-                  >
-                    <FaArrowLeft /> Prev
-                  </button>
-                  <span>
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage(page + 1)}
-                    disabled={page === totalPages}
-                    className="page-btn"
-                  >
-                    Next <FaArrowRight />
-                  </button>
-                </div>
-              )}
 
               {/* Edit Draft Modal */}
               {editingDraft && (
