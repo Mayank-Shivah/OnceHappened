@@ -517,13 +517,16 @@ ul {
 }
 
 /* Remove default focus styles and add custom color */
+.flag-other-box  input[type="text"]:focus{
+   color: #fff;
+}
 input[type="tel"]:focus,
 input[type="email"]:focus,
 input[type="text"]:focus,
 input[type="password"]:focus {
   box-shadow: none;
   outline: none;
-  color: var(--bg-dark);
+  color: var(--dark-text);
   background-color: transparent;
   /* Change to any color you want */
 }
@@ -1557,7 +1560,7 @@ span.time-text {
 // new account
 
 
-  // @media screen and (max-width:768px) {
-  //   html,body{
-  //     overflow-x: hidden !important;}
-  // }
+  @media screen and (max-width:768px) {
+    html,body{
+      overflow-x: hidden !important;}
+  }
