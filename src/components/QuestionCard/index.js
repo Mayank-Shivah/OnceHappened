@@ -288,7 +288,7 @@ const flagRef = useRef(null);
         </div>
 
         {/* TITLE + TIME */}
-        <div className="d-flex align-items-start justify-content-between mb-1">
+        <div className="d-flex align-items-start justify-content-between mb-1 flex-wrap">
           <h5 className="mb-0"><strong>{question.slug}</strong></h5>
           <span className="time-text">{postTime}</span>
         </div>

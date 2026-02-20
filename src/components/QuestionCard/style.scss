@@ -12,7 +12,12 @@
 .question-description {
   position: relative;
   color: var(--category-text);
-
+.time-text{
+  @media screen and (max-width:768px) {
+    margin-left: auto;
+    text-align: end;
+  }
+}
     h2 {
       font-size: 1.2rem;
       font-weight: 600;

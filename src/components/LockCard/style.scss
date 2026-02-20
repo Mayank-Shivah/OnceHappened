@@ -108,3 +108,9 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+.time-text{
+  @media screen and (max-width:768px) {
+    margin-left: auto;
+    text-align: end;
+  }
+}

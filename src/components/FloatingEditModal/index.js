@@ -51,9 +51,23 @@ export default function FloatingEditModal({
   return text.split("\n")[0] || "";
 };
 
-const extractFirstLine = (state) => {
+const extractFirstLineOLD = (state) => {
   const text = state.getCurrentContent().getPlainText(" ").trim();
   return text.split(".")[0] || "";
+};
+
+const extractFirstLine = (state) => {
+  const text = state.getCurrentContent().getPlainText(" ").trim();
+  const firstSentence = text.split(".")[0] || "";
+
+  if (firstSentence.length <= 40) {
+    return firstSentence;
+  }
+
+  const trimmed = firstSentence.substring(0, 100);
+  const lastSpace = trimmed.lastIndexOf(" ");
+
+  return trimmed.substring(0, lastSpace) + "...";
 };
 
 const handleNext = () => {
@@ -254,7 +268,8 @@ const handleNext = () => {
         <div className="containers">
           <div className="row align-items-start justify-content-between">
             {/*  */}
-            <div className="col-lg-6 col-md-6 col-12">
+         {step === 1 && (
+            <div className="col-12 signle-topic">
               {/* 🔹 TOPIC DROPDOWN */}
               <div className="mb-3">
                 <select
@@ -273,10 +288,11 @@ const handleNext = () => {
                 </select>
               </div>
             </div>
+            )}
            {/*  */}
 
             {step === 2 && (
-            <div className="col-lg-6 col-md-6 col-12">
+            <div className=" col-12">
               {/* 🔹 TAGS */}
               <div className="custom-tag-wrapper mb-3" ref={tagRef}>
                 <div
@@ -354,8 +370,10 @@ const handleNext = () => {
                 className="custom-input mb-3"
                 placeholder="Enter topic title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value.slice(0, 20))}
+                maxLength="40"
               />
+              <small className="text-muted">{title.length}/20</small>
             </div>
             )}
             {/*  */}
