@@ -169,8 +169,19 @@ console.log(userId);
         .sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0))
         .slice(0, 5);
       
-      // Combine and deduplicate by ID
-      const combined = [...topRecent, ...topLiked];
+      // Get all post IDs from top recent and top liked
+      const topPostIds = new Set([
+        ...topRecent.map(p => p.id),
+        ...topLiked.map(p => p.id)
+      ]);
+      
+      // Get remaining posts (those not in top recent or top liked)
+      const remainingPosts = allPosts.filter(p => !topPostIds.has(p.id));
+      
+      // Combine: top recent + top liked + remaining posts
+      const combined = [...topRecent, ...topLiked, ...remainingPosts];
+      
+      // Deduplicate by ID (keep first occurrence)
       const uniqueIds = new Set();
       filtered = combined.filter((p) => {
         if (uniqueIds.has(p.id)) return false;
@@ -178,7 +189,7 @@ console.log(userId);
         return true;
       });
       
-      // ✅ Shuffle the filtered list
+      // ✅ Shuffle the filtered list for mixed display
       filtered = shuffleArray(filtered);
     } else {
       // Filter by selected category
