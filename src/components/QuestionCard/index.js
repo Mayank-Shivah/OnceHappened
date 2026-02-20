@@ -126,7 +126,7 @@ export default function QuestionCard({
   }, []);
 const flagRef = useRef(null);
   /* ---------------- TIME ---------------- */
-  const timeAgo = (date) => {
+  const timeAgoS = (date) => {
     if (!date) return "";
     const sec = Math.floor((new Date() - new Date(date)) / 1000);
     if (sec < 60) return `${sec} sec ago`;
@@ -134,6 +134,40 @@ const flagRef = useRef(null);
     if (sec < 86400) return `${Math.floor(sec / 3600)} hr ago`;
     return `${Math.floor(sec / 86400)} days ago`;
   };
+
+  const timeAgo = (date) => {
+    if (!date) return "";
+
+    const now = new Date();
+    const past = new Date(date);
+    const sec = Math.floor((now - past) / 1000);
+
+    if (sec < 60) 
+        return `${sec} sec ago`;
+
+    if (sec < 3600) 
+        return `${Math.floor(sec / 60)} min ago`;
+
+    if (sec < 86400) 
+        return `${Math.floor(sec / 3600)} hr ago`;
+
+    const days = Math.floor(sec / 86400);
+
+    // ✅ Show days only for 30 days
+    if (days <= 30) {
+        return days === 1 ? "1 day ago" : `${days} days ago`;
+    }
+
+    const months = Math.floor(days / 30);
+
+    // ✅ After 12 months show years
+    if (months < 12) {
+        return months === 1 ? "1 month ago" : `${months} months ago`;
+    }
+
+    const years = Math.floor(months / 12);
+    return years === 1 ? "1 year ago" : `${years} years ago`;
+};
 
 
   const handleFlagSubmit = async (reason) => {
