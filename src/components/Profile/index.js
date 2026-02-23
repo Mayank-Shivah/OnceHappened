@@ -37,8 +37,8 @@ const Profile = () => {
 
   const postsPerPage = 5;
   const [user, setUser] = useState(
-  JSON.parse(localStorage.getItem("user")) || {}
-);
+    JSON.parse(localStorage.getItem("user")) || {}
+  );
 
   // Controlled form state for profile update
   const [profileForm, setProfileForm] = useState({
@@ -69,67 +69,67 @@ const Profile = () => {
   }, [user]);
   // ✅ Extracted fetchPosts as standalone function (fixes ESLint "not defined" error)
   const fetchPosts = async () => {
-  try {
-    setLoading(true);
-    // ✅ Pass user_id to get bookmark/flag status from backend
-    const res = await api.get("/topics", {
-      params: {
-        user_id: user.id
-      }
-    });
-    const posts = res.data?.posts || [];
+    try {
+      setLoading(true);
+      // ✅ Pass user_id to get bookmark/flag status from backend
+      const res = await api.get("/topics", {
+        params: {
+          user_id: user.id
+        }
+      });
+      const posts = res.data?.posts || [];
 
-    const userLiked = posts
-      .filter(
-        (p) =>
-          Array.isArray(p.likes) &&
-          p.likes.some(
-            (like) =>
-              String(like.user_id) === String(user.id) &&
-              String(like.is_like) === "1"
-          )
-      )
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const userLiked = posts
+        .filter(
+          (p) =>
+            Array.isArray(p.likes) &&
+            p.likes.some(
+              (like) =>
+                String(like.user_id) === String(user.id) &&
+                String(like.is_like) === "1"
+            )
+        )
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    setLikedPosts(userLiked);
+      setLikedPosts(userLiked);
 
-    const userDrafts = posts
-      .filter((p) => String(p.user_id) === String(user.id) && p.status === "draft")
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const userDrafts = posts
+        .filter((p) => String(p.user_id) === String(user.id) && p.status === "draft")
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    setDraftPosts(userDrafts);
+      setDraftPosts(userDrafts);
 
-    const mine = posts
-      .filter(
-        (p) =>
-          String(p.user_id) === String(user.id) &&
-          (p.status === "draft" ||
-            p.status === "approved" ||
-            p.status === "un-approved")
-      )
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const mine = posts
+        .filter(
+          (p) =>
+            String(p.user_id) === String(user.id) &&
+            (p.status === "draft" ||
+              p.status === "approved" ||
+              p.status === "un-approved")
+        )
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    setMyPosts(mine);
+      setMyPosts(mine);
 
-    // ✅ Filter bookmarked posts
-    const userBookmarked = posts
-      .filter((p) => p.is_bookmarked === true || p.is_bookmarked === "1" || p.is_bookmarked === 1)
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      // ✅ Filter bookmarked posts
+      const userBookmarked = posts
+        .filter((p) => p.is_bookmarked === true || p.is_bookmarked === "1" || p.is_bookmarked === 1)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    setBookmarkedPosts(userBookmarked);
+      setBookmarkedPosts(userBookmarked);
 
-  } catch (err) {
-    Swal.fire("Error!", "Failed to load posts", "error");
-  } finally {
-    setLoading(false);
-  }
-};
+    } catch (err) {
+      Swal.fire("Error!", "Failed to load posts", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-useEffect(() => {
-  if (user?.id) {
-    fetchPosts();
-  }
-}, [user?.id]);
+  useEffect(() => {
+    if (user?.id) {
+      fetchPosts();
+    }
+  }, [user?.id]);
 
 
   // Initial load on mount
@@ -253,85 +253,85 @@ useEffect(() => {
 
 
   const handleDeleteAccount = async () => {
-  const result = await Swal.fire({
-    title: "Delete account",
-    text: "⚠️ Once you delete your account, all your data and posts will be permanently removed. This action cannot be undone. Do you want to continue?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete my account",
-    cancelButtonText: "Cancel",
-    confirmButtonColor: "#dc3545",
-  });
-
-  if (!result.isConfirmed) return;
-
-  try {
-    Swal.fire({
-      title: "Deleting...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
+    const result = await Swal.fire({
+      title: "Delete account",
+      text: "⚠️ Once you delete your account, all your data and posts will be permanently removed. This action cannot be undone. Do you want to continue?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete my account",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#dc3545",
     });
 
-    const full = getFullUserData();
-    const token = (full && full.token) || localStorage.getItem("token");
-    const userId = (user && user.id) || (full && full.user && full.user.id) || null;
+    if (!result.isConfirmed) return;
 
-    const response = await fetch("https://dashboard.oncehappened.com/api/delete-account", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({ userId }),
-    });
+    try {
+      Swal.fire({
+        title: "Deleting...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
 
-    const data = await response.json().catch(() => ({}));
-    Swal.close();
+      const full = getFullUserData();
+      const token = (full && full.token) || localStorage.getItem("token");
+      const userId = (user && user.id) || (full && full.user && full.user.id) || null;
 
-    if (response.ok) {
-      await Swal.fire("Deleted", "Your account has been permanently deleted.", "success");
-      localStorage.clear();
-      sessionStorage.clear();
-      window.location.href = "/";
-    } else {
-      Swal.fire("Error", data.message || "Failed to delete your account. Try again later.", "error");
-    }
-  } catch (err) {
-    Swal.close();
-    console.error(err);
-    Swal.fire("Error", "An error occurred. Please try again.", "error");
-  }
-};
+      const response = await fetch("https://dashboard.oncehappened.com/api/delete-account", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ userId }),
+      });
 
+      const data = await response.json().catch(() => ({}));
+      Swal.close();
 
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-
-  const date = new Date(dateString);
-
-  const day = date.getDate();
-  const year = date.getFullYear();
-
-  const months = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
-
-  const month = months[date.getMonth()];
-
-  // Function to get ordinal suffix
-  const getOrdinal = (n) => {
-    if (n > 3 && n < 21) return "th";
-    switch (n % 10) {
-      case 1: return "st";
-      case 2: return "nd";
-      case 3: return "rd";
-      default: return "th";
+      if (response.ok) {
+        await Swal.fire("Deleted", "Your account has been permanently deleted.", "success");
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/";
+      } else {
+        Swal.fire("Error", data.message || "Failed to delete your account. Try again later.", "error");
+      }
+    } catch (err) {
+      Swal.close();
+      console.error(err);
+      Swal.fire("Error", "An error occurred. Please try again.", "error");
     }
   };
 
-  return `${day}${getOrdinal(day)} ${month} ${year}`;
-};
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    const month = months[date.getMonth()];
+
+    // Function to get ordinal suffix
+    const getOrdinal = (n) => {
+      if (n > 3 && n < 21) return "th";
+      switch (n % 10) {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+        default: return "th";
+      }
+    };
+
+    return `${day}${getOrdinal(day)} ${month} ${year}`;
+  };
 
   return (
     <>
@@ -340,30 +340,32 @@ const formatDate = (dateString) => {
         {/*  */}
         <div className="row">
           {/*  */}
-          <div className="col-lg-3 col-md-4 col-sm-8 mx-auto">
+          <div className="col-lg-5 col-xl-4 col-md-12 col-sm-12 mx-auto">
             {/* LEFT PROFILE CARD */}
             <div className="profile-card">
               <div className="avatar-wrap">
+
                 <span className="lang-avatar">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  <img src="images/usericon.png" className="user-icon-img img-fluid" />
+                  {/* {user?.name ? user.name.charAt(0).toUpperCase() : "U"} */}
                 </span>
 
               </div>
 
               <h3>{user?.name}</h3>
-              
 
-              <div className="social-icons">
+
+              {/* <div className="social-icons">
                 <a href="https://www.facebook.com/people/oncehappened/61582009471567/?rdid=XspTKOOIXTqkEbzQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BLWoK8zGE%2F" target="_blank" rel="noreferrer" className="fac"><FaFacebook /></a>
 
                 <a href="https://www.instagram.com/once.happened" target="_blank" rel="noreferrer" className="ins"><FaInstagram /></a>
 
-              </div>
+              </div> */}
 
               <hr />
 
               <h4>Information</h4>
-              <ul className="info-list">                
+              <ul className="info-list">
                 <li>
                   <span>Birth of Date</span>
                   <span>{formatDate(user?.dob)}</span>
@@ -404,13 +406,13 @@ const formatDate = (dateString) => {
           </div>
           {/*  */}
 
-          <div className="col-lg-9 col-md-8 col-sm-8 mx-auto">
+          <div className="col-lg-7 col-xl-8 col-md-12 col-sm-12 mx-auto">
 
             {/*  */}
             <div class="tab-custom-profile">
               {/* Tabs */}
               <div className="support-header">
-                
+
                 <button
                   className={`outline-btn ${activeTab === TABS.EDIT ? "active" : ""}`}
                   onClick={() => setActiveTab(TABS.EDIT)}
@@ -455,7 +457,7 @@ const formatDate = (dateString) => {
               </div>
               <div className="profile-tab-content">
 
-                
+
 
                 {/* EDIT PROFILE */}
                 {activeTab === TABS.EDIT && (
@@ -479,10 +481,10 @@ const formatDate = (dateString) => {
                     <div>
                       <label>Birth of Date *</label>
                       <input
-                          type="date"
-                          value={profileForm.dob}
-                          onChange={(e) => setProfileForm((s) => ({ ...s, dob: e.target.value }))}
-                        />
+                        type="date"
+                        value={profileForm.dob}
+                        onChange={(e) => setProfileForm((s) => ({ ...s, dob: e.target.value }))}
+                      />
 
                     </div>
                     <div>
