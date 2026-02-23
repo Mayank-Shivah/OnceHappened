@@ -215,7 +215,7 @@ const handleNext = () => {
         const msg =
           status === "draft"
             ? "Draft saved successfully!"
-            : "Post published successfully!";
+            : "Sent for review!";
         Swal.fire("Success", msg, "success");
         setModalOpen(false);
         // Reload to show new post in feed (for publish only)
@@ -290,6 +290,20 @@ const handleNext = () => {
             </div>
             )}
            {/*  */}
+ {/*  */}
+            {step === 2 && (
+            <div className=" col-12">
+              {/* 🔹 TITLE */}
+              <input
+                className="custom-input mb-3"
+                placeholder="Enter topic title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+                maxLength="100"
+              />
+            </div>
+            )}
+            {/*  */}
 
             {step === 2 && (
             <div className=" col-12">
@@ -362,21 +376,7 @@ const handleNext = () => {
             )}
             {/*  */}
 
-            {/*  */}
-            {step === 2 && (
-            <div className=" col-12">
-              {/* 🔹 TITLE */}
-              <input
-                className="custom-input mb-3"
-                placeholder="Enter topic title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value.slice(0, 100))}
-                maxLength="100"
-              />
-            </div>
-            )}
-            {/*  */}
-
+           
           </div>
 
         </div>

@@ -197,16 +197,27 @@
 
 /* DROPDOWN */
 .flag-ui-dropdown {
-  position: absolute;
- 
-  right: 0;
-  width: 260px;
-  background: #121212;
-  border-radius: 10px;
-  padding: 12px;
-  z-index: 999;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+position: absolute;
+    right: 0;
+    width: 260px;
+    background: #121212;
+    border-radius: 10px;
+    padding: 12px;
+    z-index: 999;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    transform: translate(-59px, -21px);
+    height: 243px;
+    overflow-y: auto;
+    top: auto;
+    bottom: 0;
+    @media screen and (max-width:768px) {
+                 transform: translate(-50%, 6px);
+        left: 0;
+        right: 0;
+         height: auto;
+    }
 }
+
 
 /* TITLE */
 .flag-title {
@@ -224,7 +235,7 @@
 }
 
 .flag-list li {
-  padding: 10px;
+  padding: 6px;
   font-size: 14px;
   color: #ddd;
   cursor: pointer;

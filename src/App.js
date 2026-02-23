@@ -87,7 +87,7 @@ function useRestrictInteractions() {
   }, []);
 }
 function App() {
- useRestrictInteractions(); // globally restrict interactions
+//  useRestrictInteractions(); // globally restrict interactions
  useHorizontalDragScroll(".category-list");
   const [fontSize, setFontSize] = useState(18);
   const [loading, setLoading] = useState(true);

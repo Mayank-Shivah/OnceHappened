@@ -236,7 +236,9 @@ export default function Header() {
                               <span className="lang-avatar">
                                 {user?.name?.charAt(0).toUpperCase() || "U"}
                               </span>
-                              Your Profile
+                              <strong>
+                                Your Profile
+                              </strong>
                              
                             </Link>
                           </div>

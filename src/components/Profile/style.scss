@@ -33,7 +33,7 @@
     overflow-x: scroll;
     overflow-x: auto;
     column-gap: 3px;
-    scrollbar-width: thin;
+    scrollbar-width: none;
     scrollbar-color: rgba(204, 204, 204, 0) transparent;
     border-radius: 0px;
 
@@ -82,25 +82,29 @@
 
 button.outline-btn.active {
     background-color: var(--theme-color) !important;
-    color: var(--category-text);
+    color: #000;
     border: none !important;
 }
 
 .tab-custom-profile {
-
     gap: 10px;
     flex: 1;
-
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
     overflow: hidden;
-.support-header{
-padding: 0px;
-}
+
+    .support-header {
+        padding: 0px;
+   
+    
+    }
+
     @media (max-width: 1024px) {
         flex-direction: column;
         align-items: center;
         gap: 0px;
+        border-radius: 10px;
+
     }
 }
 
@@ -116,8 +120,8 @@ padding: 0px;
 
 .avatar-wrap {
     .lang-avatar {
-        width: 34px;
-        height: 34px;
+        width: 44px;
+        height: 44px;
         background: #000;
         color: #fff;
         font-weight: 700;
@@ -138,9 +142,11 @@ padding: 0px;
     padding: 24px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
     text-align: center;
-@media screen and (max-width:768px) {
-    margin: 10px 0px;
-}
+
+    @media screen and (max-width:996px) {
+        margin-bottom: 10px;
+    }
+
     h3 {
         font-size: 16px;
         margin: 0px;
@@ -209,6 +215,17 @@ a.ins {
 .profile-tab-content {
     padding: 16px;
     background-color: var(--header-bg);
+ 
+
+@media screen and (max-width:666px) {
+ padding: 6px;
+ border-top: 1px solid #ddd;
+
+}
+
+    .sidebar-search {
+        display: none;
+    }
 
     h2 {
         font-size: 18px;
@@ -224,9 +241,11 @@ a.ins {
     }
 
 }
+
 .grid .full {
     grid-column: 1 / -1;
 }
+
 .tab-content.grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -237,7 +256,7 @@ a.ins {
         font-size: 14px;
         box-shadow: none;
         outline: none;
-        background-color:transparent;
+        background-color: transparent;
         border: 1px solid transparent !important;
         transition: color 0.2s;
         border-bottom: 3px solid #ffff00 !important;
@@ -286,3 +305,14 @@ a.ins {
         color: #5c5c5c;
     }
 }
+
+.profile-section {
+    margin-top: 10px;
+}
+.avatar-wrap {
+    img{
+        width: 40px;
+    }
+}
+
+  

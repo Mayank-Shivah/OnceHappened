@@ -41,8 +41,20 @@ export default function QuestionCard({
   const [isFlagged, setIsFlagged] = useState(false);
 
   const descRef = useRef();
+  const [isMobile, setIsMobile] = useState(false);
   const user = loggedUser();
   const { openRegister } = usePopup();
+
+  // Detect screen size for responsive word limit
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const voteKey = user ? `post_${question.id}_user_${user.id}_vote` : null;
   const bookmarkKey = user ? `post_${question.id}_user_${user.id}_bookmark` : null;
@@ -279,8 +291,8 @@ const flagRef = useRef(null);
       <div className={`question-description ${showReadMore ? "has-readmore" : ""}`}>
         {/* HEADING + BOOKMARK */}
         <div className="d-flex align-items-start justify-content-between mb-1">
-          <h2 className="mb-0">
-            {question.title}
+          <h2 className="mb-0" title={question.title}>
+            {truncateByWords(question.title, isMobile ? 5 : 12)}
           </h2>
           <span onClick={toggleBookmark} style={{ cursor: "pointer" }}>
             {bookmarked ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}

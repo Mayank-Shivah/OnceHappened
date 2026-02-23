@@ -171,7 +171,7 @@
 .editor-wrapper {
     border: 1px solid #ddd;
     border-radius: 6px;
-    height: 73%;
+    height: 69%;
     margin-bottom: 12px;
     overflow-y: auto;
 
@@ -180,7 +180,7 @@
     }
 
     @media screen and (min-width:600px) and (max-width: 992px) {
-        height: 75%;
+        height: 69%;
 
     }
 }
@@ -219,15 +219,20 @@
     top: 1%;
     bottom: auto;
     height: 97%;
+    @media screen and (min-width:768px) and (max-width: 1200px) {
+        min-width: 99%;
+        max-width: 99%;
+      
+    }
 
-    @media (max-width: 600px) {
+    @media (max-width: 767px) {
         min-width: 99%;
         max-width: 99%;
         height:auto;
     }
 
     @media screen and (min-width:600px) and (max-width: 902px) {
-        height: 75%;
+        height: 97%;
 
     }
 
@@ -351,7 +356,7 @@ a.rdw-dropdown-selectedtext {
     gap: 10px;
 
     @media(max-width:600px) {
-        justify-content: start;
+        justify-content: space-between;
         flex-wrap: wrap;
     }
 }
@@ -392,7 +397,7 @@ a.rdw-dropdown-selectedtext {
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 10px 12px;
-    color: #757575;
+    color: var(--category-text);
     font-size: 14px;
 }
 
