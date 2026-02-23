@@ -626,7 +626,7 @@ const Profile = () => {
                           <QuestionCard
                             key={q.id}
                             question={q}
-                            showActions={activeTab === TABS.LIKED}
+                            showActions={activeTab === TABS.LIKED || activeTab === TABS.BOOKMARK}
                             isLiked={activeTab === TABS.LIKED}
                             onUnlike={(id) =>
                               setLikedPosts((prev) => prev.filter((p) => p.id !== id))
@@ -752,7 +752,7 @@ const Profile = () => {
               <QuestionCard
                 key={q.id}
                 question={q}
-                showActions={activeTab === "Liked"}
+                showActions={activeTab === "Liked" || activeTab === "BookMark"}
                 isLiked={activeTab === "Liked"}
                 onUnlike={(id) =>
                   setLikedPosts((prev) => prev.filter((p) => p.id !== id))
