@@ -137,7 +137,22 @@ const handleNext = () => {
       .split(/\s+/)
       .filter(Boolean).length;
 
+  // Check if text contains URLs
+  const containsUrl = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[^\s]+\.[a-z]{2,}\/[^\s]*)/gi;
+    return urlRegex.test(text);
+  };
+
   const handleEditorChange = (state) => {
+    const plainText = state.getCurrentContent().getPlainText(" ");
+    
+    // Prevent links from being added
+    if (containsUrl(plainText)) {
+      Swal.fire("Warning", "Links are not allowed in the description", "warning");
+      // Don't update the state if URL is detected
+      return;
+    }
+
     setEditorState(state);
     setWordCount(getWordCount(state));
   };
