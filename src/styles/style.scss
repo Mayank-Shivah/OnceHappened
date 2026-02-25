@@ -1385,14 +1385,14 @@ a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
       display: flex;
       overflow-x: auto;
       column-gap: 6px;
-      scrollbar-width: thin;
+      scrollbar-width: none;
       scrollbar-color: rgba(204, 204, 204, 0) transparent;
-      cursor: grab;
+   cursor: grabbing;
       padding-top: 10px !important;
       padding-bottom: 10px;
 
       &:active {
-        cursor: grabbing;
+      cursor: grabbing;
       }
     }
 
