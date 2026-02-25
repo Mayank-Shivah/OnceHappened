@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import LockCard from "../../components/LockCard"; // ✅ Removed unused import
 import Loader from "../../components/Loader"; // ✅ Added Loader import
 import { useAuth } from "../../context/AuthContext";  // adjust path as needed
+import { useSearch } from "../../context/SearchContext";
 
 
 function Home() {
@@ -19,19 +20,10 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [ads, setAds] = useState([]); // 🔹 ads for center left/right
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); 
   const [singlePostId, setSinglePostId] = useState(null);
-  // const loggedInUser   = isLoggedIn() ? getUser  () : null;
-  // const fullData = isLoggedIn() ? getFullUserData() : null;
-  // const subscription = fullData?.subscription;
-
-  // // ✅ Try to detect subscription properly
-  // const hasActiveSubscription = (() => {
-  //   if (!subscription || !subscription.is_active) return false;
-  //   const endDate = new Date(subscription.end_date);
-  //   return endDate > new Date();
-  // })();
-   const { user: loggedInUser, isAuth, fullUserData, hasActiveSubscription } = useAuth();
+  const [selectedHashtags, setSelectedHashtags] = useState([]); // ✅ Track selected hashtags
+  const { user: loggedInUser, isAuth, fullUserData, hasActiveSubscription } = useAuth();
+  const { searchTerm, updateSearch } = useSearch();
 
   useEffect(() => {
     let metaTag = document.querySelector('meta[name="robots"]');
@@ -144,6 +136,21 @@ console.log(userId);
     return div.textContent || div.innerText || "";
   };
 
+  // ✅ Handle hashtag selection
+  const handleHashtagSelect = (hashtag) => {
+    setSelectedHashtags((prev) => {
+      if (prev.includes(hashtag)) {
+        return prev; // Don't add if already selected
+      }
+      return [...prev, hashtag];
+    });
+  };
+
+  // ✅ Handle hashtag removal
+  const handleHashtagRemove = (hashtag) => {
+    setSelectedHashtags((prev) => prev.filter((tag) => tag !== hashtag));
+  };
+
   // ✅ Helper function to shuffle array
   const shuffleArray = (arr) => {
     const shuffled = [...arr];
@@ -159,8 +166,28 @@ console.log(userId);
 
     let filtered = allPosts;
 
-    // ✅ Handle Discover category (selectedCategory === null)
-    if (selectedCategory === null) {
+    // ✅ NEW: Filter by selected hashtags first
+    if (selectedHashtags.length > 0) {
+      // Posts that match any of the selected hashtags
+      const hashtagMatches = allPosts.filter((post) => {
+        const postTags = (post.slug || "").split(",").map((tag) => tag.trim().toLowerCase().replace("#", ""));
+        return selectedHashtags.some((hashtag) =>
+          postTags.includes(hashtag.toLowerCase())
+        );
+      });
+
+      // Posts that don't match (remaining)
+      const hashtagMismatches = allPosts.filter((post) => {
+        const postTags = (post.slug || "").split(",").map((tag) => tag.trim().toLowerCase().replace("#", ""));
+        return !selectedHashtags.some((hashtag) =>
+          postTags.includes(hashtag.toLowerCase())
+        );
+      });
+
+      // Combine: matching posts on top + remaining posts
+      filtered = [...hashtagMatches, ...hashtagMismatches];
+    } else if (selectedCategory === null) {
+      // ✅ Handle Discover category (selectedCategory === null)
       // Get top 5 recently added
       const topRecent = [...allPosts].slice(0, 5);
       
@@ -202,13 +229,25 @@ console.log(userId);
       filtered = filtered.filter((p) => {
         const textContent = stripHtml(p.description || "");
         const title = p.title || "";
-        const combined = `${title} ${textContent}`.toLowerCase();
-        return combined.includes(searchTerm.toLowerCase());
+        
+        // Include topics/tags in search
+        const tags = (p.topics || []).map(t => t.name || t.slug || "").join(" ");
+        
+        // Handle hashtag search (with or without #)
+        let searchQuery = searchTerm.toLowerCase();
+        if (!searchQuery.startsWith("#")) {
+          searchQuery = searchQuery.replace(/^#+/, ""); // Remove # if user added it
+        } else {
+          searchQuery = searchQuery.substring(1); // Remove # for matching
+        }
+        
+        const combined = `${title} ${textContent} ${tags}`.toLowerCase();
+        return combined.includes(searchQuery);
       });
     }
 
     setQuestions(filtered);
-  }, [selectedCategory, allPosts, searchTerm, singlePostId]);
+  }, [selectedCategory, allPosts, searchTerm, singlePostId, selectedHashtags]);
 
   return (
     <div className={`main-layout ${theme}-theme`}>
@@ -217,7 +256,7 @@ console.log(userId);
           <SidebarLeft
             onCategorySelect={setSelectedCategory}
             selectedCategory={selectedCategory}
-            onSearch={setSearchTerm}
+            onSearch={updateSearch}
           />
 
           <main className="main-section-parent">
@@ -225,10 +264,55 @@ console.log(userId);
               <SidebarLeft
             onCategorySelect={setSelectedCategory}
             selectedCategory={selectedCategory}
-            onSearch={setSearchTerm}
+            onSearch={updateSearch}
           />
            </div>
             {loading && <Loader />} {/* ✅ Replaced <p>Loading questions...</p> with Loader */}
+
+            {/* ✅ NEW: Display Selected Hashtags as Tabs */}
+            {selectedHashtags.length > 0 && (
+              <div className="hashtag-filter-tabs" style={{
+                display: "flex",
+                gap: "10px",
+                marginBottom: "20px",
+                flexWrap: "wrap",
+                padding: "10px 0"
+              }}>
+                {selectedHashtags.map((hashtag) => (
+                  <div
+                    key={hashtag}
+                    className="hashtag-tab"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      backgroundColor: "var(--tag-bg, #e0e0e0)",
+                      color: "var(--tag-text, #333)",
+                      padding: "8px 12px",
+                      borderRadius: "20px",
+                      fontSize: "14px",
+                      fontWeight: "500"
+                    }}
+                  >
+                    <span>#{hashtag}</span>
+                    <button
+                      onClick={() => handleHashtagRemove(hashtag)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "18px",
+                        padding: "0",
+                        color: "var(--tag-text, #333)",
+                        lineHeight: "1"
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {(!loading && singlePostId) ? (
               (() => {
@@ -236,7 +320,7 @@ console.log(userId);
                 if (post) {
                    return (
                     <div className="single-post-view">
-                      <QuestionCard key={post.id} question={post} />
+                      <QuestionCard key={post.id} question={post} onHashtagSelect={handleHashtagSelect} />
 
                       {/* 🔹 View More Button */}
                       <div className="text-center mt-4">
@@ -297,9 +381,9 @@ console.log(userId);
 
                   questions.forEach((q, i) => {
                     if (q.lock === 1 && !hasActiveSubscription) {
-                      elements.push(<LockCard key={`lock-${q.id}`} post={q} />);
+                      elements.push(<LockCard key={`lock-${q.id}`} post={q} onHashtagSelect={handleHashtagSelect} />);
                     } else {
-                      elements.push(<QuestionCard key={q.id} question={q} />);
+                      elements.push(<QuestionCard key={q.id} question={q} onHashtagSelect={handleHashtagSelect} />);
                     }
 
                     // ads after every 3 posts (unchanged)

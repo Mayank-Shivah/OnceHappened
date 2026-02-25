@@ -26,6 +26,7 @@ export default function LockCard({
     onEdit,
     onDelete,
     statusDisplay,
+    onHashtagSelect, // ✅ NEW: Callback when hashtag is clicked
 }) {
 
     const descRef = useRef();
@@ -141,7 +142,31 @@ export default function LockCard({
       }
     };
 
-    const postTime = timeAgo(question?.updated_at || question?.created_at);
+    // ✅ Calculate reading time based on word count
+    const calculateReadingTime = (html = "") => {
+      // Strip HTML tags
+      const text = html.replace(/<[^>]*>/g, "");
+      
+      // Count words
+      const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+      
+      if (words === 0) return "0 min read";
+      
+      // 50 words = 30 sec, so 1 word = 0.6 sec
+      // 100 words = 1 min (60 sec), so 1 word = 0.6 sec
+      // This means: time in seconds = words * 0.6, then convert to min/sec
+      
+      const readingTimeSeconds = Math.ceil(words * 0.6);
+      
+      if (readingTimeSeconds < 60) {
+        return `${readingTimeSeconds} sec`;
+      }
+      
+      const minutes = Math.round(readingTimeSeconds / 60);
+      return `${minutes} min`;
+    };
+
+    const postTime = calculateReadingTime(question?.description || "");
 
     const truncateByWords = (text, wordLimit = 10) => {
         if (!text) return "";
@@ -150,6 +175,10 @@ export default function LockCard({
             ? words.slice(0, wordLimit).join(" ") + "..."
             : text;
     };
+
+    const slug = question.slug; // "#nature,#life"
+
+    const tags = question?.slug ? question.slug.split(",") : [];
 
     return (
         <div
@@ -170,10 +199,33 @@ export default function LockCard({
                         </span>
                     </div>
 
+
                     {/* TAGS + TIME */}
                     <div className="d-flex align-items-start justify-content-between mb-1 flex-wrap">
                         <h5 className="mb-0">
-                           <strong>{question.slug}</strong>
+                            {tags.map((tag, index) => {
+                                const cleanTag = tag.trim().replace("#", "");
+
+                                return (
+                                <a
+                                    key={index}
+                                    href="#"
+                                    className="tag-link"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        // ✅ NEW: Call the onHashtagSelect callback instead of navigate
+                                        onHashtagSelect?.(cleanTag);
+                                        // ✅ Forcefully scroll to top immediately (won't get stuck on ads)
+                                        window.scrollTo(0, 0);
+                                        // Also queue another scroll to ensure it's at top
+                                        setTimeout(() => window.scrollTo(0, 0), 10);
+                                    }}
+                                >
+                                    #{cleanTag}
+                                </a>
+                                );
+                            })}
                         </h5>
                         <span className="time-text">{postTime}</span>
                     </div>

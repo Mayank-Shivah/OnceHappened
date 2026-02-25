@@ -3,11 +3,11 @@ import { FaBars, FaCheckCircle, FaFacebookF, FaInstagram, FaGlobe, FaSearch    }
 import "./style.scss";
 import ThemeToggleBtn from "../ThemeToggleBtn";
 import SearchComponent from "../SearchComponent";
-
 import FontSizeChanger from "../FontSizeChanger";
 import { isLoggedIn, getUser, logout } from "../../services/authService";
 import { ThemeContext } from "../ThemeProvider";
 import { Link } from "react-router-dom";
+import { useSearch } from "../../context/SearchContext";
 
 // import { useTranslation } from "react-i18next";
 
@@ -21,6 +21,7 @@ export default function Header() {
   const [showLang, setShowLang] = useState(false);
   const [showTranslate, setShowTranslate] = useState(false); // 🔹 add translate state
   const langRef = useRef();
+  const { updateSearch } = useSearch();
 
   const { resetTheme } = useContext(ThemeContext);
   // const { t, i18n } = useTranslation();
@@ -161,7 +162,7 @@ export default function Header() {
                 </button>
               </li>
               <li>
-                <SearchComponent />
+                <SearchComponent onSearch={updateSearch} />
               </li>
             </ul>
             <div className="lang-option">

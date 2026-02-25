@@ -23,6 +23,7 @@ import PopupManager from "./components/PopupManager";
 import { isLoggedIn } from "./services/authService";
 import Success from "./pages/Subscription/Success";
 import Cancel from "./pages/Subscription/Cancel";
+import { SearchProvider } from "./context/SearchContext";
 // Custom hook to restrict copy, paste, cut, right-click, and shortcuts
 function useRestrictInteractions() {
   useEffect(() => {
@@ -121,9 +122,10 @@ function App() {
 
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <ThemeProvider>
-          <PopupManager>
+      <SearchProvider>
+        <BrowserRouter>
+          <ThemeProvider>
+            <PopupManager>
             <Routes>
               {/* Main layout wraps all content pages */}
               <Route element={<Layout fontSize={fontSize} />}>
@@ -182,8 +184,7 @@ function App() {
             />
           </PopupManager>
         </ThemeProvider>
-      </BrowserRouter>
-    </AuthProvider>
+      </BrowserRouter>      </SearchProvider>    </AuthProvider>
   );
 }
 
