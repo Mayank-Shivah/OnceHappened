@@ -26,6 +26,7 @@ export default function QuestionCard({
   onDelete,
   onEdit,
   onUnlike,
+  onHashtagSelect, // ✅ NEW: Callback when hashtag is clicked
 }) {
   const [expanded, setExpanded] = useState(false);
   const [vote, setVote] = useState(null);
@@ -201,9 +202,31 @@ const flagRef = useRef(null);
     }
   };
 
+  // ✅ Calculate reading time based on word count
+  const calculateReadingTime = (html = "") => {
+    // Strip HTML tags
+    const text = html.replace(/<[^>]*>/g, "");
+    
+    // Count words
+    const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    
+    if (words === 0) return "0 min read";
+    
+    // 50 words = 30 sec, so 1 word = 0.6 sec
+    // 100 words = 1 min (60 sec), so 1 word = 0.6 sec
+    // This means: time in seconds = words * 0.6, then convert to min/sec
+    
+    const readingTimeSeconds = Math.ceil(words * 0.6);
+    
+    if (readingTimeSeconds < 60) {
+      return `${readingTimeSeconds} sec`;
+    }
+    
+    const minutes = Math.round(readingTimeSeconds / 60);
+    return `${minutes} min`;
+  };
 
-
-  const postTime = timeAgo(question.updated_at || question.created_at);
+  const postTime = calculateReadingTime(question.description);
 
   /* ---------------- INIT VOTE ---------------- */
   useEffect(() => {
@@ -286,13 +309,17 @@ const flagRef = useRef(null);
 
   const shareUrl = `${window.location.origin}/?id=${question.id}`;
 
+  const slug = question.slug; // "#nature,#life"
+
+  const tags = question?.slug ? question.slug.split(",") : [];
+
   return (
     <div className="question-card">
       <div className={`question-description ${showReadMore ? "has-readmore" : ""}`}>
         {/* HEADING + BOOKMARK */}
         <div className="d-flex align-items-start justify-content-between mb-1">
           <h2 className="mb-0" title={question.title}>
-            {truncateByWords(question.title, isMobile ? 5 : 12)}
+            {truncateByWords(question.title, isMobile ? 20 : 20)}
           </h2>
           <span onClick={toggleBookmark} style={{ cursor: "pointer" }}>
             {bookmarked ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
@@ -301,7 +328,31 @@ const flagRef = useRef(null);
 
         {/* TITLE + TIME */}
         <div className="d-flex align-items-start justify-content-between mb-1 flex-wrap">
-          <h5 className="mb-0"><strong>{question.slug}</strong></h5>
+          <h5 className="mb-0">
+              {tags.map((tag, index) => {
+                  const cleanTag = tag.trim().replace("#", "");
+
+                  return (
+                  <a
+                      key={index}
+                      href="#"
+                      className="tag-link"
+                      onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // ✅ NEW: Call the onHashtagSelect callback instead of navigate
+                          onHashtagSelect?.(cleanTag);
+                          // ✅ Forcefully scroll to top immediately (won't get stuck on ads)
+                          window.scrollTo(0, 0);
+                          // Also queue another scroll to ensure it's at top
+                          setTimeout(() => window.scrollTo(0, 0), 10);
+                      }}
+                  >
+                      #{cleanTag}
+                  </a>
+                  );
+              })}
+          </h5>
           <span className="time-text">{postTime}</span>
         </div>
 
@@ -353,18 +404,23 @@ const flagRef = useRef(null);
           <div className="flag-ui-wrapper" ref={flagRef}>
             {/* FLAG BUTTON */}
             <button
-  className="flag-btn"
-  onClick={() => {
-    setShowFlagMenu(!showFlagMenu);
-    setShowOtherInput(false);
-  }}
->
-  {isFlagged ? (
-    <FaFlag color="#dc3545" />   // 🔴 solid when active
-  ) : (
-    <FaRegFlag className="color-set" /> // ⚪ outline by default
-  )}
-</button>
+              className="flag-btn"
+              onClick={() => {
+                  if (!isLoggedIn()) {
+                    openRegister();
+                    return;
+                  }
+
+                setShowFlagMenu(!showFlagMenu);
+                setShowOtherInput(false);
+              }}
+            >
+              {isFlagged ? (
+                <FaFlag color="#dc3545" />   // 🔴 solid when active
+              ) : (
+                <FaRegFlag className="color-set" /> // ⚪ outline by default
+              )}
+            </button>
 
 
             {showFlagMenu && (
