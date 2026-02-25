@@ -271,41 +271,17 @@ console.log(userId);
 
             {/* ✅ NEW: Display Selected Hashtags as Tabs */}
             {selectedHashtags.length > 0 && (
-              <div className="hashtag-filter-tabs" style={{
-                display: "flex",
-                gap: "10px",
-                marginBottom: "20px",
-                flexWrap: "wrap",
-                padding: "10px 0"
-              }}>
+              <div className="hashtag-filter-tabs" >
                 {selectedHashtags.map((hashtag) => (
                   <div
                     key={hashtag}
                     className="hashtag-tab"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      backgroundColor: "var(--tag-bg, #e0e0e0)",
-                      color: "var(--tag-text, #333)",
-                      padding: "8px 12px",
-                      borderRadius: "20px",
-                      fontSize: "14px",
-                      fontWeight: "500"
-                    }}
+                   
                   >
                     <span>#{hashtag}</span>
                     <button
                       onClick={() => handleHashtagRemove(hashtag)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "18px",
-                        padding: "0",
-                        color: "var(--tag-text, #333)",
-                        lineHeight: "1"
-                      }}
+                    
                     >
                       ×
                     </button>
