@@ -377,7 +377,7 @@ const flagRef = useRef(null);
                   );
               })}
           </h5>
-          <span className="time-text">{postTime}</span>
+          {/* <span className="time-text">{postTime}</span> */}
         </div>
 
         <div ref={descRef} className={`desc-body ${expanded ? "expanded" : "collapsed"}`}>
@@ -392,11 +392,11 @@ const flagRef = useRef(null);
       </div>
 
       {/* ACTIONS */}
-      <div className="question-actions d-flex justify-content-between align-items-center ms-auto">
+      <div className="question-actions d-flex  justify-content-between align-items-center ms-auto">
         {/* LEFT: LIKE / DISLIKE */}
         {showActions && (
-          <div className="d-flex">
-            <button className="upvote" onClick={() => handleVote(true)} disabled={loading}>
+          <div className="d-flex align-items-center">
+            <button className="upvote ps-0" onClick={() => handleVote(true)} disabled={loading}>
               {vote === true ? (
                 <FaHeart color="red" size={20} />
               ) : (
@@ -415,7 +415,7 @@ const flagRef = useRef(null);
                   height="20"
                 />
               )}
-            </button>
+            </button>  <span className="time-text">{postTime}</span>
           </div>
         )}
 
@@ -502,8 +502,8 @@ const flagRef = useRef(null);
           </div>
 
           {showActions && (
-            <button className="share-btn" onClick={() => setShowShare(true)}>
-              Send to My
+            <button className="share-btn pe-0" onClick={() => setShowShare(true)}>
+              Send to
             </button>
           )}
 
