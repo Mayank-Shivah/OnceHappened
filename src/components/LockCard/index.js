@@ -227,7 +227,7 @@ export default function LockCard({
                                 );
                             })}
                         </h5>
-                        <span className="time-text">{postTime}</span>
+                        {/* <span className="time-text">{postTime}</span> */}
                     </div>
 
                     <span>

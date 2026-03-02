@@ -2,8 +2,8 @@
   background: var(--light-yellow);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 10px 10px 2px 10px;
-  margin-bottom: 5px;
+  padding: 12px 10px 2px 11px;
+  margin-bottom: 7px;
   font-family: "Roboto", sans-serif;
 
 }
@@ -21,22 +21,25 @@
     h2 {
       font-size: 1.2rem;
       font-weight: 600;
+      word-spacing: 1px;
     }
       h5 {
    font-weight: 400 !important;
     font-size:15px;
-    width: 82%;
+    width: 84%;
+            margin: 5px 0px;
     text-decoration: none;
     white-space: normal;
     word-break: break-word;
     @media screen and (max-width:768px){
- width: 100%;
+ width: fit-content;
     }
     a{
          font-weight: 600 !important;
     font-size:15px;
     text-decoration: none;
        color: var(--light-color);
+       margin-right: 6px;
  
     }
     }
@@ -44,6 +47,7 @@
     font-size: 1rem;
     line-height: 1.5rem;
     position: relative;
+    padding-top: 6px;
   }
   /* Collapsed */
   .desc-body.collapsed {
@@ -80,14 +84,18 @@
     font-weight: 600;
     font-size: 1rem;
     color: var(--category-text);
-    margin: 0.5rem auto 0;
+    margin: 0.6rem auto 0;
     display: block;
     text-align: center;
     position: relative;
     width: 150px;
-
+@media (max-width: 768px){
+    margin-top: 10px;
+      margin-bottom: 12px;
+}
     @media (max-width: 350px) {
       width: 180px;
+    
     }
 
     &::after {
@@ -95,7 +103,7 @@
       display: block;
       height: 2px;
       width: 100%;
-      margin-top: 2px;
+      margin-top: 3px;
       background: var(--theme-color);
       animation: glow 1.5s infinite alternate;
     }
@@ -147,7 +155,7 @@
     padding: 0.33rem 0.7rem;
     display: flex;
     align-items: center;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
     transition: 0.2s;
@@ -219,7 +227,7 @@ position: absolute;
     top: auto;
     bottom: 0;
     @media screen and (max-width:768px) {
-                 transform: translate(-50%, 6px);
+                 transform: translate(-64%, 6px);
         left: 0;
         right: 0;
          height: auto;

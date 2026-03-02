@@ -253,11 +253,35 @@ const flagRef = useRef(null);
 
   /* ---------------- READ MORE ---------------- */
   useEffect(() => {
-    const el = descRef.current;
-    if (!el) return;
-    const lh = parseFloat(getComputedStyle(el).lineHeight) || 20;
-    setShowReadMore(Math.ceil(el.scrollHeight / lh) > 9);
-  }, [question]);
+    const el = () => descRef.current;
+    // CSS uses -webkit-line-clamp: 5 for collapsed state — keep JS in sync
+    const lineLimit = 5;
+
+    const compute = () => {
+      const node = el();
+      if (!node) return;
+      const lh = parseFloat(getComputedStyle(node).lineHeight) || 20;
+      // measure after paint to ensure styles and images applied
+      requestAnimationFrame(() => {
+        const lines = Math.ceil(node.scrollHeight / lh);
+        setShowReadMore(lines > lineLimit);
+      });
+    };
+
+    compute();
+
+    // Recompute on resize
+    window.addEventListener("resize", compute);
+
+    // Observe DOM changes inside the description (images, HTML updates)
+    const observer = new MutationObserver(() => compute());
+    if (descRef.current) observer.observe(descRef.current, { childList: true, subtree: true, characterData: true });
+
+    return () => {
+      window.removeEventListener("resize", compute);
+      observer.disconnect();
+    };
+  }, [question, isMobile]);
 
   /* ---------------- LIKE / DISLIKE ---------------- */
   const handleVote = async (isLike) => {
@@ -327,7 +351,7 @@ const flagRef = useRef(null);
         </div>
 
         {/* TITLE + TIME */}
-        <div className="d-flex align-items-start justify-content-between mb-1 flex-wrap">
+        <div className="d-flex align-items-center justify-content-between mb-1 flex-wrap">
           <h5 className="mb-0">
               {tags.map((tag, index) => {
                   const cleanTag = tag.trim().replace("#", "");
@@ -353,7 +377,7 @@ const flagRef = useRef(null);
                   );
               })}
           </h5>
-          <span className="time-text">{postTime}</span>
+          {/* <span className="time-text">{postTime}</span> */}
         </div>
 
         <div ref={descRef} className={`desc-body ${expanded ? "expanded" : "collapsed"}`}>
@@ -368,11 +392,11 @@ const flagRef = useRef(null);
       </div>
 
       {/* ACTIONS */}
-      <div className="question-actions d-flex justify-content-between align-items-center ms-auto">
+      <div className="question-actions d-flex  justify-content-between align-items-center ms-auto">
         {/* LEFT: LIKE / DISLIKE */}
         {showActions && (
-          <div className="d-flex">
-            <button className="upvote" onClick={() => handleVote(true)} disabled={loading}>
+          <div className="d-flex align-items-center">
+            <button className="upvote ps-0" onClick={() => handleVote(true)} disabled={loading}>
               {vote === true ? (
                 <FaHeart color="red" size={20} />
               ) : (
@@ -391,7 +415,7 @@ const flagRef = useRef(null);
                   height="20"
                 />
               )}
-            </button>
+            </button>  <span className="time-text">{postTime}</span>
           </div>
         )}
 
@@ -478,8 +502,8 @@ const flagRef = useRef(null);
           </div>
 
           {showActions && (
-            <button className="share-btn" onClick={() => setShowShare(true)}>
-              Send to My
+            <button className="share-btn pe-0" onClick={() => setShowShare(true)}>
+              Send to
             </button>
           )}
 
