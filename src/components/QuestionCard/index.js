@@ -415,7 +415,7 @@ const flagRef = useRef(null);
                   height="20"
                 />
               )}
-            </button>  <span className="time-text">{postTime}</span>
+            </button>  <span className="time-text">{postTime} read</span>
           </div>
         )}
 
