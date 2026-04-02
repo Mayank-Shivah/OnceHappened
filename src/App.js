@@ -12,6 +12,7 @@ import SupportSuggestion from "./pages/SupportSuggestion";
 import ReturnPolicy from "./pages/ReturnPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
+import FeedQues from "./pages/FeedQues";
 import MyProfile from "./pages/MyProfile";
 import About from "./pages/AboutUs";
 import Subscription from "./pages/Subscription";
@@ -135,8 +136,9 @@ function App() {
                 <Route path="/terms-conditions" element={<TermsConditions />} />
                 <Route path="/return-policy" element={<ReturnPolicy />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/feed" element={<FeedQues />} />
                 {/* Protected routes */}
-          
+            
 
                 <Route
                   path="/support-suggestion"
