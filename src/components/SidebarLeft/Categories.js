@@ -138,6 +138,9 @@ export default function Categories({
         >
           <span className="cat-label">Discover</span>
         </li>
+           <li className="category-item">
+            <a className="cat-label" href="/feed" style={{ textDecoration: "none", color: "inherit" }}>Questions</a>
+          </li>
         {categories.length > 0 ? (
           
           categories.map((cat) => (
